@@ -1,16 +1,17 @@
 void Main()
 {
-	var b = new Bitmap(750, 750);
+	var b = new Bitmap(200, 200);
 	
 	using (var g = Graphics.FromImage(b))
 	{
 		g.FillRectangle(Brushes.Black, 0, 0, b.Width, b.Height);
 	}
 	
-	var model = LoadModel(@"D:\Users\rotor\Documents\african_head.obj");
-	Draw(model, b);
+	var model = LoadModel(@"C:\Users\p-afanasyev\Documents\african_head.obj");
+	//Draw(model, b);
 
 	//TestLine(b);
+	TestTriangle(b);
 	
 	b.RotateFlip(RotateFlipType.Rotate180FlipX);
 	b.Dump();
@@ -43,6 +44,17 @@ void TestLine(Bitmap b)
 	Line(50, 50, 40, 80, b, Color.White);
 }
 
+void TestTriangle(Bitmap bmp)
+{
+	Vector2[] t0 = new []{new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80)};
+	Vector2[] t1 = new []{new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180)};
+	Vector2[] t2 = new []{new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180)};
+
+    Triangle(t0[0], t0[1], t0[2], bmp, Color.Red);
+    Triangle(t1[0], t1[1], t1[2], bmp, Color.White);
+    Triangle(t2[0], t2[1], t2[2], bmp, Color.Green);
+}
+
 void Draw(Model model, Bitmap b)
 {
 	foreach (var face in model.Faces)
@@ -58,6 +70,11 @@ void Draw(Model model, Bitmap b)
             Line(x0, y0, x1, y1, b, Color.White);
         }
     }
+}
+
+void Line(Vector2 t0, Vector2 t1, Bitmap bmp, Color color)
+{
+	Line((int)t0.X, (int)t0.Y, (int)t1.X, (int)t1.Y, bmp, color);
 }
 
 void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
@@ -118,11 +135,18 @@ void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
 	}
 }
 
+void Triangle(Vector2 t0, Vector2 t1, Vector2 t2, Bitmap bmp, Color color)
+{
+	Line(t0, t1, bmp, color);
+    Line(t1, t2, bmp, color);
+    Line(t2, t0, bmp, color);
+}
+
 Model LoadModel(string fileName)
 {
 	var lines = File.ReadAllLines(fileName);
 	
-	var vertices = new List<Vertex>();
+	var vertices = new List<Vector3>();
 	var vertexLine = new Regex("^v ([^ ]+) ([^ ]+) ([^ ]+)$");
 	
 	var faces = new List<Face>();
@@ -135,10 +159,10 @@ Model LoadModel(string fileName)
 		
 		if (vertMatch.Success)
 		{
-			var x = double.Parse(vertMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-			var y = double.Parse(vertMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-			var z = double.Parse(vertMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-			var vertex = new Vertex(x, y, z);
+			var x = float.Parse(vertMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+			var y = float.Parse(vertMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+			var z = float.Parse(vertMatch.Groups[3].Value, CultureInfo.InvariantCulture);
+			var vertex = new Vector3(x, y, z);
 			
 			vertices.Add(vertex);
 		}
@@ -154,24 +178,6 @@ Model LoadModel(string fileName)
 	}
 	
 	return new Model(vertices, faces);
-}
-	
-class Vertex
-{
-	private readonly double _x;
-	private readonly double _y;
-	private readonly double _z;
-	
-	public Vertex(double x, double y, double z)
-	{
-		_x = x;
-		_y= y;
-		_z = z;
-	}
-	
-	public double X {get{return _x;}}
-	public double Y {get{return _y;}}
-	public double Z {get{return _z;}}
 }
 
 class Face
@@ -212,16 +218,16 @@ class Face
 
 class Model
 {
-	private readonly List<Vertex> _vertices;
+	private readonly List<Vector3> _vertices;
 	private readonly List<Face> _faces;
 	
-	public Model(List<Vertex> vertices, List<Face> faces)
+	public Model(List<Vector3> vertices, List<Face> faces)
 	{
 		_vertices = vertices;
 		_faces = faces;
 	}
 	
-	public List<Vertex> Vertices
+	public List<Vector3> Vertices
 	{
 		get {return _vertices;}
 	}
