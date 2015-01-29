@@ -1,6 +1,6 @@
 void Main()
 {
-	var b = new Bitmap(300, 300);
+	var b = new Bitmap(750, 750);
 	
 	using (var g = Graphics.FromImage(b))
 	{
@@ -8,10 +8,10 @@ void Main()
 	}
 	
 	var model = LoadModel(@"D:\Users\rotor\Documents\african_head.obj");
-	//Draw(model, b);
+	Draw(model, b);
 
 	//TestLine(b);
-	TestTriangle(b);
+	//TestTriangle(b);
 	
 	b.RotateFlip(RotateFlipType.Rotate180FlipX);
 	b.Dump();
@@ -50,11 +50,13 @@ void TestTriangle(Bitmap bmp)
 	Vector2[] t1 = new []{new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180)};
 	Vector2[] t2 = new []{new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180)};
 	Vector2[] t3 = new []{new Vector2(200, 100), new Vector2(200, 150), new Vector2(220, 180)};
+	Vector2[] t4 = new []{new Vector2(200, 50), new Vector2(220, 50), new Vector2(250, 100)};
 
     Triangle(t0[0], t0[1], t0[2], bmp, Color.Red);
     Triangle(t1[0], t1[1], t1[2], bmp, Color.White);
     Triangle(t2[0], t2[1], t2[2], bmp, Color.Green);
     Triangle(t3[0], t3[1], t3[2], bmp, Color.Blue);
+    Triangle(t4[0], t4[1], t4[2], bmp, Color.Yellow);
 }
 
 void Triangle(int x0, int y0, int x1, int y1, int x2, int y2, Bitmap bmp, Color color)
@@ -89,7 +91,14 @@ void Triangle(int x0, int y0, int x1, int y1, int x2, int y2, Bitmap bmp, Color 
 			
 			if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
 			{
-				bmp.SetPixel(x, y, color);
+				try
+				{
+					bmp.SetPixel(x, y, color);
+				}
+				catch
+				{
+					new {x, y}.Dump();
+				}
 			}
 		}
 	}
@@ -97,9 +106,16 @@ void Triangle(int x0, int y0, int x1, int y1, int x2, int y2, Bitmap bmp, Color 
 
 MyLine MakeLineFunc(double x0, double y0, double x1, double y1)
 {
+	Func<double, double, double> func;
+	
+	if (x0 == x1)
+		func = (x, _) => x*(y1 - y0) + x0*(y0 - y1);
+	else
+		func = (x, y) => (y - y0)/(y1 - y0) - (x - x0)/(x1 - x0);
+		
 	var line = new MyLine
 	{
-		Func = (x, y) => (y - y0)/(y1 - y0) - (x - x0)/(x1 - x0),
+		Func = func,
 		DeltaX = (y1 - y0)/(x1 - x0),
 		DeltaY = 0
 	};
@@ -129,7 +145,7 @@ void Draw(Model model, Bitmap b)
         for (var j=0; j<3; j++)
 		{
 			var worldCoord = model.Vertices[face[j]];
-			screenCoords[j] = new Vector2((worldCoord.X + 1f)*b.Width/2, (worldCoord.Y + 1f)*b.Height/2);
+			screenCoords[j] = new Vector2((worldCoord.X + 1f)*(b.Width-1)/2, (worldCoord.Y + 1f)*(b.Height-1)/2);
             /*var v0 = model.Vertices[face[j]];
             var v1 = model.Vertices[face[(j+1)%3]];
             int x0 = (int)((v0.X+1d)*b.Width/2d);
