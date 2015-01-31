@@ -25,8 +25,8 @@ namespace Render
             var model = LoadModel(@"D:\Users\rotor\Documents\african_head.obj");
             Draw(model, b);
 
-            //TestLine(b);
-            //TestTriangle(b);
+//            TestLine(b);
+//            TestTriangle(b);
 
             b.RotateFlip(RotateFlipType.Rotate180FlipX);
 
@@ -66,7 +66,7 @@ namespace Render
             Vector2[] t1 = new[] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
             Vector2[] t2 = new[] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
             Vector2[] t3 = new[] { new Vector2(200, 100), new Vector2(200, 150), new Vector2(220, 180) };
-            Vector2[] t4 = new[] { new Vector2(200, 50), new Vector2(220, 50), new Vector2(250, 100) };
+            Vector2[] t4 = new[] { new Vector2(200, 50), new Vector2(220, 50), new Vector2(150, 100) };
 
             Triangle(t0[0], t0[1], t0[2], bmp, Color.Red);
             Triangle(t1[0], t1[1], t1[2], bmp, Color.White);
@@ -85,25 +85,34 @@ namespace Render
             double xmid = ((double)x0 + x1 + x2) / 3;
             double ymid = ((double)y0 + y1 + y2) / 3;
 
+            var v0 = new Vector3((float)(x0 - xmid), (float)(y0 - ymid), 0);
+            var v1 = new Vector3((float)(x1 - xmid), (float)(y1 - ymid), 0);
+
+            var direction = Vector3.Cross(v0, v1).Z;
+            if (direction < 0)
+            {
+                int buf;
+
+                buf = x1;
+                x1 = x2;
+                x2 = buf;
+
+                buf = y1;
+                y1 = y2;
+                y2 = buf;
+            }
+
             var line1 = MakeLineFunc(x0, y0, x1, y1);
-            if (line1.Func(xmid, ymid) < 0)
-                line1 = MakeLineFunc(x1, y1, x0, y0);
-
             var line2 = MakeLineFunc(x1, y1, x2, y2);
-            if (line2.Func(xmid, ymid) < 0)
-                line2 = MakeLineFunc(x2, y2, x1, y1);
-
             var line3 = MakeLineFunc(x2, y2, x0, y0);
-            if (line3.Func(xmid, ymid) < 0)
-                line3 = MakeLineFunc(x0, y0, x2, y2);
 
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
                 {
-                    var curr1 = line1.Func(x, y);
-                    var curr2 = line2.Func(x, y);
-                    var curr3 = line3.Func(x, y);
+                    var curr1 = line1(x, y);
+                    var curr2 = line2(x, y);
+                    var curr3 = line3(x, y);
 
                     if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
                     {
@@ -113,29 +122,9 @@ namespace Render
             }
         }
 
-        private static MyLine MakeLineFunc(double x0, double y0, double x1, double y1)
+        private static Func<double, double, double> MakeLineFunc(double x0, double y0, double x1, double y1)
         {
-            Func<double, double, double> func;
-
-            if (x0 == x1)
-                func = (x, _) => x * (y1 - y0) + x0 * (y0 - y1);
-            else
-                func = (x, y) => (y - y0) / (y1 - y0) - (x - x0) / (x1 - x0);
-
-            var line = new MyLine
-            {
-                Func = func,
-                DeltaX = (y1 - y0) / (x1 - x0),
-                DeltaY = 0
-            };
-            return line;
-        }
-
-        private class MyLine
-        {
-            public Func<double, double, double> Func { get; set; }
-            public double DeltaX { get; set; }
-            public double DeltaY { get; set; }
+            return (x, y) => y*(x1 - x0) - x*(y1 - y0) - y0*(x1 - x0) + x0*(y1 - y0);
         }
 
         private static int Math3(int a, int b, int c, Func<int, int, int> func)
