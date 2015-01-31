@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Render
 {
@@ -62,11 +59,11 @@ namespace Render
 
         private static void TestTriangle(Bitmap bmp)
         {
-            Vector2[] t0 = new[] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
-            Vector2[] t1 = new[] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
-            Vector2[] t2 = new[] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
-            Vector2[] t3 = new[] { new Vector2(200, 100), new Vector2(200, 150), new Vector2(220, 180) };
-            Vector2[] t4 = new[] { new Vector2(200, 50), new Vector2(220, 50), new Vector2(150, 100) };
+            Vector2[] t0 = { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
+            Vector2[] t1 = { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
+            Vector2[] t2 = { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
+            Vector2[] t3 = { new Vector2(200, 100), new Vector2(200, 150), new Vector2(220, 180) };
+            Vector2[] t4 = { new Vector2(200, 50), new Vector2(220, 50), new Vector2(150, 100) };
 
             Triangle(t0[0], t0[1], t0[2], bmp, Color.Red);
             Triangle(t1[0], t1[1], t1[2], bmp, Color.White);
@@ -135,7 +132,8 @@ namespace Render
 
         private static void Draw(Model model, Bitmap b)
         {
-            var rnd = new Random();
+            var light = new Vector3(0, 0, 1);
+
             foreach (var face in model.Faces)
             {
                 Vector2[] screenCoords = new Vector2[3];
@@ -144,15 +142,25 @@ namespace Render
                 {
                     var worldCoord = model.Vertices[face[j]];
                     screenCoords[j] = new Vector2((worldCoord.X + 1f) * (b.Width - 1) / 2, (worldCoord.Y + 1f) * (b.Height - 1) / 2);
-                    /*var v0 = model.Vertices[face[j]];
-                    var v1 = model.Vertices[face[(j+1)%3]];
-                    int x0 = (int)((v0.X+1d)*b.Width/2d);
-                    int y0 = (int)((v0.Y+1d)*(b.Height - 1)/2d);
-                    int x1 = (int)((v1.X+1d)*b.Width/2d);
-                    int y1 = (int)((v1.Y+1d)*(b.Height - 1)/2d);
-                    Line(x0, y0, x1, y1, b, Color.White);*/
                 }
-                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], b, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)));
+
+                var v0 = model.Vertices[face[0]];
+                var v1 = model.Vertices[face[1]];
+                var v2 = model.Vertices[face[2]];
+
+                var foo1 = Vector3.Subtract(v1, v0);
+                var foo2 = Vector3.Subtract(v2, v1);
+
+                var normal = Vector3.Cross(foo1, foo2);
+                normal = Vector3.Normalize(normal);
+
+                var bar = Vector3.Dot(normal, light);
+                var bar1 = (int) (bar*255);
+
+                if (bar1 < 0)
+                    continue;
+
+                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], b, Color.FromArgb(bar1, bar1, bar1));
             }
         }
 
