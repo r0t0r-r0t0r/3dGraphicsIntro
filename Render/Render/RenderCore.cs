@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
@@ -12,7 +14,7 @@ namespace Render
     {
         public static Bitmap Render()
         {
-            var b = new Bitmap(750, 750);
+            var b = new Bitmap(800, 800);
 
             using (var g = Graphics.FromImage(b))
             {
@@ -24,6 +26,7 @@ namespace Render
 
 //            TestLine(b);
 //            TestTriangle(b);
+//            TestYBuffer(b);
 
             b.RotateFlip(RotateFlipType.Rotate180FlipX);
 
@@ -55,6 +58,59 @@ namespace Render
             Line(50, 50, 20, 60, b, Color.White);
             Line(50, 50, 20, 80, b, Color.White);
             Line(50, 50, 40, 80, b, Color.White);
+        }
+
+        private static void TestYBuffer(Bitmap bmp)
+        {
+            var yBuffer = new double[bmp.Width];
+            for (int i = 0; i < yBuffer.Length; i++)
+            {
+                yBuffer[i] = double.NegativeInfinity;
+            }
+
+            Rasterize(20, 34, 744, 400, bmp, Color.Red, yBuffer);
+            Rasterize(120, 434, 444, 400, bmp, Color.Green, yBuffer);
+            Rasterize(330, 463, 594, 200, bmp, Color.Blue, yBuffer);
+
+            Rasterize(10, 10, 790, 10, bmp, Color.White, yBuffer);
+        }
+
+        private static void Rasterize(int x0, int y0, int x1, int y1, Bitmap bmp, Color color,
+            double[] yBuffer)
+        {
+            if (x0 == x1)
+            {
+                return;
+            }
+
+            if (x1 < x0)
+            {
+                int buf;
+                
+                buf = x0;
+                x0 = x1;
+                x1 = buf;
+
+                buf = y0;
+                y0 = y1;
+                y1 = buf;
+            }
+
+            double k = ((double)y1 - y0)/(x1 - x0);
+            double y = y0;
+
+            for (int x = x0; x <= x1; x++)
+            {
+                if (yBuffer[x] < y)
+                {
+                    yBuffer[x] = y;
+                    for (int yOut = 200; yOut < 210; yOut++)
+                    {
+                        bmp.SetPixel(x, yOut, color);
+                    }
+                }
+                y += k;
+            }
         }
 
         private static void TestTriangle(Bitmap bmp)
@@ -119,6 +175,53 @@ namespace Render
             }
         }
 
+        private static void Triangle(int x0, int y0, double z0, int x1, int y1, double z1, int x2, int y2, double z2, Bitmap bmp, Color color, double[,] zBuffer)
+        {
+            int minX = Math3(x0, x1, x2, Math.Min);
+            int minY = Math3(y0, y1, y2, Math.Min);
+            int maxX = Math3(x0, x1, x2, Math.Max);
+            int maxY = Math3(y0, y1, y2, Math.Max);
+
+            double xmid = ((double)x0 + x1 + x2) / 3;
+            double ymid = ((double)y0 + y1 + y2) / 3;
+
+            var v0 = new Vector3((float)(x0 - xmid), (float)(y0 - ymid), 0);
+            var v1 = new Vector3((float)(x1 - xmid), (float)(y1 - ymid), 0);
+
+            var direction = Vector3.Cross(v0, v1).Z;
+            if (direction < 0)
+            {
+                int buf;
+
+                buf = x1;
+                x1 = x2;
+                x2 = buf;
+
+                buf = y1;
+                y1 = y2;
+                y2 = buf;
+            }
+
+            var line1 = MakeLineFunc(x0, y0, x1, y1);
+            var line2 = MakeLineFunc(x1, y1, x2, y2);
+            var line3 = MakeLineFunc(x2, y2, x0, y0);
+
+            for (int x = minX; x <= maxX; x++)
+            {
+                for (int y = minY; y <= maxY; y++)
+                {
+                    var curr1 = line1(x, y);
+                    var curr2 = line2(x, y);
+                    var curr3 = line3(x, y);
+
+                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
+                    {
+                        bmp.SetPixel(x, y, color);
+                    }
+                }
+            }
+        }
+
         private static Func<double, double, double> MakeLineFunc(double x0, double y0, double x1, double y1)
         {
             return (x, y) => y*(x1 - x0) - x*(y1 - y0) - y0*(x1 - x0) + x0*(y1 - y0);
@@ -132,6 +235,15 @@ namespace Render
 
         private static void Draw(Model model, Bitmap b)
         {
+            var zBuffer = new double[b.Width, b.Height];
+            for (int x = 0; x < b.Width; x++)
+            {
+                for (int y = 0; y < b.Height; y++)
+                {
+                    zBuffer[x, y] = double.NegativeInfinity;
+                }
+            }
+
             var light = new Vector3(0, 0, 1);
 
             foreach (var face in model.Faces)
