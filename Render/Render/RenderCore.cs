@@ -21,7 +21,7 @@ namespace Render
                 g.FillRectangle(Brushes.Black, 0, 0, b.Width, b.Height);
             }
 
-            var model = LoadModel(@"D:\Users\rotor\Documents\african_head.obj");
+            var model = LoadModel(@"C:\Users\p-afanasyev\Documents\african_head.obj");
             Draw(model, b);
 
 //            TestLine(b);
@@ -206,6 +206,8 @@ namespace Render
             var line2 = MakeLineFunc(x1, y1, x2, y2);
             var line3 = MakeLineFunc(x2, y2, x0, y0);
 
+            var plain = MakePlain(x0, y0, z0, x1, y1, z1, x2, y2, z2);
+
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
@@ -214,8 +216,11 @@ namespace Render
                     var curr2 = line2(x, y);
                     var curr3 = line3(x, y);
 
-                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
+                    var z = plain(x, y);
+
+                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0 && z > zBuffer[x, y])
                     {
+                        zBuffer[x, y] = z;
                         bmp.SetPixel(x, y, color);
                     }
                 }
@@ -225,6 +230,18 @@ namespace Render
         private static Func<double, double, double> MakeLineFunc(double x0, double y0, double x1, double y1)
         {
             return (x, y) => y*(x1 - x0) - x*(y1 - y0) - y0*(x1 - x0) + x0*(y1 - y0);
+        }
+
+        private static Func<double, double, double> MakePlain(double x0, double y0, double z0, double x1, double y1, double z1, double x2, double y2, double z2)
+        {
+            return (x, y) =>
+            {
+                double k = (-y1 * z0 + y2 * z0 + y0 * z1 - y2 * z1 - y0 * z2 + y1 * z2) / (x1 * y0 - x2 * y0 - x0 * y1 + x2 * y1 + x0 * y2 - x1 * y2);
+                double l = (x1 * z0 - x2 * z0 - x0 * z1 + x2 * z1 + x0 * z2 - x1 * z2) / (x1 * y0 - x2 * y0 - x0 * y1 + x2 * y1 + x0 * y2 - x1 * y2);
+                double m = (x2 * y1 * z0 - x1 * y2 * z0 - x2 * y0 * z1 + x0 * y2 * z1 + x1 * y0 * z2 - x0 * y1 * z2) / (x1 * y0 - x2 * y0 - x0 * y1 + x2 * y1 + x0 * y2 - x1 * y2);
+
+                return k * x + l * y + m;
+            };
         }
 
         private static int Math3(int a, int b, int c, Func<int, int, int> func)
@@ -269,10 +286,13 @@ namespace Render
                 var bar = Vector3.Dot(normal, light);
                 var bar1 = (int) (bar*255);
 
-                if (bar1 < 0)
+                if (bar1 <= 0)
                     continue;
 
-                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], b, Color.FromArgb(bar1, bar1, bar1));
+//                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], b, Color.FromArgb(bar1, bar1, bar1));
+                Triangle((int) screenCoords[0].X, (int) screenCoords[0].Y, v0.Z, (int) screenCoords[1].X,
+                    (int) screenCoords[1].Y, v1.Z, (int) screenCoords[2].X, (int) screenCoords[2].Y, v2.Z, b,
+                    Color.FromArgb(bar1, bar1, bar1), zBuffer);
             }
         }
 
