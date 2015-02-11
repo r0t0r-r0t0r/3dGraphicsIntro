@@ -12,6 +12,7 @@ namespace Render
 {
     public static class RenderCore
     {
+        private static readonly string RootDir = @"D:\Users\rotor\Documents\";
         public static Bitmap Render()
         {
             var b = new Bitmap(800, 800);
@@ -21,8 +22,9 @@ namespace Render
                 g.FillRectangle(Brushes.Black, 0, 0, b.Width, b.Height);
             }
 
-            var model = LoadModel(@"C:\Users\p-afanasyev\Documents\african_head.obj");
-            Draw(model, b);
+            var model = LoadModel(RootDir + "african_head.obj");
+            var texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
+            Draw(model, texture, b);
 
 //            TestLine(b);
 //            TestTriangle(b);
@@ -175,20 +177,39 @@ namespace Render
             }
         }
 
-        private static void Triangle(int x0, int y0, double z0, int x1, int y1, double z1, int x2, int y2, double z2, Bitmap bmp, Color color, double[,] zBuffer)
+        private static void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, Bitmap bmp, Color color, Bitmap texture, double[,] zBuffer)
         {
+            var x0 = (int) v0.X;
+            var y0 = (int) v0.Y;
+            var z0 = v0.Z;
+            var x1 = (int)v1.X;
+            var y1 = (int)v1.Y;
+            var z1 = v1.Z;
+            var x2 = (int)v2.X;
+            var y2 = (int)v2.Y;
+            var z2 = v2.Z;
+
+            var tv0 = textureVertices[0];
+            var tv1 = textureVertices[1];
+            var tv2 = textureVertices[2];
+
             int minX = Math3(x0, x1, x2, Math.Min);
             int minY = Math3(y0, y1, y2, Math.Min);
             int maxX = Math3(x0, x1, x2, Math.Max);
             int maxY = Math3(y0, y1, y2, Math.Max);
 
+            float minTx = Math3(tv0.X, tv1.X, tv2.X, Math.Min);
+            float minTy = Math3(tv0.Y, tv1.Y, tv2.Y, Math.Min);
+            float maxTx = Math3(tv0.X, tv1.X, tv2.X, Math.Max);
+            float maxTy = Math3(tv0.Y, tv1.Y, tv2.Y, Math.Max);
+
             double xmid = ((double)x0 + x1 + x2) / 3;
             double ymid = ((double)y0 + y1 + y2) / 3;
 
-            var v0 = new Vector3((float)(x0 - xmid), (float)(y0 - ymid), 0);
-            var v1 = new Vector3((float)(x1 - xmid), (float)(y1 - ymid), 0);
+            var dirV0 = new Vector3((float)(x0 - xmid), (float)(y0 - ymid), 0);
+            var dirV1 = new Vector3((float)(x1 - xmid), (float)(y1 - ymid), 0);
 
-            var direction = Vector3.Cross(v0, v1).Z;
+            var direction = Vector3.Cross(dirV0, dirV1).Z;
             if (direction < 0)
             {
                 int buf;
@@ -200,6 +221,11 @@ namespace Render
                 buf = y1;
                 y1 = y2;
                 y2 = buf;
+
+                Vector3 tbuf;
+                tbuf = v1;
+                v1 = v2;
+                v2 = tbuf;
             }
 
             var line1 = MakeLineFunc(x0, y0, x1, y1);
@@ -208,6 +234,10 @@ namespace Render
 
             var plain = MakePlain(x0, y0, z0, x1, y1, z1, x2, y2, z2);
 
+            var tx = minTx;
+            var ty = minTy;
+            var deltaTx = (maxTx - minTx)/(maxX - minX);
+            var deltaTy = (maxTy - minTy)/(maxY - minY);
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
@@ -218,12 +248,23 @@ namespace Render
 
                     var z = plain(x, y);
 
-                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0 && z > zBuffer[x, y])
+                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0 && z >= zBuffer[x, y])
                     {
                         zBuffer[x, y] = z;
+
+                        var tx1 = (int)Math.Round(tx*(texture.Width - 1));
+                        var ty1 = (int) Math.Round(ty*(texture.Height - 1));
+                        color = texture.GetPixel(tx1, ty1);
                         bmp.SetPixel(x, y, color);
+
                     }
+                    ty += deltaTy;
+                    if (ty > 1)
+                        ty = 1;
                 }
+                tx += deltaTx;
+                if (tx > 1)
+                    tx = 1;
             }
         }
 
@@ -244,13 +285,13 @@ namespace Render
             };
         }
 
-        private static int Math3(int a, int b, int c, Func<int, int, int> func)
+        private static T Math3<T>(T a, T b, T c, Func<T, T, T> func)
         {
             var result = func(a, b);
             return func(result, c);
         }
 
-        private static void Draw(Model model, Bitmap b)
+        private static void Draw(Model model, Bitmap texture, Bitmap b)
         {
             var zBuffer = new double[b.Width, b.Height];
             for (int x = 0; x < b.Width; x++)
@@ -265,17 +306,20 @@ namespace Render
 
             foreach (var face in model.Faces)
             {
-                Vector2[] screenCoords = new Vector2[3];
+                var screenCoords = new Vector3[3];
 
                 for (var j = 0; j < 3; j++)
                 {
                     var worldCoord = model.Vertices[face[j]];
-                    screenCoords[j] = new Vector2((worldCoord.X + 1f) * (b.Width - 1) / 2, (worldCoord.Y + 1f) * (b.Height - 1) / 2);
+                    screenCoords[j] = new Vector3((worldCoord.X + 1f) * (b.Width - 1) / 2, (worldCoord.Y + 1f) * (b.Height - 1) / 2, worldCoord.Z);
                 }
 
                 var v0 = model.Vertices[face[0]];
                 var v1 = model.Vertices[face[1]];
                 var v2 = model.Vertices[face[2]];
+
+                var textureVertices =
+                    Enumerable.Range(0, 3).Select(face.GetVtIndex).Select(x => model.TextureVertices[x]).ToArray();
 
                 var foo1 = Vector3.Subtract(v1, v0);
                 var foo2 = Vector3.Subtract(v2, v1);
@@ -289,10 +333,7 @@ namespace Render
                 if (bar1 <= 0)
                     continue;
 
-//                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], b, Color.FromArgb(bar1, bar1, bar1));
-                Triangle((int) screenCoords[0].X, (int) screenCoords[0].Y, v0.Z, (int) screenCoords[1].X,
-                    (int) screenCoords[1].Y, v1.Z, (int) screenCoords[2].X, (int) screenCoords[2].Y, v2.Z, b,
-                    Color.FromArgb(bar1, bar1, bar1), zBuffer);
+                Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, b, Color.FromArgb(bar1, bar1, bar1), texture, zBuffer);
             }
         }
 
@@ -371,13 +412,17 @@ namespace Render
             var vertices = new List<Vector3>();
             var vertexLine = new Regex("^v ([^ ]+) ([^ ]+) ([^ ]+)$");
 
+            var textureVertices = new List<Vector3>();
+            var textureVertexLine = new Regex(@"^vt\s+([^ ]+) ([^ ]+) ([^ ]+)$");
+
             var faces = new List<Face>();
-            var faceLine = new Regex("^f ([^/]+).* ([^/]+).* ([^/]+).*$");
+            var faceLine = new Regex("^f ([^/]+)/([^/]+).* ([^/]+)/([^/]+).* ([^/]+)/([^/]+).*$");
 
             foreach (var line in lines)
             {
                 var vertMatch = vertexLine.Match(line);
                 var faceMatch = faceLine.Match(line);
+                var textureVertMatch = textureVertexLine.Match(line);
 
                 if (vertMatch.Success)
                 {
@@ -391,15 +436,27 @@ namespace Render
                 else if (faceMatch.Success)
                 {
                     var a = int.Parse(faceMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var b = int.Parse(faceMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-                    var c = int.Parse(faceMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-                    var face = new Face(a - 1, b - 1, c - 1);
+                    var ta = int.Parse(faceMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+                    var b = int.Parse(faceMatch.Groups[3].Value, CultureInfo.InvariantCulture);
+                    var tb = int.Parse(faceMatch.Groups[4].Value, CultureInfo.InvariantCulture);
+                    var c = int.Parse(faceMatch.Groups[5].Value, CultureInfo.InvariantCulture);
+                    var tc = int.Parse(faceMatch.Groups[6].Value, CultureInfo.InvariantCulture);
+                    var face = new Face(a - 1, b - 1, c - 1, ta - 1, tb - 1, tc - 1);
 
                     faces.Add(face);
                 }
+                else if (textureVertMatch.Success)
+                {
+                    var x = float.Parse(textureVertMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+                    var y = float.Parse(textureVertMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+                    var z = float.Parse(textureVertMatch.Groups[3].Value, CultureInfo.InvariantCulture);
+                    var vertex = new Vector3(x, y, z);
+
+                    textureVertices.Add(vertex); 
+                }
             }
 
-            return new Model(vertices, faces);
+            return new Model(vertices, textureVertices, faces);
         }
 
         private class Face
@@ -407,12 +464,18 @@ namespace Render
             private readonly int _a;
             private readonly int _b;
             private readonly int _c;
+            private readonly int _ta;
+            private readonly int _tb;
+            private readonly int _tc;
 
-            public Face(int a, int b, int c)
+            public Face(int a, int b, int c, int ta, int tb, int tc)
             {
                 _a = a;
                 _b = b;
                 _c = c;
+                _ta = ta;
+                _tb = tb;
+                _tc = tc;
             }
 
             public int A { get { return _a; } }
@@ -436,22 +499,44 @@ namespace Render
                     }
                 }
             }
+
+            public int GetVtIndex(int i)
+            {
+                switch (i)
+                {
+                    case 0:
+                        return _ta;
+                    case 1:
+                        return _tb;
+                    case 2:
+                        return _tc;
+                    default:
+                        throw new IndexOutOfRangeException();
+                }
+            }
         }
 
         private class Model
         {
             private readonly List<Vector3> _vertices;
+            private readonly List<Vector3> _textureVertices;
             private readonly List<Face> _faces;
 
-            public Model(List<Vector3> vertices, List<Face> faces)
+            public Model(List<Vector3> vertices, List<Vector3> textureVertices, List<Face> faces)
             {
                 _vertices = vertices;
+                _textureVertices = textureVertices;
                 _faces = faces;
             }
 
             public List<Vector3> Vertices
             {
                 get { return _vertices; }
+            }
+
+            public List<Vector3> TextureVertices
+            {
+                get { return _textureVertices; }
             }
 
             public List<Face> Faces
