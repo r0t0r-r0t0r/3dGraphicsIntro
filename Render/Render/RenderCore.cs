@@ -12,7 +12,11 @@ namespace Render
 {
     public static class RenderCore
     {
-        private static readonly string RootDir = @"D:\Users\rotor\Documents\";
+//        private const string RootDir = @"D:\Users\rotor\Documents\";
+        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+
+        private static Bitmap _textureDebugBitmap;
+
         public static Bitmap Render()
         {
             var b = new Bitmap(800, 800);
@@ -24,6 +28,7 @@ namespace Render
 
             var model = LoadModel(RootDir + "african_head.obj");
             var texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
+            _textureDebugBitmap = new Bitmap(texture);
             Draw(model, texture, b);
 
 //            TestLine(b);
@@ -32,6 +37,7 @@ namespace Render
 
             b.RotateFlip(RotateFlipType.Rotate180FlipX);
 
+            _textureDebugBitmap.Save(RootDir + @"debug.bmp");
             return b;
         }
 
@@ -177,6 +183,8 @@ namespace Render
             }
         }
 
+        private static Random _random = new Random(33);
+
         private static void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, Bitmap bmp, Color color, Bitmap texture, double[,] zBuffer)
         {
             var x0 = (int) v0.X;
@@ -234,6 +242,7 @@ namespace Render
 
             var plain = MakePlain(x0, y0, z0, x1, y1, z1, x2, y2, z2);
 
+            var debugColor = Color.FromArgb(_random.Next(40, 256), _random.Next(40, 256), _random.Next(40, 256));
             var tx = minTx;
             var ty = minTy;
             var deltaTx = (maxTx - minTx)/(maxX - minX);
@@ -254,17 +263,16 @@ namespace Render
 
                         var tx1 = (int)Math.Round(tx*(texture.Width - 1));
                         var ty1 = (int) Math.Round(ty*(texture.Height - 1));
+                        ty1 = texture.Height - ty1;
+                        _textureDebugBitmap.SetPixel(tx1, ty1, debugColor);
                         color = texture.GetPixel(tx1, ty1);
                         bmp.SetPixel(x, y, color);
 
                     }
                     ty += deltaTy;
-                    if (ty > 1)
-                        ty = 1;
                 }
                 tx += deltaTx;
-                if (tx > 1)
-                    tx = 1;
+                ty = minTy;
             }
         }
 
