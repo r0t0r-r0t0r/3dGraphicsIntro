@@ -264,9 +264,15 @@ namespace Render
                         var tx1 = (int)Math.Round(tx*(texture.Width - 1));
                         var ty1 = (int) Math.Round(ty*(texture.Height - 1));
                         ty1 = texture.Height - ty1;
+                        if (tx1 == 487 && ty1 == 59)
+                        {
+                            var a = 3;
+                            a += 3;
+                        }
                         _textureDebugBitmap.SetPixel(tx1, ty1, debugColor);
-                        color = texture.GetPixel(tx1, ty1);
-                        bmp.SetPixel(x, y, color);
+                        var color1 = texture.GetPixel(tx1, ty1);
+//                        color1 = Color.FromArgb(255 - (color.R/2), color1);
+                        bmp.SetPixel(x, y, color1);
 
                     }
                     ty += deltaTy;
@@ -341,6 +347,7 @@ namespace Render
                 if (bar1 <= 0)
                     continue;
 
+//                Triangle(new Vector2(screenCoords[0].X, screenCoords[0].Y), new Vector2(screenCoords[1].X, screenCoords[1].Y), new Vector2(screenCoords[2].X, screenCoords[2].Y), b, Color.FromArgb(bar1, bar1, bar1));
                 Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, b, Color.FromArgb(bar1, bar1, bar1), texture, zBuffer);
             }
         }
