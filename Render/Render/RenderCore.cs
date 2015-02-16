@@ -251,6 +251,9 @@ namespace Render
             {
                 for (int y = minY; y <= maxY; y++)
                 {
+                    if (!(x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height))
+                        continue;
+
                     var curr1 = line1(x, y);
                     var curr2 = line2(x, y);
                     var curr3 = line3(x, y);
@@ -319,7 +322,7 @@ namespace Render
             var light = new Vector3(0, 0, 1);
 
             const float t = -1f/-10f;
-            const float c = 4f;
+            const float c = 3f;
 
             var m = new Matrix4x4(
                 1, 0, 0, 0,
@@ -334,8 +337,7 @@ namespace Render
                 for (var j = 0; j < 3; j++)
                 {
                     var worldCoord = model.Vertices[face[j]];
-                    var w = 1 - worldCoord.Z/c;
-                    var v = new Vector3(worldCoord.X/w, worldCoord.Y/w, worldCoord.Z/w);
+//                    var v = new Vector3(worldCoord.X/w, worldCoord.Y/w, worldCoord.Z/w);
 //                    var v = new Vector4(worldCoord, 1);
 ////                    m = Matrix4x4.Transpose(m);
 //                    var vect4 = new Vector4(
@@ -343,8 +345,10 @@ namespace Render
 //                        m.M21*v.X + m.M22*v.Y + m.M23*v.Z + m.M24*v.W,
 //                        m.M31*v.X + m.M32*v.Y + m.M33*v.Z + m.M34*v.W,
 //                        m.M41*v.X + m.M42*v.Y + m.M43*v.Z + m.M44*v.W);
-                    var g = new Vector3((worldCoord.X + 1f) * (b.Width - 1) / 2, (worldCoord.Y + 1f) * (b.Height - 1) / 2, worldCoord.Z);
+                    var g = new Vector3((worldCoord.X + 1f) * (b.Width - 1) / 2, (worldCoord.Y + 1f) * (b.Height - 1) / 2, worldCoord.Z*b.Width);
 //                    var g = new Vector3((worldCoord.X) * 300, (worldCoord.Y) * 300, worldCoord.Z);
+                    var w = 1 - screenCoords[j].Z/c;
+                    g = new Vector3(worldCoord.X, worldCoord.Y, worldCoord.Z);
                     screenCoords[j] = new Vector3(g.X/w, g.Y/w, g.Z/w);
 //                    screenCoords[j] = new Vector3((v.X + 1)*b.Width/2, (v.Y + 1)*b.Height/2, v.Z);
 //                    screenCoords[j] = new Vector3(v.X + 300, v.Y + 300, v.Z);
@@ -368,9 +372,6 @@ namespace Render
                 var bar1 = (int) (bar*255);
 
                 if (bar1 <= 0)
-                    continue;
-
-                if (screenCoords.Any(a => a.X < 0 || a.Y < 0 || a.X >= b.Width || a.Y >= b.Height))
                     continue;
 
 //                Triangle(new Vector2(screenCoords[0].X, screenCoords[0].Y), new Vector2(screenCoords[1].X, screenCoords[1].Y), new Vector2(screenCoords[2].X, screenCoords[2].Y), b, Color.FromArgb(bar1, bar1, bar1));
