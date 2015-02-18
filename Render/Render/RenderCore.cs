@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,39 +10,50 @@ using System.Text.RegularExpressions;
 
 namespace Render
 {
-    public static class RenderCore
+    public class RenderCore
     {
-//        private const string RootDir = @"D:\Users\rotor\Documents\";
-        public const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+        private const string RootDir = @"D:\Users\rotor\Documents\";
+//        public const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
-        public static Bitmap Render(List<IRender> renders, float cameraZPosition)
+        private readonly Bitmap _bitmap = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
+
+        private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
+        private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
+
+        public Bitmap Render(List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection)
         {
-            var b = new Bitmap(800, 800);
-
-            using (var g = Graphics.FromImage(b))
-            {
-                g.FillRectangle(Brushes.Black, 0, 0, b.Width, b.Height);
-            }
-
-            var model = ModelLoader.LoadModel(RootDir + "african_head.obj");
-            var texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
-
+            var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             foreach (var render in renders)
             {
-                render.Init(model, texture, b.Width, b.Height, RootDir);
+                unsafe
+                {
+                    render.Init(_model, (byte*)textureData.Scan0, _texture.Width, _texture.Height, _bitmap.Width, _bitmap.Height, RootDir);
+                }
             }
-            Draw(model, b, renders, cameraZPosition);
+            var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
+            unsafe
+            {
+                
+                byte* rawData = (byte*) data.Scan0;
+                var length = _bitmap.Width*_bitmap.Height*4;
+                for (var i = 0; i < length; i++)
+                {
+                    rawData[i] = 0;
+                }
+                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection);
+            }
             foreach (var render in renders)
             {
                 render.Finish();
             }
+            _bitmap.UnlockBits(data);
+            _texture.UnlockBits(textureData);
 
-            b.RotateFlip(RotateFlipType.Rotate180FlipX);
-
-            return b;
+            return _bitmap;
         }
 
-        private static void Draw(Model model, Bitmap b, List<IRender> renders, float cameraZPosition)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection)
         {
             var light = new Vector3(0, 0, 1);
 
@@ -55,10 +67,18 @@ namespace Render
                 {
                     var worldCoord = model.Vertices[face[j]];
                     var w = 1 - worldCoord.Z/c;
-                    var g = new Vector3(worldCoord.X, worldCoord.Y, worldCoord.Z);
-                    screenCoords[j] = new Vector3(g.X/w, g.Y/w, g.Z/w);
+                    var g = new Vector3(worldCoord.X*300, worldCoord.Y*300, worldCoord.Z*300);
+                    if (usePerspectiveProjection)
+                    {
+                        screenCoords[j] = new Vector3(g.X/w, g.Y/w, g.Z/w);
+                    }
+                    else
+                    {
+                        screenCoords[j] = new Vector3(g.X, g.Y, g.Z);
+                    }
 
-                    screenCoords[j] = new Vector3((screenCoords[j].X/(cameraZPosition*0.1f))*300 + b.Width/2, (screenCoords[j].Y/(cameraZPosition*0.1f))*300 + b.Height/2, screenCoords[j].Z);
+                    screenCoords[j] = new Vector3(screenCoords[j].X/(cameraZPosition*0.1f) + width/2,
+                        screenCoords[j].Y/(cameraZPosition*0.1f) + height/2, screenCoords[j].Z);
                 }
 
                 var v0 = model.Vertices[face[0]];
@@ -79,7 +99,7 @@ namespace Render
 
                 foreach (var render in renders)
                 {
-                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], b, (byte)bar1);
+                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, (byte)bar1);
                 }
             }
         }

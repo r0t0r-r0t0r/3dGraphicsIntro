@@ -8,15 +8,24 @@ namespace Render
     public class TextureRender: IRender
     {
         private Model _model;
-        private Bitmap _texture;
+        private unsafe byte* _texture;
         private double[,] zBuffer;
         private readonly Random _random = new Random(33);
-        private Bitmap _textureDebugBitmap;
+//        private Bitmap _textureDebugBitmap;
         private string _rootDir;
-        public void Init(Model model, Bitmap texture, int width, int height, string rootDir)
+        private int _width;
+        private int _height;
+        private int _textureWidth;
+        private int _textureHeight;
+
+        unsafe public void Init(Model model, byte* texture, int textureWidth, int textureHeight, int width, int height, string rootDir)
         {
+            _textureWidth = textureWidth;
+            _textureHeight = textureHeight;
+            _width = width;
+            _height = height;
             _rootDir = rootDir;
-            _textureDebugBitmap = new Bitmap(texture);
+//            _textureDebugBitmap = new Bitmap(texture);
             _model = model;
             _texture = texture;
             zBuffer = new double[width, height];
@@ -31,19 +40,19 @@ namespace Render
 
         public void Finish()
         {
-            _textureDebugBitmap.Save(_rootDir + @"debug.bmp");
+//            _textureDebugBitmap.Save(_rootDir + @"debug.bmp");
         }
 
-        public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, Bitmap bitmap, byte lightLevel)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, byte lightLevel)
         {
             var bar1 = lightLevel;
             var screenCoords = new[] { a, b, c };
             var textureVertices = Enumerable.Range(0, 3).Select(face.GetVtIndex).Select(x => _model.TextureVertices[x]).ToArray();
 
-            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, bitmap, Color.FromArgb(bar1, bar1, bar1), _texture, zBuffer);
+            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, data, Color.FromArgb(bar1, bar1, bar1), _texture, zBuffer);
         }
 
-        private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, Bitmap bmp, Color color, Bitmap texture, double[,] zBuffer)
+        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, byte* data, Color color, byte* texture, double[,] zBuffer)
         {
             var x0 = (int)v0.X;
             var y0 = (int)v0.Y;
@@ -109,7 +118,7 @@ namespace Render
             {
                 for (int y = minY; y <= maxY; y++)
                 {
-                    if (!(x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height))
+                    if (!(x >= 0 && x < _width && y >= 0 && y < _height))
                         continue;
 
                     var curr1 = line1(x, y);
@@ -122,18 +131,23 @@ namespace Render
                     {
                         zBuffer[x, y] = z;
 
-                        var tx1 = (int)Math.Round(tx * (texture.Width - 1));
-                        var ty1 = (int)Math.Round(ty * (texture.Height - 1));
-                        ty1 = texture.Height - ty1;
-                        if (tx1 == 487 && ty1 == 59)
-                        {
-                            var a = 3;
-                            a += 3;
-                        }
-                        _textureDebugBitmap.SetPixel(tx1, ty1, debugColor);
-                        var color1 = texture.GetPixel(tx1, ty1);
+                        var tx1 = (int)Math.Round(tx * (_textureWidth - 1));
+                        var ty1 = (int)Math.Round(ty * (_textureHeight - 1));
+                        ty1 = _textureHeight - ty1 - 1;
+//                        if (tx1 == 487 && ty1 == 59)
+//                        {
+//                            var a = 3;
+//                            a += 3;
+//                        }
+//                        _textureDebugBitmap.SetPixel(tx1, ty1, debugColor);
+                        var tbase = (ty1*_textureWidth + tx1)*4;
+                        var color1 = Color.FromArgb(texture[tbase + 2], texture[tbase + 1], texture[tbase + 0]);
                         //                        color1 = Color.FromArgb(255 - (color.R/2), color1);
-                        bmp.SetPixel(x, y, color1);
+                        var foo = ((_height - y - 1)*_width+x)*4;
+                        data[foo + 2] = color1.R;
+                        data[foo + 1] = color1.G;
+                        data[foo + 0] = color1.B;
+//                        bmp.SetPixel(x, y, color1);
 
                     }
                     ty += deltaTy;

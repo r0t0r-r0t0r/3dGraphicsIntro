@@ -6,11 +6,16 @@ namespace Render
 {
     public class WireRender: IRender
     {
-        public void Init(Model model, Bitmap texture, int width, int height, string rootDir)
+        private int _width;
+        private int _height;
+
+        public unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir)
         {
+            _width = width;
+            _height = height;
         }
 
-        public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, Bitmap bitmap, byte lightLevel)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, byte lightLevel)
         {
             var screenCoords = new[] {a, b, c};
 
@@ -23,7 +28,7 @@ namespace Render
         {
         }
 
-        private static void Line(int x0, int y0, int x1, int y1, Bitmap bmp, Color color)
+        unsafe private void Line(int x0, int y0, int x1, int y1, byte* bmp, Color color)
         {
             var vertOrientation = Math.Abs(x1 - x0) < Math.Abs(y1 - y0);
 
@@ -72,13 +77,27 @@ namespace Render
 
                 if (vertOrientation)
                 {
-                    if (y >= 0 && y < bmp.Width && x >= 0 && x < bmp.Height)
-                        bmp.SetPixel(y, x, color);
+                    if (y >= 0 && y < _width && x >= 0 && x < _height)
+                    {
+                        var foo = ((_height - x - 1) * _width + y) * 4;
+                        bmp[foo + 2] = color.R;
+                        bmp[foo + 1] = color.G;
+                        bmp[foo + 0] = color.B;
+
+//                        bmp.SetPixel(y, x, color);
+                    }
                 }
                 else
                 {
-                    if (x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
-                        bmp.SetPixel(x, y, color);
+                    if (x >= 0 && x < _width && y >= 0 && y < _height)
+                    {
+                        var foo = ((_height - y - 1) * _width + x) * 4;
+                        bmp[foo + 2] = color.R;
+                        bmp[foo + 1] = color.G;
+                        bmp[foo + 0] = color.B;
+
+//                        bmp.SetPixel(x, y, color);
+                    }
                 }
             }
         }
