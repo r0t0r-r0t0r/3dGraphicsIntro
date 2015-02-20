@@ -31,6 +31,10 @@ namespace Render
 
         public MyFastLine(double x0, double y0, double x1, double y1, double minX, double minY, double maxX, double maxY)
         {
+//            x0 = Math.Round(x0);
+//            y0 = Math.Round(y0);
+//            x1 = Math.Round(x1);
+//            y1 = Math.Round(y1);
             _x0 = x0;
             _y0 = y0;
             _x1 = x1;
@@ -54,12 +58,10 @@ namespace Render
 
         public double Value
         {
-//            get { return _currX + _currY; }
             get
             {
-                var wrong = _currX + _currY;
-//                var right = _y*(_x1 - _x0) - _x*(_y1 - _y0) - _y0*(_x1 - _x0) + _x0*(_y1 - _y0);
-                return wrong;
+//                return _y*(_x1 - _x0) - _x*(_y1 - _y0) - _y0*(_x1 - _x0) + _x0*(_y1 - _y0);
+                return _currX + _currY;
 
             }
         }

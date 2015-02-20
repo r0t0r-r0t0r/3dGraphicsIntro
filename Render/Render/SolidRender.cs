@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -40,6 +41,16 @@ namespace Render
 
         public void Finish()
         {
+//            var maxZbuff = Double.NegativeInfinity;
+//            for (var i = 0; i < _width; i++)
+//            {
+//                for (var j = 0; j < _height; j++)
+//                {
+//                    if (_zBuffer[i, j] > maxZbuff)
+//                        maxZbuff = _zBuffer[i, j];
+//                }
+//            }
+//            "tralala".ToString();
 //            _textureDebugBitmap.Save(_rootDir + @"debug.bmp");
         }
 
@@ -115,7 +126,7 @@ namespace Render
             var b1 = new Vector2(v1.X - midX, v1.Y - midY);
             var b2 = new Vector2(v2.X - midX, v2.Y - midY);
 
-            var plain = MakePlain(x0, y0, z0, x1, y1, z1, x2, y2, z2);
+            var plain = MakePlain(v0.X, v0.Y, v0.Z, v1.X, v1.Y, v1.Z, v2.X, v2.Y, v2.Z);
 
             var debugColor = Color.FromArgb(_random.Next(40, 256), _random.Next(40, 256), _random.Next(40, 256));
             var tx = minTx;
@@ -123,9 +134,9 @@ namespace Render
             var deltaTx = (maxTx - minTx) / (maxX - minX);
             var deltaTy = (maxTy - minTy) / (maxY - minY);
 
-            var sline1 = new MyFastLine(x0, y0, x1, y1, minX, minY, maxX, maxY);
-            var sline2 = new MyFastLine(x1, y1, x2, y2, minX, minY, maxX, maxY);
-            var sline3 = new MyFastLine(x2, y2, x0, y0, minX, minY, maxX, maxY);
+            var sline1 = new MyFastLine(v0.X, v0.Y, v1.X, v1.Y, minX, minY, maxX, maxY);
+            var sline2 = new MyFastLine(v1.X, v1.Y, v2.X, v2.Y, minX, minY, maxX, maxY);
+            var sline3 = new MyFastLine(v2.X, v2.Y, v0.X, v0.Y, minX, minY, maxX, maxY);
 
             for (int x = minX; x <= maxX; x++)
             {
@@ -160,11 +171,14 @@ namespace Render
 //                        _textureDebugBitmap.SetPixel(tx1, ty1, debugColor);
                         var tbase = (ty1*_textureWidth + tx1)*4;
                         var color1 = Color.FromArgb(texture[tbase + 2], texture[tbase + 1], texture[tbase + 0]);
+
                         //                        color1 = Color.FromArgb(255 - (color.R/2), color1);
+                        var intense = color.R/255f;
+//                        intense = 1;
                         var foo = ((_height - y - 1)*_width+x)*4;
-                        data[foo + 2] = color1.R;
-                        data[foo + 1] = color1.G;
-                        data[foo + 0] = color1.B;
+                        data[foo + 2] = (byte) (color1.R*intense);
+                        data[foo + 1] = (byte) (color1.G*intense);
+                        data[foo + 0] = (byte) (color1.B*intense);
 //                        bmp.SetPixel(x, y, color1);
 //                        data[foo + 2] = color.R;
 //                        data[foo + 1] = color.G;
