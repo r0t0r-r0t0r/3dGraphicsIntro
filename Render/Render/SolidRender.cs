@@ -5,11 +5,11 @@ using System.Numerics;
 
 namespace Render
 {
-    public class TextureRender: IRender
+    public class SolidRender: IRender
     {
         private Model _model;
         private unsafe byte* _texture;
-        private double[,] zBuffer;
+        private double[,] _zBuffer;
         private readonly Random _random = new Random(33);
 //        private Bitmap _textureDebugBitmap;
         private string _rootDir;
@@ -28,12 +28,12 @@ namespace Render
 //            _textureDebugBitmap = new Bitmap(texture);
             _model = model;
             _texture = texture;
-            zBuffer = new double[width, height];
+            _zBuffer = new double[width, height];
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    zBuffer[x, y] = double.NegativeInfinity;
+                    _zBuffer[x, y] = double.NegativeInfinity;
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Render
             var screenCoords = new[] { a, b, c };
             var textureVertices = Enumerable.Range(0, 3).Select(face.GetVtIndex).Select(x => _model.TextureVertices[x]).ToArray();
 
-            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, data, Color.FromArgb(bar1, bar1, bar1), _texture, zBuffer);
+            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, data, Color.FromArgb(bar1, bar1, bar1), _texture, _zBuffer);
         }
 
         unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, byte* data, Color color, byte* texture, double[,] zBuffer)
@@ -64,14 +64,18 @@ namespace Render
             var y2 = (int)v2.Y;
             var z2 = v2.Z;
 
+            var midX = (x0 + x1 + x2)/3f;
+            var midY = (y0 + y1 + y2)/3f;
+            var midZ = (z0 + z1 + z2)/3f;
+
             var tv0 = textureVertices[0];
             var tv1 = textureVertices[1];
             var tv2 = textureVertices[2];
 
-            int minX = Math3(x0, x1, x2, Math.Min);
-            int minY = Math3(y0, y1, y2, Math.Min);
-            int maxX = Math3(x0, x1, x2, Math.Max);
-            int maxY = Math3(y0, y1, y2, Math.Max);
+            int minX = ClipX(Math3(x0, x1, x2, Math.Min));
+            int minY = ClipY(Math3(y0, y1, y2, Math.Min));
+            int maxX = ClipX(Math3(x0, x1, x2, Math.Max));
+            int maxY = ClipY(Math3(y0, y1, y2, Math.Max));
 
             float minTx = Math3(tv0.X, tv1.X, tv2.X, Math.Min);
             float minTy = Math3(tv0.Y, tv1.Y, tv2.Y, Math.Min);
@@ -97,15 +101,19 @@ namespace Render
                 y1 = y2;
                 y2 = buf;
 
+                var zbuf = z1;
+                z1 = z2;
+                z2 = zbuf;
+
                 Vector3 tbuf;
                 tbuf = v1;
                 v1 = v2;
                 v2 = tbuf;
             }
 
-            var line1 = MakeLineFunc(x0, y0, x1, y1);
-            var line2 = MakeLineFunc(x1, y1, x2, y2);
-            var line3 = MakeLineFunc(x2, y2, x0, y0);
+            var b0 = new Vector2(v0.X - midX, v0.Y - midY);
+            var b1 = new Vector2(v1.X - midX, v1.Y - midY);
+            var b2 = new Vector2(v2.X - midX, v2.Y - midY);
 
             var plain = MakePlain(x0, y0, z0, x1, y1, z1, x2, y2, z2);
 
@@ -114,21 +122,31 @@ namespace Render
             var ty = minTy;
             var deltaTx = (maxTx - minTx) / (maxX - minX);
             var deltaTy = (maxTy - minTy) / (maxY - minY);
+
+            var sline1 = new MyFastLine(x0, y0, x1, y1, minX, minY, maxX, maxY);
+            var sline2 = new MyFastLine(x1, y1, x2, y2, minX, minY, maxX, maxY);
+            var sline3 = new MyFastLine(x2, y2, x0, y0, minX, minY, maxX, maxY);
+
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
                 {
-                    if (!(x >= 0 && x < _width && y >= 0 && y < _height))
-                        continue;
+                    var curr1 = sline1.Value;
+                    var curr2 = sline2.Value;
+                    var curr3 = sline3.Value;
 
-                    var curr1 = line1(x, y);
-                    var curr2 = line2(x, y);
-                    var curr3 = line3(x, y);
-
-                    var z = plain(x, y);
-
-                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0 && z >= zBuffer[x, y])
+                    if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
                     {
+                        var curr = new Vector2(x - midX, y - midY);
+                        var b0p = Vector2.Dot(b0, curr);
+                        var b1p = Vector2.Dot(b1, curr);
+                        var b2p = Vector2.Dot(b2, curr);
+
+                        var z = plain(x, y);
+
+                        if (z < zBuffer[x, y])
+                            continue;
+
                         zBuffer[x, y] = z;
 
                         var tx1 = (int)Math.Round(tx * (_textureWidth - 1));
@@ -148,12 +166,22 @@ namespace Render
                         data[foo + 1] = color1.G;
                         data[foo + 0] = color1.B;
 //                        bmp.SetPixel(x, y, color1);
+//                        data[foo + 2] = color.R;
+//                        data[foo + 1] = color.G;
+//                        data[foo + 0] = color.B;
+
 
                     }
                     ty += deltaTy;
+                    sline1.StepY();
+                    sline2.StepY();
+                    sline3.StepY();
                 }
                 tx += deltaTx;
                 ty = minTy;
+                sline1.StepX();
+                sline2.StepX();
+                sline3.StepX();
             }
         }
 
@@ -161,11 +189,6 @@ namespace Render
         {
             var result = func(a, b);
             return func(result, c);
-        }
-
-        private static Func<double, double, double> MakeLineFunc(double x0, double y0, double x1, double y1)
-        {
-            return (x, y) => y * (x1 - x0) - x * (y1 - y0) - y0 * (x1 - x0) + x0 * (y1 - y0);
         }
 
         private static Func<double, double, double> MakePlain(double x0, double y0, double z0, double x1, double y1, double z1, double x2, double y2, double z2)
@@ -178,6 +201,25 @@ namespace Render
 
                 return k * x + l * y + m;
             };
+        }
+
+        private int ClipX(int x)
+        {
+            return Clip(x, _width);
+        }
+
+        private int ClipY(int y)
+        {
+            return Clip(y, _height);
+        }
+
+        private static int Clip(int a, int length)
+        {
+            if (a < 0)
+                return 0;
+            if (a >= length)
+                return length - 1;
+            return a;
         }
     }
 }

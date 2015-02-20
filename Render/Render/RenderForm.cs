@@ -17,7 +17,7 @@ namespace Render
 
         private List<IRender> _renders = new List<IRender>
         {
-            new TextureRender()
+            new SolidRender()
         };
 
         private float _cameraZPosition = 10;
@@ -43,7 +43,7 @@ namespace Render
 
             if (checkBox1.Checked)
             {
-                renders.Add(new TextureRender());
+                renders.Add(new SolidRender());
             }
             if (checkBox2.Checked)
             {
