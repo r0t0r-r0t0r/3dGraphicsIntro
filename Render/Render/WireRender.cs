@@ -9,13 +9,13 @@ namespace Render
         private int _width;
         private int _height;
 
-        public unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir)
+        public unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir, Vector3 light)
         {
             _width = width;
             _height = height;
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, byte lightLevel)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap)
         {
             var screenCoords = new[] {a, b, c};
 

@@ -8,9 +8,9 @@ namespace Render
 {
     public interface IRender
     {
-        unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir);
+        unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir, Vector3 light);
 
-        unsafe void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, byte lightLevel);
+        unsafe void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap);
 
         void Finish();
     }

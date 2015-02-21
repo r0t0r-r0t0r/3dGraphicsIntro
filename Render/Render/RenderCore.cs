@@ -12,8 +12,8 @@ namespace Render
 {
     public class RenderCore
     {
-//        private const string RootDir = @"D:\Users\rotor\Documents\";
-        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+        private const string RootDir = @"D:\Users\rotor\Documents\";
+//        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
         private readonly Bitmap _bitmap = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
 
@@ -24,11 +24,13 @@ namespace Render
         {
             var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
+            var cameraDirection = new Vector3(0, 0, 1);
+            var light = new Vector3(0.5f, 0, 0.5f);
             foreach (var render in renders)
             {
                 unsafe
                 {
-                    render.Init(_model, (byte*)textureData.Scan0, _texture.Width, _texture.Height, _bitmap.Width, _bitmap.Height, RootDir);
+                    render.Init(_model, (byte*)textureData.Scan0, _texture.Width, _texture.Height, _bitmap.Width, _bitmap.Height, RootDir, light);
                 }
             }
             var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
@@ -41,7 +43,7 @@ namespace Render
                 {
                     rawData[i] = 0;
                 }
-                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection);
+                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection);
             }
             foreach (var render in renders)
             {
@@ -53,10 +55,8 @@ namespace Render
             return _bitmap;
         }
 
-        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection)
         {
-            var light = new Vector3(0, 0, 1);
-
             float c = cameraZPosition;
 
             foreach (var face in model.Faces)
@@ -91,15 +91,14 @@ namespace Render
                 var normal = Vector3.Cross(foo1, foo2);
                 normal = Vector3.Normalize(normal);
 
-                var bar = Vector3.Dot(normal, light);
-                var bar1 = (int) (bar*255);
+                var bar = Vector3.Dot(normal, cameraDirection);
 
-                if (bar1 <= 0)
+                if (bar <= 0)
                     continue;
 
                 foreach (var render in renders)
                 {
-                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, (byte)bar1);
+                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data);
                 }
             }
         }

@@ -18,9 +18,11 @@ namespace Render
         private int _height;
         private int _textureWidth;
         private int _textureHeight;
+        private Vector3 _light;
 
-        unsafe public void Init(Model model, byte* texture, int textureWidth, int textureHeight, int width, int height, string rootDir)
+        unsafe public void Init(Model model, byte* texture, int textureWidth, int textureHeight, int width, int height, string rootDir, Vector3 light)
         {
+            _light = light;
             _textureWidth = textureWidth;
             _textureHeight = textureHeight;
             _width = width;
@@ -54,17 +56,33 @@ namespace Render
 //            _textureDebugBitmap.Save(_rootDir + @"debug.bmp");
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, byte lightLevel)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data)
         {
-            var bar1 = lightLevel;
+            var v0 = _model.Vertices[face[0]];
+            var v1 = _model.Vertices[face[1]];
+            var v2 = _model.Vertices[face[2]];
+
+            var foo1 = Vector3.Subtract(v1, v0);
+            var foo2 = Vector3.Subtract(v2, v1);
+
+            var normal = Vector3.Cross(foo1, foo2);
+            normal = Vector3.Normalize(normal);
+
+            var bar = Vector3.Dot(normal, _light);
+
             var screenCoords = new[] { a, b, c };
             var textureVertices = Enumerable.Range(0, 3).Select(face.GetVtIndex).Select(x => _model.TextureVertices[x]).ToArray();
+            var vertexNormals = Enumerable.Range(0, 3).Select(face.GetNormalIndex).Select(x => _model.VertexNormals[x]).ToArray();
 
-            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, data, Color.FromArgb(bar1, bar1, bar1), _texture, _zBuffer);
+            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], textureVertices, data, bar, _texture, _zBuffer, vertexNormals);
         }
 
-        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, byte* data, Color color, byte* texture, float[,] zBuffer)
+        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, Vector3[] textureVertices, byte* data, float intensity, byte* texture, float[,] zBuffer, Vector3[] vns)
         {
+//            var l0 = Vector3.Dot(vns[0], _light);
+//            var l1 = Vector3.Dot(vns[1], _light);
+//            var l2 = Vector3.Dot(vns[2], _light);
+
             var x0 = (int)Math.Round(v0.X);
             var y0 = (int)Math.Round(v0.Y);
             var x1 = (int)Math.Round(v1.X);
@@ -127,11 +145,26 @@ namespace Render
                             continue;
 
                         var z = v0.Z*p.Item1 + v1.Z*p.Item2 + v2.Z*p.Item3;
+//                        var l = l0*p.Item1 + l1*p.Item2 + l2*p.Item3;
+//                        intensity = l;
+
+//                        if (l < 0)
+//                            continue;
 
                         if (z < zBuffer[x, y])
                             continue;
 
                         zBuffer[x, y] = z;
+
+                        var nx = vns[0].X*p.Item1 + vns[1].X*p.Item2 + vns[2].X*p.Item3;
+                        var ny = vns[0].Y*p.Item1 + vns[1].Y*p.Item2 + vns[2].Y*p.Item3;
+                        var nz = vns[0].Z*p.Item1 + vns[1].Z*p.Item2 + vns[2].Z*p.Item3;
+                        var normal = new Vector3(nx, ny, nz);
+                        var l = Vector3.Dot(normal, _light);
+
+                        intensity = l;
+                        if (intensity < 0)
+                            continue;
 
                         var tx = (int)((p.Item1*tx0 + p.Item2*tx1 + p.Item3*tx2)*(_textureWidth - 1));
                         var ty = (int)((p.Item1*ty0 + p.Item2*ty1 + p.Item3*ty2)*(_textureHeight - 1));
@@ -142,12 +175,14 @@ namespace Render
                         var tb = texture[pos + 0];
                         var color1 = Color.FromArgb(tr, tg, tb);
 
-//                        var color1 = Color.LightGray;
-                        var intense = color.R/255f;
+//                        var color1 = Color.WhiteSmoke;
                         var foo = ((_height - y - 1)*_width+x)*4;
-                        data[foo + 2] = (byte) (color1.R*intense);
-                        data[foo + 1] = (byte) (color1.G*intense);
-                        data[foo + 0] = (byte) (color1.B*intense);
+//                        intensity *= 1.5f;
+                        if (intensity > 1)
+                            intensity = 1;
+                        data[foo + 2] = (byte) (color1.R*intensity);
+                        data[foo + 1] = (byte) (color1.G*intensity);
+                        data[foo + 0] = (byte) (color1.B*intensity);
 
                     }
                     sline1.StepY();
