@@ -12,8 +12,8 @@ namespace Render
 {
     public class RenderCore
     {
-        private const string RootDir = @"D:\Users\rotor\Documents\";
-//        public const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+//        private const string RootDir = @"D:\Users\rotor\Documents\";
+        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
         private readonly Bitmap _bitmap = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
 
