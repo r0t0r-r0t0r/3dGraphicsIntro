@@ -31,7 +31,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.perspectiveProjectionCheckBox = new System.Windows.Forms.CheckBox();
+            this.distanceNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -39,16 +40,30 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.bordersRadioButton = new System.Windows.Forms.RadioButton();
+            this.fillRadioButton = new System.Windows.Forms.RadioButton();
+            this.bordersAndFillRadioButton = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.flatRadioButton = new System.Windows.Forms.RadioButton();
+            this.simpleRadioButton = new System.Windows.Forms.RadioButton();
+            this.gouraudRadioButton = new System.Windows.Forms.RadioButton();
+            this.phongRadioButton = new System.Windows.Forms.RadioButton();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.solidColorRadioButton = new System.Windows.Forms.RadioButton();
+            this.textureRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.distanceNumericUpDown)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -75,8 +90,11 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.checkBox3);
-            this.tabPage1.Controls.Add(this.numericUpDown1);
+            this.tabPage1.Controls.Add(this.groupBox3);
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.perspectiveProjectionCheckBox);
+            this.tabPage1.Controls.Add(this.distanceNumericUpDown);
             this.tabPage1.Controls.Add(this.checkBox2);
             this.tabPage1.Controls.Add(this.checkBox1);
             this.tabPage1.Controls.Add(this.pictureBox1);
@@ -88,24 +106,42 @@
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // perspectiveProjectionCheckBox
             // 
-            this.numericUpDown1.DecimalPlaces = 3;
-            this.numericUpDown1.Increment = new decimal(new int[] {
+            this.perspectiveProjectionCheckBox.AutoSize = true;
+            this.perspectiveProjectionCheckBox.Checked = true;
+            this.perspectiveProjectionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.perspectiveProjectionCheckBox.Location = new System.Drawing.Point(7, 80);
+            this.perspectiveProjectionCheckBox.Name = "perspectiveProjectionCheckBox";
+            this.perspectiveProjectionCheckBox.Size = new System.Drawing.Size(132, 17);
+            this.perspectiveProjectionCheckBox.TabIndex = 4;
+            this.perspectiveProjectionCheckBox.Text = "Perspective Projection";
+            this.perspectiveProjectionCheckBox.UseVisualStyleBackColor = true;
+            this.perspectiveProjectionCheckBox.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            // 
+            // distanceNumericUpDown
+            // 
+            this.distanceNumericUpDown.DecimalPlaces = 3;
+            this.distanceNumericUpDown.Increment = new decimal(new int[] {
             125,
             0,
             0,
             196608});
-            this.numericUpDown1.Location = new System.Drawing.Point(7, 53);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDown1.TabIndex = 3;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.distanceNumericUpDown.Location = new System.Drawing.Point(7, 53);
+            this.distanceNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.distanceNumericUpDown.Name = "distanceNumericUpDown";
+            this.distanceNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.distanceNumericUpDown.TabIndex = 3;
+            this.distanceNumericUpDown.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
+            this.distanceNumericUpDown.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
             // 
             // checkBox2
             // 
@@ -178,18 +214,146 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
-            // checkBox3
+            // groupBox1
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(7, 80);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(132, 17);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "Perspective Projection";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.groupBox1.Controls.Add(this.bordersAndFillRadioButton);
+            this.groupBox1.Controls.Add(this.fillRadioButton);
+            this.groupBox1.Controls.Add(this.bordersRadioButton);
+            this.groupBox1.Location = new System.Drawing.Point(7, 104);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(216, 91);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Render Mode";
+            // 
+            // bordersRadioButton
+            // 
+            this.bordersRadioButton.AutoSize = true;
+            this.bordersRadioButton.Location = new System.Drawing.Point(6, 19);
+            this.bordersRadioButton.Name = "bordersRadioButton";
+            this.bordersRadioButton.Size = new System.Drawing.Size(61, 17);
+            this.bordersRadioButton.TabIndex = 0;
+            this.bordersRadioButton.Text = "Borders";
+            this.bordersRadioButton.UseVisualStyleBackColor = true;
+            this.bordersRadioButton.CheckedChanged += new System.EventHandler(this.bordersRadioButton_CheckedChanged);
+            // 
+            // fillRadioButton
+            // 
+            this.fillRadioButton.AutoSize = true;
+            this.fillRadioButton.Checked = true;
+            this.fillRadioButton.Location = new System.Drawing.Point(6, 42);
+            this.fillRadioButton.Name = "fillRadioButton";
+            this.fillRadioButton.Size = new System.Drawing.Size(37, 17);
+            this.fillRadioButton.TabIndex = 1;
+            this.fillRadioButton.TabStop = true;
+            this.fillRadioButton.Text = "Fill";
+            this.fillRadioButton.UseVisualStyleBackColor = true;
+            this.fillRadioButton.CheckedChanged += new System.EventHandler(this.fillRadioButton_CheckedChanged);
+            // 
+            // bordersAndFillRadioButton
+            // 
+            this.bordersAndFillRadioButton.AutoSize = true;
+            this.bordersAndFillRadioButton.Location = new System.Drawing.Point(6, 65);
+            this.bordersAndFillRadioButton.Name = "bordersAndFillRadioButton";
+            this.bordersAndFillRadioButton.Size = new System.Drawing.Size(98, 17);
+            this.bordersAndFillRadioButton.TabIndex = 2;
+            this.bordersAndFillRadioButton.Text = "Borders And Fill";
+            this.bordersAndFillRadioButton.UseVisualStyleBackColor = true;
+            this.bordersAndFillRadioButton.CheckedChanged += new System.EventHandler(this.bordersAndFillRadioButton_CheckedChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.phongRadioButton);
+            this.groupBox2.Controls.Add(this.gouraudRadioButton);
+            this.groupBox2.Controls.Add(this.simpleRadioButton);
+            this.groupBox2.Controls.Add(this.flatRadioButton);
+            this.groupBox2.Location = new System.Drawing.Point(7, 202);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(216, 117);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Light Mode";
+            // 
+            // flatRadioButton
+            // 
+            this.flatRadioButton.AutoSize = true;
+            this.flatRadioButton.Location = new System.Drawing.Point(6, 20);
+            this.flatRadioButton.Name = "flatRadioButton";
+            this.flatRadioButton.Size = new System.Drawing.Size(42, 17);
+            this.flatRadioButton.TabIndex = 0;
+            this.flatRadioButton.Text = "Flat";
+            this.flatRadioButton.UseVisualStyleBackColor = true;
+            this.flatRadioButton.CheckedChanged += new System.EventHandler(this.flatRadioButton_CheckedChanged);
+            // 
+            // simpleRadioButton
+            // 
+            this.simpleRadioButton.AutoSize = true;
+            this.simpleRadioButton.Location = new System.Drawing.Point(6, 43);
+            this.simpleRadioButton.Name = "simpleRadioButton";
+            this.simpleRadioButton.Size = new System.Drawing.Size(56, 17);
+            this.simpleRadioButton.TabIndex = 1;
+            this.simpleRadioButton.Text = "Simple";
+            this.simpleRadioButton.UseVisualStyleBackColor = true;
+            this.simpleRadioButton.CheckedChanged += new System.EventHandler(this.simpleRadioButton_CheckedChanged);
+            // 
+            // gouraudRadioButton
+            // 
+            this.gouraudRadioButton.AutoSize = true;
+            this.gouraudRadioButton.Checked = true;
+            this.gouraudRadioButton.Location = new System.Drawing.Point(6, 66);
+            this.gouraudRadioButton.Name = "gouraudRadioButton";
+            this.gouraudRadioButton.Size = new System.Drawing.Size(66, 17);
+            this.gouraudRadioButton.TabIndex = 2;
+            this.gouraudRadioButton.TabStop = true;
+            this.gouraudRadioButton.Text = "Gouraud";
+            this.gouraudRadioButton.UseVisualStyleBackColor = true;
+            this.gouraudRadioButton.CheckedChanged += new System.EventHandler(this.gouraudRadioButton_CheckedChanged);
+            // 
+            // phongRadioButton
+            // 
+            this.phongRadioButton.AutoSize = true;
+            this.phongRadioButton.Location = new System.Drawing.Point(6, 89);
+            this.phongRadioButton.Name = "phongRadioButton";
+            this.phongRadioButton.Size = new System.Drawing.Size(56, 17);
+            this.phongRadioButton.TabIndex = 3;
+            this.phongRadioButton.Text = "Phong";
+            this.phongRadioButton.UseVisualStyleBackColor = true;
+            this.phongRadioButton.CheckedChanged += new System.EventHandler(this.phongRadioButton_CheckedChanged);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.textureRadioButton);
+            this.groupBox3.Controls.Add(this.solidColorRadioButton);
+            this.groupBox3.Location = new System.Drawing.Point(4, 326);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(219, 71);
+            this.groupBox3.TabIndex = 7;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Fill Mode";
+            // 
+            // solidColorRadioButton
+            // 
+            this.solidColorRadioButton.AutoSize = true;
+            this.solidColorRadioButton.Location = new System.Drawing.Point(9, 20);
+            this.solidColorRadioButton.Name = "solidColorRadioButton";
+            this.solidColorRadioButton.Size = new System.Drawing.Size(75, 17);
+            this.solidColorRadioButton.TabIndex = 0;
+            this.solidColorRadioButton.Text = "Solid Color";
+            this.solidColorRadioButton.UseVisualStyleBackColor = true;
+            this.solidColorRadioButton.CheckedChanged += new System.EventHandler(this.solidColorRadioButton_CheckedChanged);
+            // 
+            // textureRadioButton
+            // 
+            this.textureRadioButton.AutoSize = true;
+            this.textureRadioButton.Checked = true;
+            this.textureRadioButton.Location = new System.Drawing.Point(9, 43);
+            this.textureRadioButton.Name = "textureRadioButton";
+            this.textureRadioButton.Size = new System.Drawing.Size(61, 17);
+            this.textureRadioButton.TabIndex = 1;
+            this.textureRadioButton.TabStop = true;
+            this.textureRadioButton.Text = "Texture";
+            this.textureRadioButton.UseVisualStyleBackColor = true;
+            this.textureRadioButton.CheckedChanged += new System.EventHandler(this.textureRadioButton_CheckedChanged);
             // 
             // RenderForm
             // 
@@ -204,12 +368,18 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.distanceNumericUpDown)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -226,8 +396,20 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.NumericUpDown distanceNumericUpDown;
+        private System.Windows.Forms.CheckBox perspectiveProjectionCheckBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton bordersAndFillRadioButton;
+        private System.Windows.Forms.RadioButton fillRadioButton;
+        private System.Windows.Forms.RadioButton bordersRadioButton;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton flatRadioButton;
+        private System.Windows.Forms.RadioButton phongRadioButton;
+        private System.Windows.Forms.RadioButton gouraudRadioButton;
+        private System.Windows.Forms.RadioButton simpleRadioButton;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton textureRadioButton;
+        private System.Windows.Forms.RadioButton solidColorRadioButton;
     }
 }
 

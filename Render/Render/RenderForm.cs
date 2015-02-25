@@ -14,6 +14,7 @@ namespace Render
     public partial class RenderForm : Form
     {
         private RenderCore _renderCore = new RenderCore();
+        private RenderSettingsBuilder _builder = new RenderSettingsBuilder();
 
         private List<IRender> _renders = new List<IRender>
         {
@@ -27,6 +28,52 @@ namespace Render
         public RenderForm()
         {
             InitializeComponent();
+            InitializeSettings();
+        }
+
+        private void InitializeSettings()
+        {
+            switch (_builder.RenderMode)
+            {
+                case FlatRenderMode.Borders:
+                    bordersRadioButton.Checked = true;
+                    break;
+                case FlatRenderMode.Fill:
+                    fillRadioButton.Checked = true;
+                    break;
+                case FlatRenderMode.BordersAndFill:
+                    bordersAndFillRadioButton.Checked = true;
+                    break;
+            }
+
+            switch (_builder.FillMode)
+            {
+                case FlatFillMode.Texture:
+                    textureRadioButton.Checked = true;
+                    break;
+                case FlatFillMode.SolidColor:
+                    solidColorRadioButton.Checked = true;
+                    break;
+            }
+
+            switch (_builder.LightMode)
+            {
+                case FlatLightMode.None:
+                    flatRadioButton.Checked = true;
+                    break;
+                case FlatLightMode.Simple:
+                    simpleRadioButton.Checked = true;
+                    break;
+                case FlatLightMode.Gouraud:
+                    gouraudRadioButton.Checked = true;
+                    break;
+                case FlatLightMode.Phong:
+                    phongRadioButton.Checked = true;
+                    break;
+            }
+
+            distanceNumericUpDown.Value = (decimal) _builder.CameraZPosition;
+            perspectiveProjectionCheckBox.Checked = _builder.PerspectiveProjection;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -60,13 +107,67 @@ namespace Render
 
         private void CameraZPositionHandler(object sender, EventArgs e)
         {
-            _cameraZPosition = (float) numericUpDown1.Value;
+            _cameraZPosition = (float) distanceNumericUpDown.Value;
             Draw();
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            _usePerspectiveProjection = checkBox3.Checked;
+            _usePerspectiveProjection = perspectiveProjectionCheckBox.Checked;
+            Draw();
+        }
+
+        private void bordersRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.RenderMode = FlatRenderMode.Borders;
+            Draw();
+        }
+
+        private void fillRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.RenderMode = FlatRenderMode.Fill;
+            Draw();
+        }
+
+        private void bordersAndFillRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.RenderMode = FlatRenderMode.BordersAndFill;
+            Draw();
+        }
+
+        private void flatRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.LightMode = FlatLightMode.None;
+            Draw();
+        }
+
+        private void simpleRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.LightMode = FlatLightMode.Simple;
+            Draw();
+        }
+
+        private void gouraudRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.LightMode = FlatLightMode.Gouraud;
+            Draw();
+        }
+
+        private void phongRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.LightMode = FlatLightMode.Phong;
+            Draw();
+        }
+
+        private void solidColorRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.FillMode = FlatFillMode.SolidColor;
+            Draw();
+        }
+
+        private void textureRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.FillMode = FlatFillMode.Texture;
             Draw();
         }
     }
