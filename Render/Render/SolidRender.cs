@@ -96,8 +96,6 @@ namespace Render
                             data[foo + 1] = resColor.Value.G;
                             data[foo + 0] = resColor.Value.B;
                         }
-
-
                     }
                     sline1.StepY();
                     sline2.StepY();

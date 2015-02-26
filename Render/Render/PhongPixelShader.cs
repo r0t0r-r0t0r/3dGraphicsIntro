@@ -45,17 +45,16 @@ namespace Render
 
             var intensity = Vector3.Dot(normal, _light);
             if (intensity < 0)
-                return null;
+                return Color.Black;
 
             if (intensity > 1)
                 intensity = 1;
+
             var resR = (byte)(color.Value.R * intensity);
             var resG = (byte)(color.Value.G * intensity);
             var resB = (byte)(color.Value.B * intensity);
 
-            var resColor = Color.FromArgb(resR, resG, resB);
-
-            return resColor;
+            return Color.FromArgb(resR, resG, resB);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Render
 
             var intensity = ins[0]*a + ins[1]*b + ins[2]*c;
             if (intensity < 0)
-                return null;
+                return Color.Black;
 
             if (intensity > 1)
                 intensity = 1;
