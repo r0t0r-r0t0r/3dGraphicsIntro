@@ -9,23 +9,19 @@ namespace Render
         private int _width;
         private int _height;
 
-        public unsafe void Init(Model model, byte* texture, int textureWidts, int textureHeight, int width, int height, string rootDir, Vector3 light)
+        public unsafe void Init(int width, int height)
         {
             _width = width;
             _height = height;
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IPixelShader shader)
         {
             var screenCoords = new[] {a, b, c};
 
             Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, Color.White);
             Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, Color.White);
             Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, Color.White);
-        }
-
-        public void Finish()
-        {
         }
 
         unsafe private void Line(int x0, int y0, int x1, int y1, byte* bmp, Color color)
@@ -83,8 +79,6 @@ namespace Render
                         bmp[foo + 2] = color.R;
                         bmp[foo + 1] = color.G;
                         bmp[foo + 0] = color.B;
-
-//                        bmp.SetPixel(y, x, color);
                     }
                 }
                 else
@@ -95,8 +89,6 @@ namespace Render
                         bmp[foo + 2] = color.R;
                         bmp[foo + 1] = color.G;
                         bmp[foo + 0] = color.B;
-
-//                        bmp.SetPixel(x, y, color);
                     }
                 }
             }

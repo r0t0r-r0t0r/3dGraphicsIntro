@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -12,42 +13,90 @@ namespace Render
 {
     public class RenderCore
     {
-        private const string RootDir = @"D:\Users\rotor\Documents\";
-//        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+//        private const string RootDir = @"D:\Users\rotor\Documents\";
+        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
         private readonly Bitmap _bitmap = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
 
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
 
-        public Bitmap Render(List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection)
+        private readonly List<IRender> _renders = new List<IRender>
         {
+            new SolidRender(),
+            new WireRender()
+        };
+
+
+        public Bitmap Render(RenderSettings settings)
+        {
+            var cameraZPosition = settings.CameraZPosition;
+            var usePerspectiveProjection = settings.PerspectiveProjection;
+            List<IRender> renders = new List<IRender>();
+            if (settings.RenderMode.UseFilling)
+            {
+                renders.Add(_renders[0]);
+            }
+            if (settings.RenderMode.UseBorders)
+            {
+                renders.Add(_renders[1]);
+            }
+
             var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var cameraDirection = new Vector3(0, 0, 1);
             var light = new Vector3(0.5f, 0, 0.5f);
             foreach (var render in renders)
             {
-                unsafe
-                {
-                    render.Init(_model, (byte*)textureData.Scan0, _texture.Width, _texture.Height, _bitmap.Width, _bitmap.Height, RootDir, light);
-                }
+                render.Init(_bitmap.Width, _bitmap.Height);
             }
             var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
             unsafe
             {
-                
+                IPixelShader shader;
+
+                if (!settings.RenderMode.UseFilling)
+                {
+                    shader = new EmptyPixelShader();
+                }
+                else
+                {
+                    IPixelShader innerShader;
+                    if (settings.RenderMode.FillMode.UseTexture)
+                    {
+                        innerShader = new TexturePixelShader(_model, (byte*) textureData.Scan0, _texture.Width, _texture.Height);
+                    }
+                    else
+                    {
+                        innerShader = new SolidColorPixelShader(settings.RenderMode.FillMode.Color);
+                    }
+
+                    switch (settings.RenderMode.LightMode)
+                    {
+                        case LightMode.None:
+                            shader = innerShader;
+                            break;
+                        case LightMode.Simple:
+                            shader = new SimplePixelShader(_model, light, innerShader);
+                            break;
+                        case LightMode.Gouraud:
+                            shader = new GouraudPixelShader(_model, light, innerShader);
+                            break;
+                        case LightMode.Phong:
+                            shader = new PhongPixelShader(_model, light, innerShader);
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                }
+
                 byte* rawData = (byte*) data.Scan0;
                 var length = _bitmap.Width*_bitmap.Height*4;
                 for (var i = 0; i < length; i++)
                 {
                     rawData[i] = 0;
                 }
-                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection);
-            }
-            foreach (var render in renders)
-            {
-                render.Finish();
+                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader);
             }
             _bitmap.UnlockBits(data);
             _texture.UnlockBits(textureData);
@@ -55,7 +104,7 @@ namespace Render
             return _bitmap;
         }
 
-        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader)
         {
             float c = cameraZPosition;
 
@@ -98,7 +147,7 @@ namespace Render
 
                 foreach (var render in renders)
                 {
-                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data);
+                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader);
                 }
             }
         }

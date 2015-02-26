@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -13,17 +12,8 @@ namespace Render
 {
     public partial class RenderForm : Form
     {
-        private RenderCore _renderCore = new RenderCore();
-        private RenderSettingsBuilder _builder = new RenderSettingsBuilder();
-
-        private List<IRender> _renders = new List<IRender>
-        {
-            new SolidRender()
-        };
-
-        private float _cameraZPosition = 10;
-
-        private bool _usePerspectiveProjection = true;
+        private readonly RenderCore _renderCore = new RenderCore();
+        private readonly RenderSettingsBuilder _builder = new RenderSettingsBuilder();
 
         public RenderForm()
         {
@@ -84,36 +74,20 @@ namespace Render
             pictureBox4.Image = Line.Render();
         }
 
-        private void RendersHandler(object sender, EventArgs e)
-        {
-            var renders = new List<IRender>();
-
-            if (checkBox1.Checked)
-            {
-                renders.Add(new SolidRender());
-            }
-            if (checkBox2.Checked)
-            {
-                renders.Add(new WireRender());
-            }
-            _renders = renders;
-            Draw();
-        }
-
         private void Draw()
         {
-            pictureBox1.Image = _renderCore.Render(_renders, _cameraZPosition, _usePerspectiveProjection);
+            pictureBox1.Image = _renderCore.Render(_builder.Build());
         }
 
         private void CameraZPositionHandler(object sender, EventArgs e)
         {
-            _cameraZPosition = (float) distanceNumericUpDown.Value;
+            _builder.CameraZPosition = (float) distanceNumericUpDown.Value;
             Draw();
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            _usePerspectiveProjection = perspectiveProjectionCheckBox.Checked;
+            _builder.PerspectiveProjection = perspectiveProjectionCheckBox.Checked;
             Draw();
         }
 
