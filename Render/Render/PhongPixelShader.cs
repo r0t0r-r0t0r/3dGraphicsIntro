@@ -42,6 +42,7 @@ namespace Render
             var ny = vns[0].Y * a + vns[1].Y * b + vns[2].Y * c;
             var nz = vns[0].Z * a + vns[1].Z * b + vns[2].Z * c;
             var normal = new Vector3(nx, ny, nz);
+            normal = Vector3.Normalize(normal);
 
             var intensity = Vector3.Dot(normal, _light);
             if (intensity < 0)

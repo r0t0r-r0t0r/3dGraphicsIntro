@@ -56,7 +56,7 @@ namespace Render
             switch (FillMode)
             {
                 case FlatFillMode.SolidColor:
-                    fillMode = Render.FillMode.SolidColor(Color.Gray);
+                    fillMode = Render.FillMode.SolidColor(Color.WhiteSmoke);
                     break;
                 case FlatFillMode.Texture:
                     fillMode = Render.FillMode.Texture();

@@ -45,7 +45,8 @@ namespace Render
             var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var cameraDirection = new Vector3(0, 0, 1);
-            var light = new Vector3(0.5f, 0, 0.5f);
+            var light = new Vector3(0.6f, 0.6f, 0.75f);
+            light = Vector3.Normalize(light);
             foreach (var render in renders)
             {
                 render.Init(_bitmap.Width, _bitmap.Height);

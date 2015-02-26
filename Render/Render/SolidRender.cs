@@ -92,9 +92,9 @@ namespace Render
                         if (resColor != null)
                         {
                             zBuffer[x, y] = z;
-                            data[foo + 2] = resColor.Value.R;
-                            data[foo + 1] = resColor.Value.G;
                             data[foo + 0] = resColor.Value.B;
+                            data[foo + 1] = resColor.Value.G;
+                            data[foo + 2] = resColor.Value.R;
                         }
                     }
                     sline1.StepY();
