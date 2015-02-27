@@ -28,6 +28,7 @@ namespace Render
         private double _y;
 
         private readonly double _minYdY;
+        private readonly double _minXdX;
 
         public MyFastLine(double x0, double y0, double x1, double y1, double minX, double minY, double maxX, double maxY)
         {
@@ -49,8 +50,9 @@ namespace Render
             _dy = x1 - x0;
 
             _minYdY = minY*_dy;
-            _currX = minX*_dx + _c;
-            _currY = _minYdY;
+            _minXdX = minX*_dx;
+            _currX = minX*_dx;
+            _currY = _minYdY + _c;
 
             _x = minX;
             _y = minY;
@@ -68,7 +70,7 @@ namespace Render
 
         public void StepX()
         {
-            _currY = _minYdY;
+//            _currY = _minYdY;
             _currX += _dx;
 
 //            _x++;
@@ -78,6 +80,7 @@ namespace Render
         public void StepY()
         {
             _currY += _dy;
+            _currX = _minXdX;
 //            _y++;
         }
     }

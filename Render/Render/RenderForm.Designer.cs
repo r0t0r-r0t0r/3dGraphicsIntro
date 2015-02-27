@@ -50,6 +50,10 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.startBenchmarkButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -62,6 +66,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -88,6 +93,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
@@ -327,6 +333,46 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.lastBenchmarkTimeLabel);
+            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Controls.Add(this.startBenchmarkButton);
+            this.groupBox4.Location = new System.Drawing.Point(6, 357);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(216, 58);
+            this.groupBox4.TabIndex = 8;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Benchmark";
+            // 
+            // startBenchmarkButton
+            // 
+            this.startBenchmarkButton.Location = new System.Drawing.Point(6, 20);
+            this.startBenchmarkButton.Name = "startBenchmarkButton";
+            this.startBenchmarkButton.Size = new System.Drawing.Size(75, 23);
+            this.startBenchmarkButton.TabIndex = 0;
+            this.startBenchmarkButton.Text = "Start";
+            this.startBenchmarkButton.UseVisualStyleBackColor = true;
+            this.startBenchmarkButton.Click += new System.EventHandler(this.startBenchmarkButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(87, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Last Run:";
+            // 
+            // lastBenchmarkTimeLabel
+            // 
+            this.lastBenchmarkTimeLabel.AutoSize = true;
+            this.lastBenchmarkTimeLabel.Location = new System.Drawing.Point(148, 25);
+            this.lastBenchmarkTimeLabel.Name = "lastBenchmarkTimeLabel";
+            this.lastBenchmarkTimeLabel.Size = new System.Drawing.Size(13, 13);
+            this.lastBenchmarkTimeLabel.TabIndex = 2;
+            this.lastBenchmarkTimeLabel.Text = "0";
+            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -352,6 +398,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -380,6 +428,10 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton textureRadioButton;
         private System.Windows.Forms.RadioButton solidColorRadioButton;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label lastBenchmarkTimeLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button startBenchmarkButton;
     }
 }
 

@@ -1,17 +1,22 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Render.Experiments;
+using System.IO;
 
 namespace Render
 {
     public partial class RenderForm : Form
     {
+        private const string BenchmarkLogFileName = @"..\..\BenchmarkLog.txt";
+        
         private readonly RenderCore _renderCore = new RenderCore();
         private readonly RenderSettingsBuilder _builder = new RenderSettingsBuilder();
 
@@ -69,6 +74,7 @@ namespace Render
         private void Form1_Load(object sender, EventArgs e)
         {
             Draw();
+            LoadLastBenchmarkResult();
             pictureBox2.Image = FilledTriangle.Render();
             pictureBox3.Image = YBuffer.Render();
             pictureBox4.Image = Line.Render();
@@ -143,6 +149,53 @@ namespace Render
         {
             _builder.FillMode = FlatFillMode.Texture;
             Draw();
+        }
+
+        private void startBenchmarkButton_Click(object sender, EventArgs e)
+        {
+            _builder.CameraZPosition = 5;
+            _builder.FillMode = FlatFillMode.Texture;
+            _builder.LightMode = FlatLightMode.Gouraud;
+            _builder.PerspectiveProjection = true;
+            _builder.RenderMode = FlatRenderMode.Fill;
+            InitializeSettings();
+            Draw();
+
+            var settings = _builder.Build();
+
+            const int count = 100;
+            var start = Stopwatch.GetTimestamp();
+            for (var i = 0; i < count; i++)
+            {
+                _renderCore.Render(settings);
+            }
+            var end = Stopwatch.GetTimestamp();
+
+            double runticks = end - start;
+            double runtime = runticks/Stopwatch.Frequency/count;
+
+            lastBenchmarkTimeLabel.Text = runtime.ToString("F3");
+            WriteBenchmarkResult(DateTime.Now, runtime);
+        }
+
+        private void LoadLastBenchmarkResult()
+        {
+            var lastLine = new []{"0 0"}
+                .Concat(File.ReadLines(BenchmarkLogFileName))
+                .Last();
+            var lineValues = lastLine.Split(' ');
+            var lastBenchmarkTime = double.Parse(lineValues[1], CultureInfo.InvariantCulture);
+
+            lastBenchmarkTimeLabel.Text = lastBenchmarkTime.ToString("F3");
+        }
+
+        private void WriteBenchmarkResult(DateTime dateTime, double benchmarkTime)
+        {
+            var line = string.Format(CultureInfo.InvariantCulture, "{0} {1}", dateTime.Ticks, benchmarkTime);
+            using (var benchmarkLog = File.AppendText(BenchmarkLogFileName))
+            {
+                benchmarkLog.WriteLine(line);
+            }
         }
     }
 }

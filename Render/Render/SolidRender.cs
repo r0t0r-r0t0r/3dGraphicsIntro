@@ -65,9 +65,11 @@ namespace Render
             var sline2 = new MyFastLine(v1.X, v1.Y, v2.X, v2.Y, minX, minY, maxX, maxY);
             var sline3 = new MyFastLine(v2.X, v2.Y, v0.X, v0.Y, minX, minY, maxX, maxY);
 
-            for (int x = minX; x <= maxX; x++)
+            var line = ((int*) data) + (_height - minY - 1) * _width;
+
+            for (int y = minY; y <= maxY; y++)
             {
-                for (int y = minY; y <= maxY; y++)
+                for (int x = minX; x <= maxX; x++)
                 {
                     var curr1 = sline1.Value;
                     var curr2 = sline2.Value;
@@ -85,25 +87,22 @@ namespace Render
                         if (z < zBuffer[x, y])
                             continue;
 
-                        var foo = ((_height - y - 1)*_width+x)*4;
-
                         var resColor = shader.OnPixel(state, p.Item1, p.Item2, p.Item3);
 
                         if (resColor != null)
                         {
                             zBuffer[x, y] = z;
-                            data[foo + 0] = resColor.Value.B;
-                            data[foo + 1] = resColor.Value.G;
-                            data[foo + 2] = resColor.Value.R;
+                            line[x] = resColor.Value.ToArgb();
                         }
                     }
-                    sline1.StepY();
-                    sline2.StepY();
-                    sline3.StepY();
+                    sline1.StepX();
+                    sline2.StepX();
+                    sline3.StepX();
                 }
-                sline1.StepX();
-                sline2.StepX();
-                sline3.StepX();
+                sline1.StepY();
+                sline2.StepY();
+                sline3.StepY();
+                line -= _width;
             }
         }
 
