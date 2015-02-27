@@ -61,9 +61,11 @@ namespace Render
                 v2 = tbuf;
             }
 
-            var sline1 = new MyFastLine(v0.X, v0.Y, v1.X, v1.Y, minX, minY, maxX, maxY);
-            var sline2 = new MyFastLine(v1.X, v1.Y, v2.X, v2.Y, minX, minY, maxX, maxY);
-            var sline3 = new MyFastLine(v2.X, v2.Y, v0.X, v0.Y, minX, minY, maxX, maxY);
+            var sline1 = new MyFastLine(v0.X, v0.Y, v1.X, v1.Y, minX, minY);
+            var sline2 = new MyFastLine(v1.X, v1.Y, v2.X, v2.Y, minX, minY);
+            var sline3 = new MyFastLine(v2.X, v2.Y, v0.X, v0.Y, minX, minY);
+
+            var converter = new BarycentricCoordinatesConverter(v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
 
             var line = ((int*) data) + (_height - minY - 1) * _width;
 
@@ -77,17 +79,19 @@ namespace Render
 
                     if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
                     {
-                        var p = GetBarycentricCoordinates(x, y, v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
+//                        var g = GetBarycentricCoordinates(x, y, v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
+//                        var p = new BarycentricCoordinates(g.Item1, g.Item2, g.Item3);
+                        var p = converter.Convert(x, y);
 
-                        if (p.Item1 < 0 || p.Item2 < 0 || p.Item3 < 0)
+                        if (p.A < 0 || p.B < 0 || p.C < 0)
                             continue;
 
-                        var z = v0.Z*p.Item1 + v1.Z*p.Item2 + v2.Z*p.Item3;
+                        var z = v0.Z*p.A + v1.Z*p.B + v2.Z*p.C;
 
                         if (z < zBuffer[x, y])
                             continue;
 
-                        var resColor = shader.OnPixel(state, p.Item1, p.Item2, p.Item3);
+                        var resColor = shader.OnPixel(state, p.A, p.B, p.C);
 
                         if (resColor != null)
                         {
@@ -138,6 +142,68 @@ namespace Render
             if (a >= length)
                 return length - 1;
             return a;
+        }
+    }
+
+    public struct BarycentricCoordinatesConverter
+    {
+        private readonly float _ka;
+        private readonly float _la;
+        private readonly float _m;
+
+        private readonly float _kb;
+        private readonly float _lb;
+        private readonly float _n;
+
+        public BarycentricCoordinatesConverter(float x1, float y1, float x2, float y2, float x3, float y3)
+        {
+            var a = 1/((y1 - y3)*(x2 - x3) - (x1 - x3)*(y2 - y3));
+            var b = 1/((y2 - y1)*(x3 - x1) - (x2 - x1)*(y3 - y1));
+
+            _ka = (x2 - x3)*a;
+            _la = (y2 - y3)*a;
+            _m = x3*_la - y3*_ka;
+
+            _kb = (x3 - x1) * b;
+            _lb = (y3 - y1) * b;
+            _n = x1 * _lb - y1 * _kb;
+        }
+
+        public BarycentricCoordinates Convert(float x, float y)
+        {
+            var lambda1 = y*_ka - x*_la + _m;
+            var lambda2 = y*_kb - x*_lb + _n;
+            var lambda3 = 1 - lambda1 - lambda2;
+            return new BarycentricCoordinates(lambda1, lambda2, lambda3);
+        }
+    }
+
+    public struct BarycentricCoordinates
+    {
+        private readonly float _a;
+        private readonly float _b;
+        private readonly float _c;
+
+        public BarycentricCoordinates(float a, float b, float c)
+        {
+            _a = a;
+            _b = b;
+            _c = c;
+        }
+
+        public float A
+        {
+            get { return _a; }
+        }
+
+        public float B
+        {
+            get { return _b; }
+        }
+
+        public float C
+        {
+            get { return _c; }
         }
     }
 }
