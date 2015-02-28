@@ -160,6 +160,7 @@ namespace Render
             _builder.RenderMode = FlatRenderMode.Fill;
             InitializeSettings();
             Draw();
+//            var _renderCore = new RenderCore();
 
             var settings = _builder.Build();
 

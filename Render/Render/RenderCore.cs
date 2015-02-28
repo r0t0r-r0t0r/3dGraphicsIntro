@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Render
 {
@@ -71,6 +72,7 @@ namespace Render
                     {
                         innerShader = new SolidColorPixelShader(settings.RenderMode.FillMode.Color);
                     }
+//                        innerShader = new SolidColorPixelShader(Color.White);
 
                     switch (settings.RenderMode.LightMode)
                     {
@@ -97,7 +99,27 @@ namespace Render
                 {
                     rawData[i] = 0;
                 }
-                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader);
+
+                const int parCount = 4;
+                var vertStep = _bitmap.Height/parCount - 1;
+                var start = 0;
+                var regions = new Tuple<int, int>[parCount];
+                for (var i = 0; i < parCount; i++)
+                {
+                    var end = start + vertStep;
+                    regions[i] = Tuple.Create(start, end);
+
+                    start = end + 1;
+                }
+                const int last = parCount - 1;
+                regions[last] = Tuple.Create(regions[last].Item1, _bitmap.Height - 1);
+                var tasks = regions.Select(region => new Task(() => Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader, region.Item1, region.Item2))).ToList();
+//                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader, 200, 300);
+                foreach (var task in tasks)
+                {
+                    task.Start();
+                }
+                Task.WaitAll(tasks.ToArray());
             }
             _bitmap.UnlockBits(data);
             _texture.UnlockBits(textureData);
@@ -105,7 +127,7 @@ namespace Render
             return _bitmap;
         }
 
-        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader, int startY, int endY)
         {
             float c = cameraZPosition;
 
@@ -148,7 +170,7 @@ namespace Render
 
                 foreach (var render in renders)
                 {
-                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader);
+                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader, startY, endY);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Render
         private int _width;
         private int _height;
 
-        unsafe public void Init(int width, int height)
+        public void Init(int width, int height)
         {
             _width = width;
             _height = height;
@@ -24,15 +24,15 @@ namespace Render
             }
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IPixelShader shader)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IPixelShader shader, int startY, int endY)
         {
             var screenCoords = new[] { a, b, c };
 
             var state = shader.OnFace(face);
-            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, state);
+            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, state, startY, endY);
         }
 
-        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IPixelShader shader, object state)
+        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IPixelShader shader, object state, int startY, int endY)
         {
             var x0 = (int)Math.Round(v0.X);
             var y0 = (int)Math.Round(v0.Y);
@@ -42,9 +42,9 @@ namespace Render
             var y2 = (int)Math.Round(v2.Y);
 
             int minX = ClipX(Math3(x0, x1, x2, Math.Min));
-            int minY = ClipY(Math3(y0, y1, y2, Math.Min));
+            int minY = ClipY(Math3(y0, y1, y2, Math.Min), startY, endY);
             int maxX = ClipX(Math3(x0, x1, x2, Math.Max));
-            int maxY = ClipY(Math3(y0, y1, y2, Math.Max));
+            int maxY = ClipY(Math3(y0, y1, y2, Math.Max), startY, endY);
 
             float midX = (v0.X + v1.X + v2.X)/3;
             float midY = (v0.Y + v1.Y + v2.Y)/3;
@@ -79,8 +79,6 @@ namespace Render
 
                     if (curr1 >= 0 && curr2 >= 0 && curr3 >= 0)
                     {
-//                        var g = GetBarycentricCoordinates(x, y, v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
-//                        var p = new BarycentricCoordinates(g.Item1, g.Item2, g.Item3);
                         var p = converter.Convert(x, y);
 
                         if (p.A < 0 || p.B < 0 || p.C < 0)
@@ -116,31 +114,22 @@ namespace Render
             return func(result, c);
         }
 
-        private static Tuple<float, float, float> GetBarycentricCoordinates(float x, float y, float x1, float y1, float x2, float y2, float x3, float y3)
-        {
-            var lambda1 = ((y - y3)*(x2 - x3) - (x - x3)*(y2 - y3))/((y1 - y3)*(x2 - x3) - (x1 - x3)*(y2 - y3));
-            var lambda2 = ((y - y1)*(x3 - x1) - (x - x1)*(y3 - y1))/((y2 - y1)*(x3 - x1) - (x2 - x1)*(y3 - y1));
-            var lambda3 = 1 - lambda1 - lambda2;
-
-            return Tuple.Create(lambda1, lambda2, lambda3);
-        }
-
         private int ClipX(int x)
         {
-            return Clip(x, _width);
+            return Clip(x, 0, _width - 1);
         }
 
-        private int ClipY(int y)
+        private int ClipY(int y, int minY, int maxY)
         {
-            return Clip(y, _height);
+            return Clip(y, minY, maxY);
         }
 
-        private static int Clip(int a, int length)
+        private static int Clip(int a, int minA, int maxA)
         {
-            if (a < 0)
-                return 0;
-            if (a >= length)
-                return length - 1;
+            if (a < minA)
+                return minA;
+            if (a > maxA)
+                return maxA;
             return a;
         }
     }

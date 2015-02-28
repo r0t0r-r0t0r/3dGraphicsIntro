@@ -10,6 +10,6 @@ namespace Render
     {
         void Init(int width, int height);
 
-        unsafe void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IPixelShader shader);
+        unsafe void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IPixelShader shader, int startY, int endY);
     }
 }

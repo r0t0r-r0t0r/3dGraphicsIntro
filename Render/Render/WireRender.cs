@@ -15,16 +15,16 @@ namespace Render
             _height = height;
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IPixelShader shader)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IPixelShader shader, int startY, int endY)
         {
             var screenCoords = new[] {a, b, c};
 
-            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, Color.White);
-            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, Color.White);
-            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, Color.White);
+            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, Color.White, startY, endY);
+            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, Color.White, startY, endY);
+            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, Color.White, startY, endY);
         }
 
-        unsafe private void Line(int x0, int y0, int x1, int y1, byte* bmp, Color color)
+        unsafe private void Line(int x0, int y0, int x1, int y1, byte* bmp, Color color, int startY, int endY)
         {
             var vertOrientation = Math.Abs(x1 - x0) < Math.Abs(y1 - y0);
 
@@ -73,7 +73,7 @@ namespace Render
 
                 if (vertOrientation)
                 {
-                    if (y >= 0 && y < _width && x >= 0 && x < _height)
+                    if (y >= 0 && y < _width && x >= startY && x <= endY)
                     {
                         var foo = ((_height - x - 1) * _width + y) * 4;
                         bmp[foo + 2] = color.R;
@@ -83,7 +83,7 @@ namespace Render
                 }
                 else
                 {
-                    if (x >= 0 && x < _width && y >= 0 && y < _height)
+                    if (x >= 0 && x < _width && y >= startY && y <= endY)
                     {
                         var foo = ((_height - y - 1) * _width + x) * 4;
                         bmp[foo + 2] = color.R;
