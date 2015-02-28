@@ -17,8 +17,6 @@ namespace Render
         private const string RootDir = @"D:\Users\rotor\Documents\";
 //        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
-        private readonly Bitmap _bitmap = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
-
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
 
@@ -29,8 +27,11 @@ namespace Render
         };
 
 
-        public Bitmap Render(RenderSettings settings)
+        public void Render(RenderSettings settings, Bitmap bitmap)
         {
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+
             var cameraZPosition = settings.CameraZPosition;
             var usePerspectiveProjection = settings.PerspectiveProjection;
             List<IRender> renders = new List<IRender>();
@@ -50,9 +51,9 @@ namespace Render
             light = Vector3.Normalize(light);
             foreach (var render in renders)
             {
-                render.Init(_bitmap.Width, _bitmap.Height);
+                render.Init(width, height);
             }
-            var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
+            var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
             unsafe
             {
                 IPixelShader shader;
@@ -72,7 +73,6 @@ namespace Render
                     {
                         innerShader = new SolidColorPixelShader(settings.RenderMode.FillMode.Color);
                     }
-//                        innerShader = new SolidColorPixelShader(Color.White);
 
                     switch (settings.RenderMode.LightMode)
                     {
@@ -94,14 +94,14 @@ namespace Render
                 }
 
                 byte* rawData = (byte*) data.Scan0;
-                var length = _bitmap.Width*_bitmap.Height*4;
+                var length = width*height*4;
                 for (var i = 0; i < length; i++)
                 {
                     rawData[i] = 0;
                 }
 
-                const int parCount = 4;
-                var vertStep = _bitmap.Height/parCount - 1;
+                var parCount = Environment.ProcessorCount;
+                var vertStep = height/parCount - 1;
                 var start = 0;
                 var regions = new Tuple<int, int>[parCount];
                 for (var i = 0; i < parCount; i++)
@@ -111,20 +111,22 @@ namespace Render
 
                     start = end + 1;
                 }
-                const int last = parCount - 1;
-                regions[last] = Tuple.Create(regions[last].Item1, _bitmap.Height - 1);
-                var tasks = regions.Select(region => new Task(() => Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader, region.Item1, region.Item2))).ToList();
-//                Draw(_model, rawData, _bitmap.Width, _bitmap.Height, renders, cameraZPosition, usePerspectiveProjection, cameraDirection, shader, 200, 300);
+                var last = parCount - 1;
+                regions[last] = Tuple.Create(regions[last].Item1, height - 1);
+                var tasks =
+                    regions.Select(
+                        region =>
+                            new Task(() => Draw(_model, rawData, width, height, renders, cameraZPosition,
+                                usePerspectiveProjection, cameraDirection, shader, region.Item1, region.Item2)))
+                        .ToArray();
                 foreach (var task in tasks)
                 {
                     task.Start();
                 }
-                Task.WaitAll(tasks.ToArray());
+                Task.WaitAll(tasks);
             }
-            _bitmap.UnlockBits(data);
+            bitmap.UnlockBits(data);
             _texture.UnlockBits(textureData);
-
-            return _bitmap;
         }
 
         private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader, int startY, int endY)

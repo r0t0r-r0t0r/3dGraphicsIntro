@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,9 @@ namespace Render
         
         private readonly RenderCore _renderCore = new RenderCore();
         private readonly RenderSettingsBuilder _builder = new RenderSettingsBuilder();
+
+        private Bitmap _frontBuffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
+        private Bitmap _backBuffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
 
         public RenderForm()
         {
@@ -82,7 +86,12 @@ namespace Render
 
         private void Draw()
         {
-            pictureBox1.Image = _renderCore.Render(_builder.Build());
+            _renderCore.Render(_builder.Build(), _backBuffer);
+            pictureBox1.Image = _backBuffer;
+
+            var exchange = _backBuffer;
+            _backBuffer = _frontBuffer;
+            _frontBuffer = exchange;
         }
 
         private void CameraZPositionHandler(object sender, EventArgs e)
@@ -160,7 +169,9 @@ namespace Render
             _builder.RenderMode = FlatRenderMode.Fill;
             InitializeSettings();
             Draw();
-//            var _renderCore = new RenderCore();
+
+            var buffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
+            var renderCore = new RenderCore();
 
             var settings = _builder.Build();
 
@@ -168,7 +179,7 @@ namespace Render
             var start = Stopwatch.GetTimestamp();
             for (var i = 0; i < count; i++)
             {
-                _renderCore.Render(settings);
+                renderCore.Render(settings, buffer);
             }
             var end = Stopwatch.GetTimestamp();
 
