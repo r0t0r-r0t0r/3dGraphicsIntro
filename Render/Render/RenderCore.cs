@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -139,9 +140,13 @@ namespace Render
 
                 for (var j = 0; j < 3; j++)
                 {
-                    var worldCoord = model.Vertices[face[j]];
-                    var w = 1 - worldCoord.Z/c;
-                    var g = new Vector3(worldCoord.X*300, worldCoord.Y*300, worldCoord.Z*300);
+                    var modelCoord = model.Vertices[face[j]];
+                    var lookAt = LookAt(new Vector3(0, 0, 0), new Vector3(5, 0, 10), new Vector3(0, 1, 0));
+                    var foo = Mul(lookAt, modelCoord);
+                    modelCoord = foo;
+                        
+                    var w = 1 - modelCoord.Z/c;
+                    var g = new Vector3(modelCoord.X*300, modelCoord.Y*300, modelCoord.Z*300);
                     if (usePerspectiveProjection)
                     {
                         screenCoords[j] = new Vector3(g.X/w, g.Y/w, g.Z/w);
@@ -155,9 +160,9 @@ namespace Render
                         screenCoords[j].Y/(cameraZPosition*0.1f) + height/2, screenCoords[j].Z);
                 }
 
-                var v0 = model.Vertices[face[0]];
-                var v1 = model.Vertices[face[1]];
-                var v2 = model.Vertices[face[2]];
+                var v0 = screenCoords[0];
+                var v1 = screenCoords[1];
+                var v2 = screenCoords[2];
 
                 var foo1 = Vector3.Subtract(v1, v0);
                 var foo2 = Vector3.Subtract(v2, v1);
@@ -175,6 +180,34 @@ namespace Render
                     render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader, startY, endY);
                 }
             }
+        }
+
+        private static Matrix4x4 LookAt(Vector3 center, Vector3 eye, Vector3 up)
+        {
+            var z = Vector3.Normalize(eye - center);
+            var x = Vector3.Normalize(Vector3.Cross(up, z));
+            var y = Vector3.Normalize(Vector3.Cross(z, x));
+//            var y = Vector3.Normalize(up);
+//            var x = Vector3.Normalize(Vector3.Cross(y, z));
+
+            var result = new Matrix4x4(
+                x.X, x.Y, x.Z, -center.X,
+                y.X, y.Y, y.Z, -center.Y,
+                z.X, z.Y, z.Z, -center.Z,
+                0, 0, 0, 1
+                );
+            return result;
+        }
+
+        private static Vector3 Mul(Matrix4x4 m, Vector3 vector)
+        {
+            var v = new Vector4(vector, 1);
+            var result = new Vector3(
+                m.M11*v.X + m.M12*v.Y + m.M13*v.Z + m.M14*v.W,
+                m.M21*v.X + m.M22*v.Y + m.M23*v.Z + m.M24*v.W,
+                m.M31*v.X + m.M32*v.Y + m.M33*v.Z + m.M34*v.W
+                );
+            return result;
         }
     }
 }
