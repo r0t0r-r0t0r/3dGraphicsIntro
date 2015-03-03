@@ -11,13 +11,13 @@ namespace Render
     {
         private readonly RenderMode _renderMode;
         private readonly bool _perspectiveProjection;
-        private readonly float _cameraZPosition;
+        private readonly float _viewportScale;
 
-        private RenderSettings(RenderMode renderMode, bool perspectiveProjection, float cameraZPosition)
+        private RenderSettings(RenderMode renderMode, bool perspectiveProjection, float viewportScale)
         {
             _renderMode = renderMode;
             _perspectiveProjection = perspectiveProjection;
-            _cameraZPosition = cameraZPosition;
+            _viewportScale = viewportScale;
         }
 
         public static Func<RenderMode, RenderSettings> Create(bool perspectiveProjection, float cameraZPosition)
@@ -27,7 +27,7 @@ namespace Render
 
         public RenderMode RenderMode { get { return _renderMode; }}
         public bool PerspectiveProjection { get { return _perspectiveProjection; }}
-        public float CameraZPosition { get { return _cameraZPosition; }}
+        public float ViewportScale { get { return _viewportScale; }}
     }
 
     public class RenderMode

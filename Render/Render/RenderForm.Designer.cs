@@ -31,6 +31,10 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.startBenchmarkButton = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textureRadioButton = new System.Windows.Forms.RadioButton();
             this.solidColorRadioButton = new System.Windows.Forms.RadioButton();
@@ -44,29 +48,25 @@
             this.fillRadioButton = new System.Windows.Forms.RadioButton();
             this.bordersRadioButton = new System.Windows.Forms.RadioButton();
             this.perspectiveProjectionCheckBox = new System.Windows.Forms.CheckBox();
-            this.distanceNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.viewportScaleNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.startBenchmarkButton = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.distanceNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -98,7 +98,7 @@
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.perspectiveProjectionCheckBox);
-            this.tabPage1.Controls.Add(this.distanceNumericUpDown);
+            this.tabPage1.Controls.Add(this.viewportScaleNumericUpDown);
             this.tabPage1.Controls.Add(this.pictureBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -107,6 +107,46 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.lastBenchmarkTimeLabel);
+            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Controls.Add(this.startBenchmarkButton);
+            this.groupBox4.Location = new System.Drawing.Point(6, 357);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(216, 58);
+            this.groupBox4.TabIndex = 8;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Benchmark";
+            // 
+            // lastBenchmarkTimeLabel
+            // 
+            this.lastBenchmarkTimeLabel.AutoSize = true;
+            this.lastBenchmarkTimeLabel.Location = new System.Drawing.Point(148, 25);
+            this.lastBenchmarkTimeLabel.Name = "lastBenchmarkTimeLabel";
+            this.lastBenchmarkTimeLabel.Size = new System.Drawing.Size(13, 13);
+            this.lastBenchmarkTimeLabel.TabIndex = 2;
+            this.lastBenchmarkTimeLabel.Text = "0";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(87, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Last Run:";
+            // 
+            // startBenchmarkButton
+            // 
+            this.startBenchmarkButton.Location = new System.Drawing.Point(6, 20);
+            this.startBenchmarkButton.Name = "startBenchmarkButton";
+            this.startBenchmarkButton.Size = new System.Drawing.Size(75, 23);
+            this.startBenchmarkButton.TabIndex = 0;
+            this.startBenchmarkButton.Text = "Start";
+            this.startBenchmarkButton.UseVisualStyleBackColor = true;
+            this.startBenchmarkButton.Click += new System.EventHandler(this.startBenchmarkButton_Click);
             // 
             // groupBox3
             // 
@@ -262,29 +302,34 @@
             this.perspectiveProjectionCheckBox.UseVisualStyleBackColor = true;
             this.perspectiveProjectionCheckBox.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
-            // distanceNumericUpDown
+            // viewportScaleNumericUpDown
             // 
-            this.distanceNumericUpDown.DecimalPlaces = 3;
-            this.distanceNumericUpDown.Increment = new decimal(new int[] {
-            125,
-            0,
-            0,
-            196608});
-            this.distanceNumericUpDown.Location = new System.Drawing.Point(6, 6);
-            this.distanceNumericUpDown.Minimum = new decimal(new int[] {
+            this.viewportScaleNumericUpDown.DecimalPlaces = 1;
+            this.viewportScaleNumericUpDown.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            0});
-            this.distanceNumericUpDown.Name = "distanceNumericUpDown";
-            this.distanceNumericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.distanceNumericUpDown.TabIndex = 3;
-            this.distanceNumericUpDown.Value = new decimal(new int[] {
-            10,
+            65536});
+            this.viewportScaleNumericUpDown.Location = new System.Drawing.Point(6, 6);
+            this.viewportScaleNumericUpDown.Maximum = new decimal(new int[] {
+            5,
             0,
             0,
             0});
-            this.distanceNumericUpDown.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
+            this.viewportScaleNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.viewportScaleNumericUpDown.Name = "viewportScaleNumericUpDown";
+            this.viewportScaleNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.viewportScaleNumericUpDown.TabIndex = 3;
+            this.viewportScaleNumericUpDown.Value = new decimal(new int[] {
+            9,
+            0,
+            0,
+            65536});
+            this.viewportScaleNumericUpDown.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
             // 
             // tabPage2
             // 
@@ -333,46 +378,6 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.lastBenchmarkTimeLabel);
-            this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Controls.Add(this.startBenchmarkButton);
-            this.groupBox4.Location = new System.Drawing.Point(6, 357);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(216, 58);
-            this.groupBox4.TabIndex = 8;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Benchmark";
-            // 
-            // startBenchmarkButton
-            // 
-            this.startBenchmarkButton.Location = new System.Drawing.Point(6, 20);
-            this.startBenchmarkButton.Name = "startBenchmarkButton";
-            this.startBenchmarkButton.Size = new System.Drawing.Size(75, 23);
-            this.startBenchmarkButton.TabIndex = 0;
-            this.startBenchmarkButton.Text = "Start";
-            this.startBenchmarkButton.UseVisualStyleBackColor = true;
-            this.startBenchmarkButton.Click += new System.EventHandler(this.startBenchmarkButton_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(87, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Last Run:";
-            // 
-            // lastBenchmarkTimeLabel
-            // 
-            this.lastBenchmarkTimeLabel.AutoSize = true;
-            this.lastBenchmarkTimeLabel.Location = new System.Drawing.Point(148, 25);
-            this.lastBenchmarkTimeLabel.Name = "lastBenchmarkTimeLabel";
-            this.lastBenchmarkTimeLabel.Size = new System.Drawing.Size(13, 13);
-            this.lastBenchmarkTimeLabel.TabIndex = 2;
-            this.lastBenchmarkTimeLabel.Text = "0";
-            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -386,20 +391,20 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.distanceNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -414,7 +419,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.NumericUpDown distanceNumericUpDown;
+        private System.Windows.Forms.NumericUpDown viewportScaleNumericUpDown;
         private System.Windows.Forms.CheckBox perspectiveProjectionCheckBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton bordersAndFillRadioButton;

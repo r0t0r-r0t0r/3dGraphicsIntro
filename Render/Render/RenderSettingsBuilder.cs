@@ -15,18 +15,18 @@ namespace Render
             LightMode = FlatLightMode.Gouraud;
             FillMode = FlatFillMode.Texture;
             PerspectiveProjection = true;
-            CameraZPosition = 10;
+            ViewportScale = 0.9f;
         }
 
         public FlatRenderMode RenderMode { get; set; }
         public FlatLightMode LightMode { get; set; }
         public FlatFillMode FillMode { get; set; }
         public bool PerspectiveProjection { get; set; }
-        public float CameraZPosition { get; set; }
+        public float ViewportScale { get; set; }
 
         public RenderSettings Build()
         {
-            var settings = RenderSettings.Create(PerspectiveProjection, CameraZPosition);
+            var settings = RenderSettings.Create(PerspectiveProjection, ViewportScale);
 
             if (RenderMode == FlatRenderMode.Borders)
             {

@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Render
 {
     public class RenderCore
     {
-        private const string RootDir = @"D:\Users\rotor\Documents\";
-//        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+//        private const string RootDir = @"D:\Users\rotor\Documents\";
+        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
 
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
@@ -33,7 +28,7 @@ namespace Render
             var width = bitmap.Width;
             var height = bitmap.Height;
 
-            var cameraZPosition = settings.CameraZPosition;
+            var viewportScale = settings.ViewportScale;
             var usePerspectiveProjection = settings.PerspectiveProjection;
             List<IRender> renders = new List<IRender>();
             if (settings.RenderMode.UseFilling)
@@ -117,7 +112,7 @@ namespace Render
                 var tasks =
                     regions.Select(
                         region =>
-                            new Task(() => Draw(_model, rawData, width, height, renders, cameraZPosition,
+                            new Task(() => Draw(_model, rawData, width, height, renders, viewportScale,
                                 usePerspectiveProjection, cameraDirection, shader, region.Item1, region.Item2)))
                         .ToArray();
                 foreach (var task in tasks)
@@ -130,10 +125,24 @@ namespace Render
             _texture.UnlockBits(textureData);
         }
 
-        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float cameraZPosition, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader, int startY, int endY)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader, int startY, int endY)
         {
-            float c = cameraZPosition;
-            var transform = Mul(Viewport(0, 0, width, height), Projection(cameraZPosition));
+            var center = new Vector3(0, 0, 0);
+            var eye = new Vector3(0, 0, 10);
+            var up = new Vector3(0, 1, 0);
+
+            var actualWidth = (int) (width*viewportScale);
+            var actualHeight = (int) (height*viewportScale);
+            var actualXmin = (width - actualWidth)/2;
+            var actualYmin = (height - actualHeight)/2;
+
+            var distance = new Vector3(center.X - eye.X, center.Y - eye.Y, center.Z - eye.Z).Length();
+
+            var viewport = Viewport(actualXmin, actualYmin, actualWidth, actualHeight);
+            var projection = usePerspectiveProjection ? Projection(distance) : Matrix4x4.Identity;
+            var view = LookAt(center, eye, up);
+            var modelTransform = Model();
+            var transform = Mul(viewport, Mul(projection, Mul(view, modelTransform)));
 
             foreach (var face in model.Faces)
             {
@@ -142,23 +151,6 @@ namespace Render
                 for (var j = 0; j < 3; j++)
                 {
                     var modelCoord = model.Vertices[face[j]];
-                    //var view = LookAt(new Vector3(0, 0, 0), new Vector3(0, 0, 10), new Vector3(1, 1, 0));
-                    //var foo = Mul(view, modelCoord);
-                    ////modelCoord = foo;
-                        
-                    //var w = 1 - modelCoord.Z/c;
-                    //var g = new Vector3(modelCoord.X*300, modelCoord.Y*300, modelCoord.Z*300);
-                    //if (usePerspectiveProjection)
-                    //{
-                    //    screenCoords[j] = new Vector3(g.X/w, g.Y/w, g.Z/w);
-                    //}
-                    //else
-                    //{
-                    //    screenCoords[j] = new Vector3(g.X, g.Y, g.Z);
-                    //}
-
-                    //screenCoords[j] = new Vector3(screenCoords[j].X/(cameraZPosition*0.1f) + width/2,
-                    //    screenCoords[j].Y/(cameraZPosition*0.1f) + height/2, screenCoords[j].Z);
 
                     var r = Mul(transform, new Vector4(modelCoord, 1));
                     screenCoords[j] = new Vector3(r.X/r.W, r.Y/r.W, r.Z/r.W);
@@ -191,8 +183,6 @@ namespace Render
             var z = Vector3.Normalize(eye - center);
             var x = Vector3.Normalize(Vector3.Cross(up, z));
             var y = Vector3.Normalize(Vector3.Cross(z, x));
-//            var y = Vector3.Normalize(up);
-//            var x = Vector3.Normalize(Vector3.Cross(y, z));
 
             var result = new Matrix4x4(
                 x.X, x.Y, x.Z, -center.X,
@@ -233,17 +223,6 @@ namespace Render
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, -1/d, 1
-                );
-            return result;
-        }
-
-        private static Vector3 Mul(Matrix4x4 m, Vector3 vector)
-        {
-            var v = new Vector4(vector, 1);
-            var result = new Vector3(
-                m.M11*v.X + m.M12*v.Y + m.M13*v.Z + m.M14*v.W,
-                m.M21*v.X + m.M22*v.Y + m.M23*v.Z + m.M24*v.W,
-                m.M31*v.X + m.M32*v.Y + m.M33*v.Z + m.M34*v.W
                 );
             return result;
         }

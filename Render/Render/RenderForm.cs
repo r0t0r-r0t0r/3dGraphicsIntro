@@ -71,7 +71,7 @@ namespace Render
                     break;
             }
 
-            distanceNumericUpDown.Value = (decimal) _builder.CameraZPosition;
+            viewportScaleNumericUpDown.Value = (decimal) _builder.ViewportScale;
             perspectiveProjectionCheckBox.Checked = _builder.PerspectiveProjection;
         }
 
@@ -96,7 +96,7 @@ namespace Render
 
         private void CameraZPositionHandler(object sender, EventArgs e)
         {
-            _builder.CameraZPosition = (float) distanceNumericUpDown.Value;
+            _builder.ViewportScale = (float) viewportScaleNumericUpDown.Value;
             Draw();
         }
 
@@ -162,7 +162,7 @@ namespace Render
 
         private void startBenchmarkButton_Click(object sender, EventArgs e)
         {
-            _builder.CameraZPosition = 5;
+            _builder.ViewportScale = 1.5f;
             _builder.FillMode = FlatFillMode.Texture;
             _builder.LightMode = FlatLightMode.Gouraud;
             _builder.PerspectiveProjection = true;
