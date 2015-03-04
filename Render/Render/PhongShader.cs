@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace Render
 {
-    public class PhongPixelShader : IPixelShader
+    public class PhongShader : IShader
     {
         private readonly Model _model;
         private readonly Vector3 _light;
-        private readonly IPixelShader _innerShader;
+        private readonly IShader _innerShader;
 
-        public PhongPixelShader(Model model, Vector3 light, IPixelShader innerShader)
+        public PhongShader(Model model, Vector3 light, IShader innerShader)
         {
             _model = model;
             _light = light;

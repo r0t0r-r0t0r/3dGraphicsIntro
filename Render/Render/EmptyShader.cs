@@ -1,16 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Render
 {
-    public class SolidColorPixelShader : IPixelShader
+    public class EmptyShader: IShader
     {
-        private readonly Color _color;
-
-        public SolidColorPixelShader(Color color)
-        {
-            _color = color;
-        }
-
         public object OnFace(Face face)
         {
             return null;
@@ -18,7 +16,7 @@ namespace Render
 
         public Color? OnPixel(object state, float a, float b, float c)
         {
-            return _color;
+            return null;
         }
     }
 }

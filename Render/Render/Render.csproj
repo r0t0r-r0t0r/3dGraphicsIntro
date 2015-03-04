@@ -50,20 +50,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmptyPixelShader.cs" />
+    <Compile Include="EmptyShader.cs" />
     <Compile Include="Experiments\FilledTriangle.cs" />
     <Compile Include="Experiments\Line.cs" />
     <Compile Include="Experiments\YBuffer.cs" />
     <Compile Include="Face.cs" />
-    <Compile Include="GouraudPixelShader.cs" />
+    <Compile Include="GouraudShader.cs" />
     <Compile Include="GouraudPixelShaderState.cs" />
-    <Compile Include="IPixelShader.cs" />
+    <Compile Include="IShader.cs" />
     <Compile Include="IRender.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="MyFastLine.cs" />
-    <Compile Include="NonePixelShader.cs" />
-    <Compile Include="PhongPixelShader.cs" />
+    <Compile Include="TextureShader.cs" />
+    <Compile Include="PhongShader.cs" />
     <Compile Include="PhongPixelShaderState.cs" />
     <Compile Include="RenderForm.cs">
       <SubType>Form</SubType>
@@ -76,9 +76,9 @@
     <Compile Include="RenderCore.cs" />
     <Compile Include="RenderSettings.cs" />
     <Compile Include="RenderSettingsBuilder.cs" />
-    <Compile Include="SimplePixelShader.cs" />
+    <Compile Include="SimpleShader.cs" />
     <Compile Include="SimplePixelShaderState.cs" />
-    <Compile Include="SolidColorPixelShader.cs" />
+    <Compile Include="SolidColorShader.cs" />
     <Compile Include="SolidRender.cs" />
     <Compile Include="TexturePixelShaderState.cs" />
     <Compile Include="WireRender.cs" />
@@ -94,6 +94,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Model\african_head.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -110,7 +113,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BenchmarkLog.txt" />
+    <Content Include="Model\african_head_diffuse.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Model\african_head_nm.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Model\african_head_spec.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

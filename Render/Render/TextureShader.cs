@@ -4,14 +4,14 @@ using System.Numerics;
 
 namespace Render
 {
-    public class TexturePixelShader : IPixelShader
+    public class TextureShader : IShader
     {
         private readonly Model _model;
         private readonly unsafe int* _texture;
         private readonly int _textureWidth;
         private readonly int _textureHeight;
 
-        unsafe public TexturePixelShader(Model model, byte* texture, int textureWidth, int textureHeight)
+        unsafe public TextureShader(Model model, byte* texture, int textureWidth, int textureHeight)
         {
             _model = model;
             _texture = (int*)texture;

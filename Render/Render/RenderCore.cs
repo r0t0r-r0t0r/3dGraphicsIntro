@@ -10,8 +10,7 @@ namespace Render
 {
     public class RenderCore
     {
-//        private const string RootDir = @"D:\Users\rotor\Documents\";
-        private const string RootDir = @"C:\Users\p-afanasyev\Documents\";
+        private const string RootDir = @"Model\";
 
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
@@ -52,22 +51,22 @@ namespace Render
             var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
             unsafe
             {
-                IPixelShader shader;
+                IShader shader;
 
                 if (!settings.RenderMode.UseFilling)
                 {
-                    shader = new EmptyPixelShader();
+                    shader = new EmptyShader();
                 }
                 else
                 {
-                    IPixelShader innerShader;
+                    IShader innerShader;
                     if (settings.RenderMode.FillMode.UseTexture)
                     {
-                        innerShader = new TexturePixelShader(_model, (byte*) textureData.Scan0, _texture.Width, _texture.Height);
+                        innerShader = new TextureShader(_model, (byte*) textureData.Scan0, _texture.Width, _texture.Height);
                     }
                     else
                     {
-                        innerShader = new SolidColorPixelShader(settings.RenderMode.FillMode.Color);
+                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color);
                     }
 
                     switch (settings.RenderMode.LightMode)
@@ -76,13 +75,13 @@ namespace Render
                             shader = innerShader;
                             break;
                         case LightMode.Simple:
-                            shader = new SimplePixelShader(_model, light, innerShader);
+                            shader = new SimpleShader(_model, light, innerShader);
                             break;
                         case LightMode.Gouraud:
-                            shader = new GouraudPixelShader(_model, light, innerShader);
+                            shader = new GouraudShader(_model, light, innerShader);
                             break;
                         case LightMode.Phong:
-                            shader = new PhongPixelShader(_model, light, innerShader);
+                            shader = new PhongShader(_model, light, innerShader);
                             break;
                         default:
                             throw new ArgumentException();
@@ -125,7 +124,7 @@ namespace Render
             _texture.UnlockBits(textureData);
         }
 
-        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IPixelShader shader, int startY, int endY)
+        private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IShader shader, int startY, int endY)
         {
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(0, 0, 10);

@@ -24,7 +24,7 @@ namespace Render
             }
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IPixelShader shader, int startY, int endY)
+        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IShader shader, int startY, int endY)
         {
             var screenCoords = new[] { a, b, c };
 
@@ -32,7 +32,7 @@ namespace Render
             Triangle(screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, state, startY, endY);
         }
 
-        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IPixelShader shader, object state, int startY, int endY)
+        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IShader shader, object state, int startY, int endY)
         {
             var x0 = (int)Math.Round(v0.X);
             var y0 = (int)Math.Round(v0.Y);
