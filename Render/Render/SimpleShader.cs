@@ -41,6 +41,33 @@ namespace Render
             };
         }
 
+        public void Vertex(VertexShaderState state, int face, int vert)
+        {
+            var vertex = _model.GetVertex(face, vert);
+
+            state.Uniform.Push(vertex);
+
+            if (vert == 2)
+            {
+                var v2 = state.Uniform.PopVector3();
+                var v1 = state.Uniform.PopVector3();
+                var v0 = state.Uniform.PopVector3();
+
+                var foo1 = Vector3.Subtract(v1, v0);
+                var foo2 = Vector3.Subtract(v2, v1);
+
+                var normal = Vector3.Cross(foo1, foo2);
+                normal = Vector3.Normalize(normal);
+
+                var intensity = Vector3.Dot(normal, _light);
+
+                if (intensity < 0)
+                    intensity = 0;
+
+                state.Uniform.Push(intensity);
+            }
+        }
+
         public Color? OnPixel(object state, float a, float b, float c)
         {
             var s = (SimplePixelShaderState)state;

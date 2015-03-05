@@ -29,6 +29,12 @@ namespace Render
             };
         }
 
+        public void Vertex(VertexShaderState state, int face, int vert)
+        {
+            var textureVertex = _model.GetTextureVertex(face, vert);
+            state.Varying[vert].Push(textureVertex);
+        }
+
         public unsafe Color? OnPixel(object state, float a, float b, float c)
         {
             var s = (TexturePixelShaderState)state;

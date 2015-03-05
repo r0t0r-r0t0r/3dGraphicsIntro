@@ -28,6 +28,12 @@ namespace Render
             };
         }
 
+        public void Vertex(VertexShaderState state, int face, int vert)
+        {
+            var normal = _model.GetVertexNormal(face, vert);
+            state.Varying[vert].Push(normal);
+        }
+
         public Color? OnPixel(object state, float a, float b, float c)
         {
             var s = (PhongPixelShaderState) state;
