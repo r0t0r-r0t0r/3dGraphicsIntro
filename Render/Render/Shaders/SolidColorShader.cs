@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace Render
+namespace Render.Shaders
 {
     public class SolidColorShader : IShader
     {

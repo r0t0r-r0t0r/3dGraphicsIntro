@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
-namespace Render
+namespace Render.Shaders
 {
     public class PhongShader : IShader
     {

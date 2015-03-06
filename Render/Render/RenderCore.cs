@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Render.Shaders;
 
 namespace Render
 {

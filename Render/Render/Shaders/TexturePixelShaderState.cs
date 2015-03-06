@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Render
+namespace Render.Shaders
 {
     public class TexturePixelShaderState
     {

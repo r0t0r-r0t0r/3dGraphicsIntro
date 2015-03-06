@@ -50,21 +50,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmptyShader.cs" />
+    <Compile Include="Shaders\EmptyShader.cs" />
     <Compile Include="Experiments\FilledTriangle.cs" />
     <Compile Include="Experiments\Line.cs" />
     <Compile Include="Experiments\YBuffer.cs" />
     <Compile Include="Face.cs" />
-    <Compile Include="GouraudShader.cs" />
-    <Compile Include="GouraudPixelShaderState.cs" />
-    <Compile Include="IShader.cs" />
+    <Compile Include="Shaders\GouraudShader.cs" />
+    <Compile Include="Shaders\GouraudPixelShaderState.cs" />
+    <Compile Include="Shaders\IShader.cs" />
     <Compile Include="IRender.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelLoader.cs" />
+    <Compile Include="ModelUtils.cs" />
     <Compile Include="MyFastLine.cs" />
-    <Compile Include="TextureShader.cs" />
-    <Compile Include="PhongShader.cs" />
-    <Compile Include="PhongPixelShaderState.cs" />
+    <Compile Include="Shaders\ShaderStateUtils.cs" />
+    <Compile Include="Shaders\TextureShader.cs" />
+    <Compile Include="Shaders\PhongShader.cs" />
+    <Compile Include="Shaders\PhongPixelShaderState.cs" />
     <Compile Include="RenderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,11 +78,12 @@
     <Compile Include="RenderCore.cs" />
     <Compile Include="RenderSettings.cs" />
     <Compile Include="RenderSettingsBuilder.cs" />
-    <Compile Include="SimpleShader.cs" />
-    <Compile Include="SimplePixelShaderState.cs" />
-    <Compile Include="SolidColorShader.cs" />
+    <Compile Include="Shaders\SimpleShader.cs" />
+    <Compile Include="Shaders\SimplePixelShaderState.cs" />
+    <Compile Include="Shaders\SolidColorShader.cs" />
     <Compile Include="SolidRender.cs" />
-    <Compile Include="TexturePixelShaderState.cs" />
+    <Compile Include="Shaders\TexturePixelShaderState.cs" />
+    <Compile Include="Shaders\VertexShaderState.cs" />
     <Compile Include="WireRender.cs" />
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>
