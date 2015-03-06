@@ -16,7 +16,7 @@ namespace Render
             _height = height;
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IShader shader, int startY, int endY)
+        unsafe public void Draw(int faceIndex, Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IShader shader, int startY, int endY, ShaderState shaderState)
         {
             var screenCoords = new[] {a, b, c};
 

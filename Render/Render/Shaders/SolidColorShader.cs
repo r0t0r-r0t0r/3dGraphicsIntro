@@ -1,14 +1,17 @@
 using System.Drawing;
+using System.Numerics;
 
 namespace Render.Shaders
 {
     public class SolidColorShader : IShader
     {
         private readonly Color _color;
+        private readonly Model _model;
 
-        public SolidColorShader(Color color)
+        public SolidColorShader(Color color, Model model)
         {
             _color = color;
+            _model = model;
         }
 
         public object OnFace(Face face)
@@ -20,8 +23,9 @@ namespace Render.Shaders
         {
         }
 
-        public void Vertex(VertexShaderState state, int face, int vert)
+        public Vector3 Vertex(VertexShaderState state, int face, int vert)
         {
+            return _model.GetVertex(face, vert);
         }
 
         public Color? Fragment(FragmentShaderState state)

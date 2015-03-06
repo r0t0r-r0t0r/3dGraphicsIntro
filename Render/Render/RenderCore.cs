@@ -67,7 +67,7 @@ namespace Render
                     }
                     else
                     {
-                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color);
+                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _model);
                     }
 
                     switch (settings.RenderMode.LightMode)
@@ -127,6 +127,8 @@ namespace Render
 
         private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IShader shader, int startY, int endY)
         {
+            var shaderState = new ShaderState(30);
+            
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(0, 0, 10);
             var up = new Vector3(0, 1, 0);
@@ -144,8 +146,10 @@ namespace Render
             var modelTransform = Model();
             var transform = Mul(viewport, Mul(projection, Mul(view, modelTransform)));
 
-            foreach (var face in model.Faces)
+            for (var i = 0; i < model.Faces.Count; i++)
             {
+                var face = model.Faces[i];
+
                 var screenCoords = new Vector3[3];
 
                 for (var j = 0; j < 3; j++)
@@ -153,7 +157,7 @@ namespace Render
                     var modelCoord = model.Vertices[face[j]];
 
                     var r = Mul(transform, new Vector4(modelCoord, 1));
-                    screenCoords[j] = new Vector3(r.X/r.W, r.Y/r.W, r.Z/r.W);
+                    screenCoords[j] = new Vector3(r.X / r.W, r.Y / r.W, r.Z / r.W);
                 }
 
                 var v0 = screenCoords[0];
@@ -173,7 +177,7 @@ namespace Render
 
                 foreach (var render in renders)
                 {
-                    render.Draw(face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader, startY, endY);
+                    render.Draw(i, face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader, startY, endY, shaderState);
                 }
             }
         }

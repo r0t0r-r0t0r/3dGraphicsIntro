@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 namespace Render.Shaders
 {
@@ -13,8 +14,9 @@ namespace Render.Shaders
         {
         }
 
-        public void Vertex(VertexShaderState state, int face, int vert)
+        public Vector3 Vertex(VertexShaderState state, int face, int vert)
         {
+            return new Vector3();
         }
 
         public Color? Fragment(FragmentShaderState state)

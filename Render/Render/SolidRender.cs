@@ -25,16 +25,27 @@ namespace Render
             }
         }
 
-        unsafe public void Draw(Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IShader shader, int startY, int endY)
+        unsafe public void Draw(int faceIndex, Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IShader shader, int startY, int endY, ShaderState shaderState)
         {
             var screenCoords = new[] { a, b, c };
 
-            var state = shader.OnFace(face);
-            Triangle(screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, state, startY, endY);
+            Triangle(faceIndex, face, screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, startY, endY, shaderState);
         }
 
-        unsafe private void Triangle(Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IShader shader, object state, int startY, int endY)
+        unsafe private void Triangle(int faceIndex, Face face, Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IShader shader, int startY, int endY, ShaderState shaderState)
         {
+            var _faceState = shaderState.Face;
+            var _vertexState = shaderState.Vertex;
+            var _fragmentState = shaderState.Fragment;
+
+            _faceState.Clear();
+            _vertexState.Clear();
+
+            shader.Face(_faceState, faceIndex);
+            shader.Vertex(_vertexState, faceIndex, 0);
+            shader.Vertex(_vertexState, faceIndex, 1);
+            shader.Vertex(_vertexState, faceIndex, 2);
+
             var x0 = (int)Math.Round(v0.X);
             var y0 = (int)Math.Round(v0.Y);
             var x1 = (int)Math.Round(v1.X);
@@ -90,7 +101,16 @@ namespace Render
                         if (z < zBuffer[x, y])
                             continue;
 
-                        var resColor = shader.OnPixel(state, p.A, p.B, p.C);
+                        _fragmentState.Clear();
+                        _fragmentState.Intensity = _faceState.Intensity;
+                        for (var i = 0; i < _vertexState.Varying[0].Count; i++)
+                        {
+                            var fragmentValue = _vertexState.Varying[0][i] * p.A + _vertexState.Varying[1][i] * p.B + _vertexState.Varying[2][i] * p.C;
+                            _fragmentState.Varying.Add(fragmentValue);
+                        }
+
+                        var resColor = shader.Fragment(_fragmentState);
+                        //var resColor = shader.OnPixel(state, p.A, p.B, p.C);
 
                         if (resColor != null)
                         {

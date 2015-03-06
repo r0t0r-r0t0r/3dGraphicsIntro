@@ -10,5 +10,10 @@ namespace Render.Shaders
     public sealed class FaceShaderState
     {
         public float Intensity { get; set; }
+
+        public void Clear()
+        {
+            Intensity = 0;
+        }
     }
 }

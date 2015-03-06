@@ -17,25 +17,18 @@ namespace Render.Shaders
             _innerShader = innerShader;
         }
 
-        public object OnFace(Face face)
-        {
-            var vertexNormals = Enumerable.Range(0, 3).Select(face.GetNormalIndex).Select(x => _model.VertexNormals[x]).ToArray();
-
-            return new PhongPixelShaderState
-            {
-                VertexNormals = vertexNormals,
-                InnerState = _innerShader.OnFace(face)
-            };
-        }
-
         public void Face(FaceShaderState state, int face)
         {
         }
 
-        public void Vertex(VertexShaderState state, int face, int vert)
+        public Vector3 Vertex(VertexShaderState state, int face, int vert)
         {
             var normal = _model.GetVertexNormal(face, vert);
             state.Varying[vert].Push(normal);
+
+            _innerShader.Vertex(state, face, vert);
+
+            return _model.GetVertex(face, vert);
         }
 
         public Color? Fragment(FragmentShaderState state)
@@ -46,36 +39,6 @@ namespace Render.Shaders
                 return null;
 
             var normal = state.Varying.PopVector3();
-            normal = Vector3.Normalize(normal);
-
-            var intensity = Vector3.Dot(normal, _light);
-            if (intensity < 0)
-                return Color.Black;
-
-            if (intensity > 1)
-                intensity = 1;
-
-            var resR = (byte)(color.Value.R * intensity);
-            var resG = (byte)(color.Value.G * intensity);
-            var resB = (byte)(color.Value.B * intensity);
-
-            return Color.FromArgb(resR, resG, resB);
-        }
-
-        public Color? OnPixel(object state, float a, float b, float c)
-        {
-            var s = (PhongPixelShaderState) state;
-            var color = _innerShader.OnPixel(s.InnerState, a, b, c);
-
-            if (color == null)
-                return null;
-
-            var vns = s.VertexNormals;
-
-            var nx = vns[0].X * a + vns[1].X * b + vns[2].X * c;
-            var ny = vns[0].Y * a + vns[1].Y * b + vns[2].Y * c;
-            var nz = vns[0].Z * a + vns[1].Z * b + vns[2].Z * c;
-            var normal = new Vector3(nx, ny, nz);
             normal = Vector3.Normalize(normal);
 
             var intensity = Vector3.Dot(normal, _light);
