@@ -16,8 +16,17 @@ namespace Render.Shaders
             return null;
         }
 
+        public void Face(FaceShaderState state, int face)
+        {
+        }
+
         public void Vertex(VertexShaderState state, int face, int vert)
         {
+        }
+
+        public Color? Fragment(FragmentShaderState state)
+        {
+            return _color;
         }
 
         public Color? OnPixel(object state, float a, float b, float c)

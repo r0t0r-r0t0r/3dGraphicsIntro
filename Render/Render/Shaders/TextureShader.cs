@@ -28,10 +28,28 @@ namespace Render.Shaders
             };
         }
 
+        public void Face(FaceShaderState state, int face)
+        {
+        }
+
         public void Vertex(VertexShaderState state, int face, int vert)
         {
             var textureVertex = _model.GetTextureVertex(face, vert);
-            state.Varying[vert].Push(textureVertex);
+
+            state.Varying.Push(vert, textureVertex.Y);
+            state.Varying.Push(vert, textureVertex.X);
+        }
+
+        public unsafe Color? Fragment(FragmentShaderState state)
+        {
+            var tx = (int)state.Varying.PopFloat();
+            var ty = (int)state.Varying.PopFloat();
+
+            var pos = ((_textureHeight - ty - 1) * _textureWidth + tx);
+            var tcolor = _texture[pos];
+            var color = Color.FromArgb(tcolor);
+
+            return Color.FromArgb(color.R, color.G, color.B);
         }
 
         public unsafe Color? OnPixel(object state, float a, float b, float c)

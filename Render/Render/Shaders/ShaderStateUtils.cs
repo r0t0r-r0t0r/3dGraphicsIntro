@@ -33,5 +33,15 @@ namespace Render.Shaders
 
             return new Vector3(x, y, z);
         }
+
+        public static float PopFloat(this List<float> list)
+        {
+            var valueIndex = list.Count - 1;
+            var value = list[valueIndex];
+
+            list.RemoveAt(valueIndex);
+
+            return value;
+        }
     }
 }

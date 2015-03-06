@@ -55,6 +55,7 @@
     <Compile Include="Experiments\Line.cs" />
     <Compile Include="Experiments\YBuffer.cs" />
     <Compile Include="Face.cs" />
+    <Compile Include="Shaders\FragmentShaderState.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
     <Compile Include="Shaders\GouraudPixelShaderState.cs" />
     <Compile Include="Shaders\IShader.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Shaders\SimpleShader.cs" />
     <Compile Include="Shaders\SimplePixelShaderState.cs" />
     <Compile Include="Shaders\SolidColorShader.cs" />
+    <Compile Include="Shaders\FaceShaderState.cs" />
     <Compile Include="SolidRender.cs" />
     <Compile Include="Shaders\TexturePixelShaderState.cs" />
     <Compile Include="Shaders\VertexShaderState.cs" />

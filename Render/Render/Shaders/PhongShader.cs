@@ -28,10 +28,38 @@ namespace Render.Shaders
             };
         }
 
+        public void Face(FaceShaderState state, int face)
+        {
+        }
+
         public void Vertex(VertexShaderState state, int face, int vert)
         {
             var normal = _model.GetVertexNormal(face, vert);
             state.Varying[vert].Push(normal);
+        }
+
+        public Color? Fragment(FragmentShaderState state)
+        {
+            var color = _innerShader.Fragment(state);
+
+            if (color == null)
+                return null;
+
+            var normal = state.Varying.PopVector3();
+            normal = Vector3.Normalize(normal);
+
+            var intensity = Vector3.Dot(normal, _light);
+            if (intensity < 0)
+                return Color.Black;
+
+            if (intensity > 1)
+                intensity = 1;
+
+            var resR = (byte)(color.Value.R * intensity);
+            var resG = (byte)(color.Value.G * intensity);
+            var resB = (byte)(color.Value.B * intensity);
+
+            return Color.FromArgb(resR, resG, resB);
         }
 
         public Color? OnPixel(object state, float a, float b, float c)
