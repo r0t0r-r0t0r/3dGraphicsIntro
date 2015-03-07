@@ -7,11 +7,13 @@ namespace Render.Shaders
     {
         private readonly Color _color;
         private readonly Model _model;
+        private readonly Matrix4x4 _transformation;
 
-        public SolidColorShader(Color color, Model model)
+        public SolidColorShader(Color color, Model model, Matrix4x4 transformation)
         {
             _color = color;
             _model = model;
+            _transformation = transformation;
         }
 
         public object OnFace(Face face)
@@ -23,9 +25,9 @@ namespace Render.Shaders
         {
         }
 
-        public Vector3 Vertex(VertexShaderState state, int face, int vert)
+        public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            return _model.GetVertex(face, vert);
+            return Matrix4x4Utils.Mul(_transformation, new Vector4(_model.GetVertex(face, vert), 1));
         }
 
         public Color? Fragment(FragmentShaderState state)

@@ -53,21 +53,22 @@ namespace Render
             unsafe
             {
                 IShader shader;
+                var transformation = GetTransformation(width, height, settings.ViewportScale, settings.PerspectiveProjection);
 
                 if (!settings.RenderMode.UseFilling)
                 {
-                    shader = new EmptyShader();
+                    shader = new EmptyShader(_model, transformation);
                 }
                 else
                 {
                     IShader innerShader;
                     if (settings.RenderMode.FillMode.UseTexture)
                     {
-                        innerShader = new TextureShader(_model, (byte*) textureData.Scan0, _texture.Width, _texture.Height);
+                        innerShader = new TextureShader(_model, (byte*) textureData.Scan0, _texture.Width, _texture.Height, transformation);
                     }
                     else
                     {
-                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _model);
+                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _model, transformation);
                     }
 
                     switch (settings.RenderMode.LightMode)
@@ -130,7 +131,7 @@ namespace Render
             var shaderState = new ShaderState(30);
             
             var center = new Vector3(0, 0, 0);
-            var eye = new Vector3(0, 0, 10);
+            var eye = new Vector3(3, 3, 10);
             var up = new Vector3(0, 1, 0);
 
             var actualWidth = (int) (width*viewportScale);
@@ -177,9 +178,31 @@ namespace Render
 
                 foreach (var render in renders)
                 {
-                    render.Draw(i, face, screenCoords[0], screenCoords[1], screenCoords[2], data, shader, startY, endY, shaderState);
+                    render.Draw(i, data, shader, shaderState, startY, endY);
                 }
             }
+        }
+
+        private static Matrix4x4 GetTransformation(int width, int height, float viewportScale, bool usePerspectiveProjection)
+        {
+            var center = new Vector3(0, 0, 0);
+            var eye = new Vector3(3, 3, 10);
+            var up = new Vector3(0, 1, 0);
+
+            var actualWidth = (int)(width * viewportScale);
+            var actualHeight = (int)(height * viewportScale);
+            var actualXmin = (width - actualWidth) / 2;
+            var actualYmin = (height - actualHeight) / 2;
+
+            var distance = new Vector3(center.X - eye.X, center.Y - eye.Y, center.Z - eye.Z).Length();
+
+            var viewport = Viewport(actualXmin, actualYmin, actualWidth, actualHeight);
+            var projection = usePerspectiveProjection ? Projection(distance) : Matrix4x4.Identity;
+            var view = LookAt(center, eye, up);
+            var modelTransform = Model();
+            var transform = Mul(viewport, Mul(projection, Mul(view, modelTransform)));
+
+            return transform;
         }
 
         private static Matrix4x4 LookAt(Vector3 center, Vector3 eye, Vector3 up)

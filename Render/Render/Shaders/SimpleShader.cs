@@ -36,10 +36,9 @@ namespace Render.Shaders
             state.Intensity = intensity;
         }
 
-        public Vector3 Vertex(VertexShaderState state, int face, int vert)
+        public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            _innerShader.Vertex(state, face, vert);
-            return _model.GetVertex(face, vert);
+            return _innerShader.Vertex(state, face, vert);
         }
 
         public Color? Fragment(FragmentShaderState state)

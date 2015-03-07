@@ -10,15 +10,25 @@ namespace Render
         private int _width;
         private int _height;
 
-        public unsafe void Init(int width, int height)
+        public void Init(int width, int height)
         {
             _width = width;
             _height = height;
         }
 
-        unsafe public void Draw(int faceIndex, Face face, Vector3 a, Vector3 b, Vector3 c, byte* bitmap, IShader shader, int startY, int endY, ShaderState shaderState)
+        unsafe public void Draw(int faceIndex, byte* bitmap, IShader shader, ShaderState shaderState, int startY, int endY)
         {
-            var screenCoords = new[] {a, b, c};
+            shaderState.Vertex.Clear();
+            var v0 = shader.Vertex(shaderState.Vertex, faceIndex, 0);
+            var v1 = shader.Vertex(shaderState.Vertex, faceIndex, 1);
+            var v2 = shader.Vertex(shaderState.Vertex, faceIndex, 2);
+
+            var screenCoords = new[]
+            {
+                new Vector3(v0.X/v0.W, v0.Y/v0.W, v0.Z/v0.W),
+                new Vector3(v1.X/v1.W, v1.Y/v1.W, v1.Z/v1.W),
+                new Vector3(v2.X/v2.W, v2.Y/v2.W, v2.Z/v2.W)
+            };
 
             Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, Color.White, startY, endY);
             Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, Color.White, startY, endY);

@@ -25,26 +25,23 @@ namespace Render
             }
         }
 
-        unsafe public void Draw(int faceIndex, Face face, Vector3 a, Vector3 b, Vector3 c, byte* data, IShader shader, int startY, int endY, ShaderState shaderState)
+        unsafe public void Draw(int faceIndex, byte* data, IShader shader, ShaderState shaderState, int startY, int endY)
         {
-            var screenCoords = new[] { a, b, c };
+            var faceState = shaderState.Face;
+            var vertexState = shaderState.Vertex;
+            var fragmentState = shaderState.Fragment;
 
-            Triangle(faceIndex, face, screenCoords[0], screenCoords[1], screenCoords[2], data, _zBuffer, shader, startY, endY, shaderState);
-        }
+            faceState.Clear();
+            vertexState.Clear();
 
-        unsafe private void Triangle(int faceIndex, Face face, Vector3 v0, Vector3 v1, Vector3 v2, byte* data, float[,] zBuffer, IShader shader, int startY, int endY, ShaderState shaderState)
-        {
-            var _faceState = shaderState.Face;
-            var _vertexState = shaderState.Vertex;
-            var _fragmentState = shaderState.Fragment;
+            shader.Face(faceState, faceIndex);
+            var v04 = shader.Vertex(vertexState, faceIndex, 0);
+            var v14 = shader.Vertex(vertexState, faceIndex, 1);
+            var v24 = shader.Vertex(vertexState, faceIndex, 2);
 
-            _faceState.Clear();
-            _vertexState.Clear();
-
-            shader.Face(_faceState, faceIndex);
-            shader.Vertex(_vertexState, faceIndex, 0);
-            shader.Vertex(_vertexState, faceIndex, 1);
-            shader.Vertex(_vertexState, faceIndex, 2);
+            var v0 = new Vector3(v04.X / v04.W, v04.Y / v04.W, v04.Z / v04.W);
+            var v1 = new Vector3(v14.X / v14.W, v14.Y / v14.W, v14.Z / v14.W);
+            var v2 = new Vector3(v24.X / v24.W, v24.Y / v24.W, v24.Z / v24.W);
 
             var x0 = (int)Math.Round(v0.X);
             var y0 = (int)Math.Round(v0.Y);
@@ -98,23 +95,22 @@ namespace Render
 
                         var z = v0.Z*p.A + v1.Z*p.B + v2.Z*p.C;
 
-                        if (z < zBuffer[x, y])
+                        if (z < _zBuffer[x, y])
                             continue;
 
-                        _fragmentState.Clear();
-                        _fragmentState.Intensity = _faceState.Intensity;
-                        for (var i = 0; i < _vertexState.Varying[0].Count; i++)
+                        fragmentState.Clear();
+                        fragmentState.Intensity = faceState.Intensity;
+                        for (var i = 0; i < vertexState.Varying[0].Count; i++)
                         {
-                            var fragmentValue = _vertexState.Varying[0][i] * p.A + _vertexState.Varying[1][i] * p.B + _vertexState.Varying[2][i] * p.C;
-                            _fragmentState.Varying.Add(fragmentValue);
+                            var fragmentValue = vertexState.Varying[0][i] * p.A + vertexState.Varying[1][i] * p.B + vertexState.Varying[2][i] * p.C;
+                            fragmentState.Varying.Add(fragmentValue);
                         }
 
-                        var resColor = shader.Fragment(_fragmentState);
-                        //var resColor = shader.OnPixel(state, p.A, p.B, p.C);
+                        var resColor = shader.Fragment(fragmentState);
 
                         if (resColor != null)
                         {
-                            zBuffer[x, y] = z;
+                            _zBuffer[x, y] = z;
                             line[x] = resColor.Value.ToArgb();
                         }
                     }

@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Shaders\EmptyShader.cs" />
     <Compile Include="Experiments\FilledTriangle.cs" />
     <Compile Include="Experiments\Line.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Shaders\SimpleShader.cs" />
     <Compile Include="Shaders\SolidColorShader.cs" />
     <Compile Include="Shaders\FaceShaderState.cs" />
+    <Compile Include="Shaders\Verctor4.cs" />
     <Compile Include="SolidRender.cs" />
     <Compile Include="Shaders\VertexShaderState.cs" />
     <Compile Include="WireRender.cs" />

@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -21,14 +22,12 @@ namespace Render.Shaders
         {
         }
 
-        public Vector3 Vertex(VertexShaderState state, int face, int vert)
+        public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
             var normal = _model.GetVertexNormal(face, vert);
             state.Varying[vert].Push(normal);
 
-            _innerShader.Vertex(state, face, vert);
-
-            return _model.GetVertex(face, vert);
+            return _innerShader.Vertex(state, face, vert);
         }
 
         public Color? Fragment(FragmentShaderState state)
@@ -45,8 +44,11 @@ namespace Render.Shaders
             if (intensity < 0)
                 return Color.Black;
 
-            if (intensity > 1)
+            if (intensity >= 1)
                 intensity = 1;
+
+            //const float intensityStepsCount = 5;
+            //intensity = (float)Math.Floor(intensity * intensityStepsCount) / intensityStepsCount;
 
             var resR = (byte)(color.Value.R * intensity);
             var resG = (byte)(color.Value.G * intensity);
