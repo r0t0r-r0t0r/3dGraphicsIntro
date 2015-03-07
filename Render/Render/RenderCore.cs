@@ -15,6 +15,7 @@ namespace Render
 
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
+        private readonly Bitmap _normalMap = new Bitmap(Image.FromFile(RootDir + "african_head_nm.png"));
 
         private readonly List<IRender> _renders = new List<IRender>
         {
@@ -42,8 +43,11 @@ namespace Render
 
             var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
+            var normalMapData = _normalMap.LockBits(new Rectangle(0, 0, _normalMap.Width, _normalMap.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var cameraDirection = new Vector3(0, 0, 1);
-            var light = new Vector3(0.6f, 0.6f, 0.75f);
+//            var light = new Vector3(0.6f, 0.6f, 0.75f);
+            var light = new Vector3(1, 0, 0.2f);
             light = Vector3.Normalize(light);
             foreach (var render in renders)
             {
@@ -54,6 +58,8 @@ namespace Render
             {
                 IShader shader;
                 var transformation = GetTransformation(width, height, settings.ViewportScale, settings.PerspectiveProjection);
+                var transformationWoViewport = GetTransformation(width, height, settings.ViewportScale,
+                    settings.PerspectiveProjection, false);
 
                 if (!settings.RenderMode.UseFilling)
                 {
@@ -84,6 +90,9 @@ namespace Render
                             break;
                         case LightMode.Phong:
                             shader = new PhongShader(_model, light, innerShader);
+                            break;
+                        case LightMode.NormalMapping:
+                            shader = new NormalMappingShader(_model, light, innerShader, (byte*) normalMapData.Scan0, _normalMap.Width, _normalMap.Height, transformationWoViewport);
                             break;
                         default:
                             throw new ArgumentException();
@@ -124,6 +133,7 @@ namespace Render
             }
             bitmap.UnlockBits(data);
             _texture.UnlockBits(textureData);
+            _normalMap.UnlockBits(normalMapData);
         }
 
         private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IShader shader, int startY, int endY)
@@ -183,7 +193,7 @@ namespace Render
             }
         }
 
-        private static Matrix4x4 GetTransformation(int width, int height, float viewportScale, bool usePerspectiveProjection)
+        private static Matrix4x4 GetTransformation(int width, int height, float viewportScale, bool usePerspectiveProjection, bool considerViewport = true)
         {
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(3, 3, 10);
@@ -200,7 +210,8 @@ namespace Render
             var projection = usePerspectiveProjection ? Projection(distance) : Matrix4x4.Identity;
             var view = LookAt(center, eye, up);
             var modelTransform = Model();
-            var transform = Mul(viewport, Mul(projection, Mul(view, modelTransform)));
+            var foo = Mul(projection, Mul(view, modelTransform));
+            var transform = considerViewport ? Mul(viewport, foo) : foo;
 
             return transform;
         }

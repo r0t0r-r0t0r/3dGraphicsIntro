@@ -64,6 +64,7 @@
     <Compile Include="ModelLoader.cs" />
     <Compile Include="ModelUtils.cs" />
     <Compile Include="MyFastLine.cs" />
+    <Compile Include="Shaders\NormalMappingShader.cs" />
     <Compile Include="Shaders\ShaderState.cs" />
     <Compile Include="Shaders\ShaderStateUtils.cs" />
     <Compile Include="Shaders\TextureShader.cs" />

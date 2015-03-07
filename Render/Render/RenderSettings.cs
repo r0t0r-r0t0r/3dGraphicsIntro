@@ -100,7 +100,8 @@ namespace Render
         None,
         Simple,
         Gouraud,
-        Phong
+        Phong,
+        NormalMapping
     }
 
     public class FillMode

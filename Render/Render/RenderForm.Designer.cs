@@ -54,6 +54,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.normalMappingRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -113,7 +114,7 @@
             this.groupBox4.Controls.Add(this.lastBenchmarkTimeLabel);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.startBenchmarkButton);
-            this.groupBox4.Location = new System.Drawing.Point(6, 357);
+            this.groupBox4.Location = new System.Drawing.Point(6, 376);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(216, 58);
             this.groupBox4.TabIndex = 8;
@@ -152,7 +153,7 @@
             // 
             this.groupBox3.Controls.Add(this.textureRadioButton);
             this.groupBox3.Controls.Add(this.solidColorRadioButton);
-            this.groupBox3.Location = new System.Drawing.Point(3, 279);
+            this.groupBox3.Location = new System.Drawing.Point(3, 298);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(219, 71);
             this.groupBox3.TabIndex = 7;
@@ -185,13 +186,14 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.normalMappingRadioButton);
             this.groupBox2.Controls.Add(this.phongRadioButton);
             this.groupBox2.Controls.Add(this.gouraudRadioButton);
             this.groupBox2.Controls.Add(this.simpleRadioButton);
             this.groupBox2.Controls.Add(this.flatRadioButton);
             this.groupBox2.Location = new System.Drawing.Point(6, 155);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(216, 117);
+            this.groupBox2.Size = new System.Drawing.Size(216, 137);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Light Mode";
@@ -378,6 +380,17 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
+            // normalMappingRadioButton
+            // 
+            this.normalMappingRadioButton.AutoSize = true;
+            this.normalMappingRadioButton.Location = new System.Drawing.Point(6, 112);
+            this.normalMappingRadioButton.Name = "normalMappingRadioButton";
+            this.normalMappingRadioButton.Size = new System.Drawing.Size(102, 17);
+            this.normalMappingRadioButton.TabIndex = 4;
+            this.normalMappingRadioButton.Text = "Normal Mapping";
+            this.normalMappingRadioButton.UseVisualStyleBackColor = true;
+            this.normalMappingRadioButton.CheckedChanged += new System.EventHandler(this.normalMappingRadioButton_CheckedChanged);
+            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -437,6 +450,7 @@
         private System.Windows.Forms.Label lastBenchmarkTimeLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button startBenchmarkButton;
+        private System.Windows.Forms.RadioButton normalMappingRadioButton;
     }
 }
 

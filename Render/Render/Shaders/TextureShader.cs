@@ -42,9 +42,8 @@ namespace Render.Shaders
 
             var pos = ((_textureHeight - ty - 1) * _textureWidth + tx);
             var tcolor = _texture[pos];
-            var color = Color.FromArgb(tcolor);
 
-            return Color.FromArgb(color.R, color.G, color.B);
+            return Color.FromArgb(tcolor);
         }
     }
 }

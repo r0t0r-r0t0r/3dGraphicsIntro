@@ -69,6 +69,9 @@ namespace Render
                 case FlatLightMode.Phong:
                     phongRadioButton.Checked = true;
                     break;
+                case FlatLightMode.NormalMapping:
+                    normalMappingRadioButton.Checked = true;
+                    break;
             }
 
             viewportScaleNumericUpDown.Value = (decimal) _builder.ViewportScale;
@@ -148,6 +151,12 @@ namespace Render
             Draw();
         }
 
+        private void normalMappingRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _builder.LightMode = FlatLightMode.NormalMapping;
+            Draw();
+        }
+
         private void solidColorRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             _builder.FillMode = FlatFillMode.SolidColor;
@@ -175,7 +184,7 @@ namespace Render
 
             var settings = _builder.Build();
 
-            const int count = 100;
+            const int count = 200;
             var start = Stopwatch.GetTimestamp();
             for (var i = 0; i < count; i++)
             {

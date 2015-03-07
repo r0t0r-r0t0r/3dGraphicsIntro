@@ -12,7 +12,7 @@ namespace Render
         public RenderSettingsBuilder()
         {
             RenderMode = FlatRenderMode.Fill;
-            LightMode = FlatLightMode.Gouraud;
+            LightMode = FlatLightMode.NormalMapping;
             FillMode = FlatFillMode.Texture;
             PerspectiveProjection = true;
             ViewportScale = 0.9f;
@@ -47,6 +47,9 @@ namespace Render
                     break;
                 case FlatLightMode.Phong:
                     lightMode = Render.LightMode.Phong;
+                    break;
+                case FlatLightMode.NormalMapping:
+                    lightMode = Render.LightMode.NormalMapping;
                     break;
                 default:
                     throw new ArgumentException();
@@ -91,7 +94,8 @@ namespace Render
         None,
         Simple,
         Gouraud,
-        Phong
+        Phong,
+        NormalMapping
     }
 
     public enum FlatFillMode
