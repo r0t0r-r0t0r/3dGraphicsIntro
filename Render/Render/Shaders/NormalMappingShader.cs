@@ -13,9 +13,10 @@ namespace Render.Shaders
         private readonly unsafe int* _normalMap;
         private readonly int _width;
         private readonly int _height;
+        private readonly Texture _specularMap;
         private readonly Matrix4x4 _transformation;
 
-        public unsafe NormalMappingShader(Model model, Vector3 light, IShader innerShader, byte* normalMap, int width, int height, Matrix4x4 transformation)
+        public unsafe NormalMappingShader(Model model, Vector3 light, IShader innerShader, byte* normalMap, int width, int height, Matrix4x4 transformation, Texture specularMap)
         {
             _model = model;
             _light = light;
@@ -23,6 +24,7 @@ namespace Render.Shaders
             _normalMap = (int*)normalMap;
             _width = width;
             _height = height;
+            _specularMap = specularMap;
 
             transformation = Matrix4x4.Transpose(transformation);
             if (!Matrix4x4.Invert(transformation, out _transformation))
@@ -63,15 +65,26 @@ namespace Render.Shaders
             var normal = Vector3.Normalize(new Vector3(normal4.X, normal4.Y, normal4.Z));
 
             var intensity = Vector3.Dot(normal, _light);
-            if (intensity < 0)
-                return Color.Black;
 
-            if (intensity >= 1)
-                intensity = 1;
+            var power = _specularMap[tx, ty].GetRed();
+            var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, _light), normal), _light);
 
-            var resR = (byte)(color.Value.R * intensity);
-            var resG = (byte)(color.Value.G * intensity);
-            var resB = (byte)(color.Value.B * intensity);
+            var center = new Vector3(0, 0, 0);
+            var eye = new Vector3(3, 3, 10);
+            var v = Vector3.Normalize(Vector3.Subtract(eye, center));
+
+            var specular = Vector3.Dot(v, r);
+            specular = (float) Math.Pow(specular, power);
+
+            intensity += 0.6f*specular;
+
+            var resR = (int)(color.Value.R * intensity);
+            var resG = (int)(color.Value.G * intensity);
+            var resB = (int)(color.Value.B * intensity);
+
+            resR = Math.Max(Math.Min(5+resR, 255), 0);
+            resG = Math.Max(Math.Min(5+resG, 255), 0);
+            resB = Math.Max(Math.Min(5+resB, 255), 0);
 
             return Color.FromArgb(resR, resG, resB);
         }

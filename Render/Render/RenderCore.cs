@@ -16,6 +16,7 @@ namespace Render
         private readonly Model _model = ModelLoader.LoadModel(RootDir + "african_head.obj");
         private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
         private readonly Bitmap _normalMap = new Bitmap(Image.FromFile(RootDir + "african_head_nm.png"));
+        private readonly Bitmap _specularMap = new Bitmap(Image.FromFile(RootDir + "african_head_spec.bmp"));
 
         private readonly List<IRender> _renders = new List<IRender>
         {
@@ -45,9 +46,11 @@ namespace Render
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var normalMapData = _normalMap.LockBits(new Rectangle(0, 0, _normalMap.Width, _normalMap.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
+            var specularMapData = _specularMap.LockBits(new Rectangle(0, 0, _specularMap.Width, _specularMap.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var cameraDirection = new Vector3(0, 0, 1);
 //            var light = new Vector3(0.6f, 0.6f, 0.75f);
-            var light = new Vector3(1, 0, 0.2f);
+            var light = new Vector3(8f, 6f, 10f);
             light = Vector3.Normalize(light);
             foreach (var render in renders)
             {
@@ -77,6 +80,9 @@ namespace Render
                         innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _model, transformation);
                     }
 
+                    var specularMapTexture = new Texture((int*) specularMapData.Scan0, _specularMap.Width,
+                        _specularMap.Height);
+
                     switch (settings.RenderMode.LightMode)
                     {
                         case LightMode.None:
@@ -92,7 +98,7 @@ namespace Render
                             shader = new PhongShader(_model, light, innerShader);
                             break;
                         case LightMode.NormalMapping:
-                            shader = new NormalMappingShader(_model, light, innerShader, (byte*) normalMapData.Scan0, _normalMap.Width, _normalMap.Height, transformationWoViewport);
+                            shader = new NormalMappingShader(_model, light, innerShader, (byte*) normalMapData.Scan0, _normalMap.Width, _normalMap.Height, transformationWoViewport, specularMapTexture);
                             break;
                         default:
                             throw new ArgumentException();
@@ -134,6 +140,7 @@ namespace Render
             bitmap.UnlockBits(data);
             _texture.UnlockBits(textureData);
             _normalMap.UnlockBits(normalMapData);
+            _specularMap.UnlockBits(specularMapData);
         }
 
         private unsafe static void Draw(Model model, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IShader shader, int startY, int endY)

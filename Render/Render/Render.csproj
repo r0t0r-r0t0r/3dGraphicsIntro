@@ -86,6 +86,7 @@
     <Compile Include="Shaders\Verctor4.cs" />
     <Compile Include="SolidRender.cs" />
     <Compile Include="Shaders\VertexShaderState.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="WireRender.cs" />
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>
