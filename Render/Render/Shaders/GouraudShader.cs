@@ -6,13 +6,13 @@ namespace Render.Shaders
 {
     public class GouraudShader : IShader
     {
-        private readonly Model _model;
+        private readonly Geometry _geometry;
         private readonly Vector3 _light;
         private readonly IShader _innerShader;
 
-        public GouraudShader(Model model, Vector3 light, IShader innerShader)
+        public GouraudShader(Geometry geometry, Vector3 light, IShader innerShader)
         {
-            _model = model;
+            _geometry = geometry;
             _light = light;
             _innerShader = innerShader;
         }
@@ -23,7 +23,7 @@ namespace Render.Shaders
 
         public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var normal = _model.GetVertexNormal(face, vert);
+            var normal = _geometry.GetVertexNormal(face, vert);
             var intensity = Vector3.Dot(normal, _light);
 
             state.Varying.Push(vert, intensity);

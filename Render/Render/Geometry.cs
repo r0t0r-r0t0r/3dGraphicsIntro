@@ -3,19 +3,19 @@ using System.Numerics;
 
 namespace Render
 {
-    public class Model
+    public class Geometry
     {
         private readonly List<Vector3> _vertices;
         private readonly List<Vector3> _textureVertices;
-        private readonly List<Face> _faces;
         private readonly List<Vector3> _vertexNormals;
+        private readonly List<Face> _faces;
 
-        public Model(List<Vector3> vertices, List<Vector3> textureVertices, List<Face> faces, List<Vector3> vertexNormals)
+        public Geometry(List<Vector3> vertices, List<Vector3> textureVertices, List<Vector3> vertexNormals, List<Face> faces)
         {
             _vertices = vertices;
             _textureVertices = textureVertices;
-            _faces = faces;
             _vertexNormals = vertexNormals;
+            _faces = faces;
         }
 
         public List<Vector3> Vertices
@@ -28,14 +28,14 @@ namespace Render
             get { return _textureVertices; }
         }
 
-        public List<Face> Faces
-        {
-            get { return _faces; }
-        }
-
         public List<Vector3> VertexNormals
         {
             get { return _vertexNormals; }
+        }
+
+        public List<Face> Faces
+        {
+            get { return _faces; }
         }
     }
 }

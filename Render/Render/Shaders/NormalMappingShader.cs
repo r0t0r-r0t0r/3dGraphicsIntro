@@ -7,7 +7,7 @@ namespace Render.Shaders
 {
     public class NormalMappingShader : IShader
     {
-        private readonly Model _model;
+        private readonly Geometry _geometry;
         private readonly Vector3 _light;
         private readonly IShader _innerShader;
         private readonly unsafe int* _normalMap;
@@ -16,9 +16,9 @@ namespace Render.Shaders
         private readonly Texture _specularMap;
         private readonly Matrix4x4 _transformation;
 
-        public unsafe NormalMappingShader(Model model, Vector3 light, IShader innerShader, byte* normalMap, int width, int height, Matrix4x4 transformation, Texture specularMap)
+        public unsafe NormalMappingShader(Geometry geometry, Vector3 light, IShader innerShader, byte* normalMap, int width, int height, Matrix4x4 transformation, Texture specularMap)
         {
-            _model = model;
+            _geometry = geometry;
             _light = light;
             _innerShader = innerShader;
             _normalMap = (int*)normalMap;
@@ -39,7 +39,7 @@ namespace Render.Shaders
 
         public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var textureVertex = _model.GetTextureVertex(face, vert);
+            var textureVertex = _geometry.GetTextureVertex(face, vert);
 
             state.Varying.Push(vert, textureVertex.Y);
             state.Varying.Push(vert, textureVertex.X);

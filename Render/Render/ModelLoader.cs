@@ -12,7 +12,7 @@ namespace Render
 {
     public class ModelLoader
     {
-        public static Model LoadModel(string fileName)
+        public static Geometry LoadGeometry(string fileName)
         {
             var lines = File.ReadAllLines(fileName);
 
@@ -28,58 +28,54 @@ namespace Render
             var faces = new List<Face>();
             var faceLine = new Regex("^f ([^/]+)/([^/]+)/([^/]+) ([^/]+)/([^/]+)/([^/]+) ([^/]+)/([^/]+)/([^/]+)$");
 
-            foreach (var line in lines)
-            {
-                var vertMatch = vertexLine.Match(line);
-                var faceMatch = faceLine.Match(line);
-                var textureVertMatch = textureVertexLine.Match(line);
-                var vertexNormalMatch = vertexNormalLine.Match(line);
+            TextParser.Empty
+                .AddLineParser(vertexLine, ParseVector3, x => vertices.Add(x))
+                .AddLineParser(textureVertexLine, ParseVector3, x => textureVertices.Add(x))
+                .AddLineParser(vertexNormalLine, ParseVector3, x => vertexNormals.Add(x))
+                .AddLineParser(faceLine, ParseFace, x => faces.Add(x))
+                .Parse(lines);
 
-                if (vertMatch.Success)
-                {
-                    var x = float.Parse(vertMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var y = float.Parse(vertMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-                    var z = float.Parse(vertMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-                    var vertex = new Vector3(x, y, z);
+            return new Geometry(vertices, textureVertices, vertexNormals, faces);
+        }
 
-                    vertices.Add(vertex);
-                }
-                else if (faceMatch.Success)
-                {
-                    var a = int.Parse(faceMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var ta = int.Parse(faceMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-                    var na = int.Parse(faceMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-                    var b = int.Parse(faceMatch.Groups[4].Value, CultureInfo.InvariantCulture);
-                    var tb = int.Parse(faceMatch.Groups[5].Value, CultureInfo.InvariantCulture);
-                    var nb = int.Parse(faceMatch.Groups[6].Value, CultureInfo.InvariantCulture);
-                    var c = int.Parse(faceMatch.Groups[7].Value, CultureInfo.InvariantCulture);
-                    var tc = int.Parse(faceMatch.Groups[8].Value, CultureInfo.InvariantCulture);
-                    var nc = int.Parse(faceMatch.Groups[9].Value, CultureInfo.InvariantCulture);
-                    var face = new Face(a - 1, b - 1, c - 1, ta - 1, tb - 1, tc - 1, na - 1, nb - 1, nc - 1);
+        private static Face ParseFace(Match faceMatch)
+        {
+            Func<string, int> parseInt = value => int.Parse(value, CultureInfo.InvariantCulture);
 
-                    faces.Add(face);
-                }
-                else if (textureVertMatch.Success)
-                {
-                    var x = float.Parse(textureVertMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var y = float.Parse(textureVertMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-                    var z = float.Parse(textureVertMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-                    var vertex = new Vector3(x, y, z);
+            var indexes = faceMatch.ParseGroups(9, parseInt).Select(x => x - 1).ToArray();
+            var v = indexes.ToTriple(0, 3, 6);
+            var tv = indexes.ToTriple(1, 4, 7);
+            var vn = indexes.ToTriple(2, 5, 8);
+            var face = new Face(v, tv, vn);
+            return face;
+        }
 
-                    textureVertices.Add(vertex);
-                }
-                else if (vertexNormalMatch.Success)
-                {
-                    var x = float.Parse(vertexNormalMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var y = float.Parse(vertexNormalMatch.Groups[2].Value, CultureInfo.InvariantCulture);
-                    var z = float.Parse(vertexNormalMatch.Groups[3].Value, CultureInfo.InvariantCulture);
-                    var vertex = new Vector3(x, y, z);
+        private static Vector3 ParseVector3(Match match)
+        {
+            Func<string, float> parseFloat = value => float.Parse(value, CultureInfo.InvariantCulture);
+            return match.ParseGroups(3, parseFloat).ToVector3();
+        }
+    }
 
-                    vertexNormals.Add(vertex); 
-                }
-            }
+    internal static class TripleUtils
+    {
+        public static Triple<T> ToTriple<T>(this T[] values, int index1, int index2, int index3) where T : struct
+        {
+            return new Triple<T>(values[index1], values[index2], values[index3]);
+        }
 
-            return new Model(vertices, textureVertices, faces, vertexNormals);
+        public static Vector3 ToVector3(this IEnumerable<float> values)
+        {
+            var materialized = values.ToArray();
+            return new Vector3(materialized[0], materialized[1], materialized[2]);
+        }
+    }
+
+    internal static class MatchUtils
+    {
+        public static IEnumerable<T> ParseGroups<T>(this Match match, int count, Func<string, T> parser)
+        {
+            return match.Groups.Cast<Group>().Skip(1).Take(count).Select(g => parser(g.Value));
         }
     }
 }

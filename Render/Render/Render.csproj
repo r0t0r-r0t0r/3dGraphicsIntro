@@ -60,7 +60,7 @@
     <Compile Include="Shaders\GouraudShader.cs" />
     <Compile Include="Shaders\IShader.cs" />
     <Compile Include="IRender.cs" />
-    <Compile Include="Model.cs" />
+    <Compile Include="Geometry.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="ModelUtils.cs" />
     <Compile Include="MyFastLine.cs" />
@@ -86,7 +86,9 @@
     <Compile Include="Shaders\Verctor4.cs" />
     <Compile Include="SolidRender.cs" />
     <Compile Include="Shaders\VertexShaderState.cs" />
+    <Compile Include="TextParser.cs" />
     <Compile Include="Texture.cs" />
+    <Compile Include="Triple.cs" />
     <Compile Include="WireRender.cs" />
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>

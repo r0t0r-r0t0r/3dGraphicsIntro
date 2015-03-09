@@ -5,22 +5,22 @@ namespace Render.Shaders
 {
     public class SimpleShader : IShader
     {
-        private readonly Model _model;
+        private readonly Geometry _geometry;
         private readonly Vector3 _light;
         private readonly IShader _innerShader;
 
-        public SimpleShader(Model model, Vector3 light, IShader innerShader)
+        public SimpleShader(Geometry geometry, Vector3 light, IShader innerShader)
         {
-            _model = model;
+            _geometry = geometry;
             _light = light;
             _innerShader = innerShader;
         }
 
         public void Face(FaceShaderState state, int face)
         {
-            var v0 = _model.GetVertex(face, 0);
-            var v1 = _model.GetVertex(face, 1);
-            var v2 = _model.GetVertex(face, 2);
+            var v0 = _geometry.GetVertex(face, 0);
+            var v1 = _geometry.GetVertex(face, 1);
+            var v2 = _geometry.GetVertex(face, 2);
 
             var foo1 = Vector3.Subtract(v1, v0);
             var foo2 = Vector3.Subtract(v2, v1);

@@ -6,13 +6,13 @@ namespace Render.Shaders
     public class SolidColorShader : IShader
     {
         private readonly Color _color;
-        private readonly Model _model;
+        private readonly Geometry _geometry;
         private readonly Matrix4x4 _transformation;
 
-        public SolidColorShader(Color color, Model model, Matrix4x4 transformation)
+        public SolidColorShader(Color color, Geometry geometry, Matrix4x4 transformation)
         {
             _color = color;
-            _model = model;
+            _geometry = geometry;
             _transformation = transformation;
         }
 
@@ -27,7 +27,7 @@ namespace Render.Shaders
 
         public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            return Matrix4x4Utils.Mul(_transformation, new Vector4(_model.GetVertex(face, vert), 1));
+            return Matrix4x4Utils.Mul(_transformation, new Vector4(_geometry.GetVertex(face, vert), 1));
         }
 
         public Color? Fragment(FragmentShaderState state)
