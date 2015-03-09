@@ -60,7 +60,6 @@
     <Compile Include="Shaders\FragmentShaderState.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
     <Compile Include="Shaders\IShader.cs" />
-    <Compile Include="IRender.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="ModelUtils.cs" />
@@ -85,12 +84,12 @@
     <Compile Include="Shaders\SolidColorShader.cs" />
     <Compile Include="Shaders\FaceShaderState.cs" />
     <Compile Include="Shaders\Verctor4.cs" />
-    <Compile Include="SolidRender.cs" />
+    <Compile Include="Render.cs" />
     <Compile Include="Shaders\VertexShaderState.cs" />
     <Compile Include="TextParser.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Triple.cs" />
-    <Compile Include="WireRender.cs" />
+    <Compile Include="World.cs" />
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -30,26 +30,26 @@ namespace Render
 
             if (RenderMode == FlatRenderMode.Borders)
             {
-                return settings(Render.RenderMode.Borders());
+                return settings(global::Render.RenderMode.Borders());
             }
 
             LightMode lightMode;
             switch (LightMode)
             {
                 case FlatLightMode.None:
-                    lightMode = Render.LightMode.None;
+                    lightMode = global::Render.LightMode.None;
                     break;
                 case FlatLightMode.Simple:
-                    lightMode = Render.LightMode.Simple;
+                    lightMode = global::Render.LightMode.Simple;
                     break;
                 case FlatLightMode.Gouraud:
-                    lightMode = Render.LightMode.Gouraud;
+                    lightMode = global::Render.LightMode.Gouraud;
                     break;
                 case FlatLightMode.Phong:
-                    lightMode = Render.LightMode.Phong;
+                    lightMode = global::Render.LightMode.Phong;
                     break;
                 case FlatLightMode.NormalMapping:
-                    lightMode = Render.LightMode.NormalMapping;
+                    lightMode = global::Render.LightMode.NormalMapping;
                     break;
                 default:
                     throw new ArgumentException();
@@ -59,10 +59,10 @@ namespace Render
             switch (FillMode)
             {
                 case FlatFillMode.SolidColor:
-                    fillMode = Render.FillMode.SolidColor(Color.WhiteSmoke);
+                    fillMode = global::Render.FillMode.SolidColor(Color.WhiteSmoke);
                     break;
                 case FlatFillMode.Texture:
-                    fillMode = Render.FillMode.Texture();
+                    fillMode = global::Render.FillMode.Texture();
                     break;
                 default:
                     throw new ArgumentException();
@@ -70,12 +70,12 @@ namespace Render
 
             if (RenderMode == FlatRenderMode.Fill)
             {
-                return settings(Render.RenderMode.Fill(fillMode, lightMode));
+                return settings(global::Render.RenderMode.Fill(fillMode, lightMode));
             }
 
             if (RenderMode == FlatRenderMode.BordersAndFill)
             {
-                return settings(Render.RenderMode.BordersAndFill(fillMode, lightMode));
+                return settings(global::Render.RenderMode.BordersAndFill(fillMode, lightMode));
             }
 
             throw new ArgumentException();
@@ -87,6 +87,19 @@ namespace Render
         Borders,
         Fill,
         BordersAndFill
+    }
+
+    public static class FlatRenderModeUtils
+    {
+        public static bool UseFill(this FlatRenderMode renderMode)
+        {
+            return renderMode == FlatRenderMode.Fill || renderMode == FlatRenderMode.BordersAndFill;
+        }
+
+        public static bool UseBorders(this FlatRenderMode renderMode)
+        {
+            return renderMode == FlatRenderMode.Borders || renderMode == FlatRenderMode.BordersAndFill;
+        }
     }
 
     public enum FlatLightMode

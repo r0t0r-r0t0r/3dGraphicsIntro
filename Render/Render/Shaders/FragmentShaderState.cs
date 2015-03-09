@@ -8,11 +8,13 @@ namespace Render.Shaders
 {
     public sealed class FragmentShaderState
     {
+        private readonly World _world;
         private float _intensity;
         private List<float> _varying;
 
-        public FragmentShaderState(int size)
+        public FragmentShaderState(int size, World world)
         {
+            _world = world;
             _varying = new List<float>(size);
         }
 
@@ -25,6 +27,11 @@ namespace Render.Shaders
         public List<float> Varying
         {
             get { return _varying; }
+        }
+
+        public World World
+        {
+            get { return _world; }
         }
 
         public void Clear()

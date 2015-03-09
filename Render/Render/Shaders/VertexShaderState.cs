@@ -4,10 +4,12 @@ namespace Render.Shaders
 {
     public sealed class VertexShaderState
     {
+        private readonly World _world;
         private readonly List<float>[] _varying;
 
-        public VertexShaderState(int size)
+        public VertexShaderState(int size, World world)
         {
+            _world = world;
             _varying = new List<float>[]
             {
                 new List<float>(size),
@@ -19,6 +21,11 @@ namespace Render.Shaders
         public List<float>[] Varying
         {
             get { return _varying; }
+        }
+
+        public World World
+        {
+            get { return _world; }
         }
 
         public void Clear()

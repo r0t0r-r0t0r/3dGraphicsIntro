@@ -7,26 +7,11 @@ namespace Render.Shaders
 {
     public class NormalMappingShader : IShader
     {
-        private readonly Geometry _geometry;
-        private readonly Vector3 _light;
         private readonly IShader _innerShader;
-        private readonly Texture _normalMap;
-        private readonly Texture _specularMap;
-        private readonly Matrix4x4 _transformation;
 
-        public NormalMappingShader(Model model, Vector3 light, IShader innerShader, Matrix4x4 transformation)
+        public NormalMappingShader(IShader innerShader)
         {
-            _geometry = model.Geometry;
-            _light = light;
             _innerShader = innerShader;
-            _normalMap = model.NormalMap;
-            _specularMap = model.SpecularMap;
-
-            transformation = Matrix4x4.Transpose(transformation);
-            if (!Matrix4x4.Invert(transformation, out _transformation))
-            {
-                throw new ArgumentException();
-            }
         }
 
         public void Face(FaceShaderState state, int face)
@@ -35,7 +20,9 @@ namespace Render.Shaders
 
         public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var textureVertex = _geometry.GetTextureVertex(face, vert);
+            var geometry = state.World.WorldObject.Model.Geometry;
+
+            var textureVertex = geometry.GetTextureVertex(face, vert);
 
             state.Varying.Push(vert, textureVertex.Y);
             state.Varying.Push(vert, textureVertex.X);
@@ -45,24 +32,30 @@ namespace Render.Shaders
 
         public Color? Fragment(FragmentShaderState state)
         {
+            var normalMap = state.World.WorldObject.Model.NormalMap;
+            var specularMap = state.World.WorldObject.Model.SpecularMap;
+            var light = state.World.LightDirection;
+
+            var transformation = state.World.NormalTransform;
+
             var color = _innerShader.Fragment(state);
 
             if (color == null)
                 return null;
             
-            var tx = (int)(state.Varying.PopFloat() * (_normalMap.Width - 1));
-            var ty = (int)(state.Varying.PopFloat() * (_normalMap.Height - 1));
+            var tx = (int)(state.Varying.PopFloat() * (normalMap.Width - 1));
+            var ty = (int)(state.Varying.PopFloat() * (normalMap.Height - 1));
 
-            var tcolor = _normalMap[tx, ty];
+            var tcolor = normalMap[tx, ty];
             var normalColor = Color.FromArgb(tcolor);
             var normal4 = new Vector4(normalColor.R, normalColor.G, normalColor.B, 0);
-            normal4 = Matrix4x4Utils.Mul(_transformation, normal4);
+            normal4 = transformation.Mul(normal4);
             var normal = Vector3.Normalize(new Vector3(normal4.X, normal4.Y, normal4.Z));
 
-            var intensity = Vector3.Dot(normal, _light);
+            var intensity = Vector3.Dot(normal, light);
 
-            var power = _specularMap[tx, ty].GetRed();
-            var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, _light), normal), _light);
+            var power = specularMap[tx, ty].GetRed();
+            var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, light), normal), light);
 
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(3, 3, 10);

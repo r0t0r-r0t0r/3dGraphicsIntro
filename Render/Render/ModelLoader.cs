@@ -24,7 +24,7 @@ namespace Render
             return new Model(g, t, nm, sm);
         }
 
-        public static Geometry LoadGeometry(string fileName)
+        private static Geometry LoadGeometry(string fileName)
         {
             var lines = File.ReadAllLines(fileName);
 

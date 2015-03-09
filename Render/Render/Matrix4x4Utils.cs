@@ -9,7 +9,7 @@ namespace Render
 {
     public static class Matrix4x4Utils
     {
-        public static Vector4 Mul(Matrix4x4 m, Vector4 v)
+        public static Vector4 Mul(this Matrix4x4 m, Vector4 v)
         {
             var result = new Vector4(
                 m.M11 * v.X + m.M12 * v.Y + m.M13 * v.Z + m.M14 * v.W,
@@ -20,7 +20,7 @@ namespace Render
             return result;
         }
 
-        public static Matrix4x4 Mul(Matrix4x4 m1, Matrix4x4 m2)
+        public static Matrix4x4 Mul(this Matrix4x4 m1, Matrix4x4 m2)
         {
             var m11 = m1.M11 * m2.M11 + m1.M12 * m2.M21 + m1.M13 * m2.M31 + m1.M14 * m2.M41;
             var m12 = m1.M11 * m2.M12 + m1.M12 * m2.M22 + m1.M13 * m2.M32 + m1.M14 * m2.M42;
@@ -47,6 +47,49 @@ namespace Render
                 m21, m22, m23, m24,
                 m31, m32, m33, m34,
                 m41, m42, m43, m44
+                );
+            return result;
+        }
+
+        public static Matrix4x4 LookAt(Vector3 center, Vector3 eye, Vector3 up)
+        {
+            var z = Vector3.Normalize(eye - center);
+            var x = Vector3.Normalize(Vector3.Cross(up, z));
+            var y = Vector3.Normalize(Vector3.Cross(z, x));
+
+            var result = new Matrix4x4(
+                x.X, x.Y, x.Z, -center.X,
+                y.X, y.Y, y.Z, -center.Y,
+                z.X, z.Y, z.Z, -center.Z,
+                0, 0, 0, 1
+                );
+            return result;
+        }
+
+        public static Matrix4x4 Viewport(int x, int y, int width, int height)
+        {
+            const int depth = 255;
+
+            var hw = (float)width / 2;
+            var hh = (float)height / 2;
+            var hd = (float)depth / 2;
+
+            var result = new Matrix4x4(
+                hw, 0, 0, x + hw,
+                0, hh, 0, y + hh,
+                0, 0, hd, hd,
+                0, 0, 0, 1
+                );
+            return result;
+        }
+
+        public static Matrix4x4 OrthographicProjection(float d)
+        {
+            var result = new Matrix4x4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, -1 / d, 1
                 );
             return result;
         }

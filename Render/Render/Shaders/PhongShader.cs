@@ -7,14 +7,10 @@ namespace Render.Shaders
 {
     public class PhongShader : IShader
     {
-        private readonly Geometry _geometry;
-        private readonly Vector3 _light;
         private readonly IShader _innerShader;
 
-        public PhongShader(Model model, Vector3 light, IShader innerShader)
+        public PhongShader(IShader innerShader)
         {
-            _geometry = model.Geometry;
-            _light = light;
             _innerShader = innerShader;
         }
 
@@ -24,7 +20,8 @@ namespace Render.Shaders
 
         public Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var normal = _geometry.GetVertexNormal(face, vert);
+            var geometry = state.World.WorldObject.Model.Geometry;
+            var normal = geometry.GetVertexNormal(face, vert);
             state.Varying[vert].Push(normal);
 
             return _innerShader.Vertex(state, face, vert);
@@ -32,6 +29,8 @@ namespace Render.Shaders
 
         public Color? Fragment(FragmentShaderState state)
         {
+            var light = state.World.LightDirection;
+
             var color = _innerShader.Fragment(state);
 
             if (color == null)
@@ -40,7 +39,7 @@ namespace Render.Shaders
             var normal = state.Varying.PopVector3();
             normal = Vector3.Normalize(normal);
 
-            var intensity = Vector3.Dot(normal, _light);
+            var intensity = Vector3.Dot(normal, light);
             if (intensity < 0)
                 return Color.Black;
 
