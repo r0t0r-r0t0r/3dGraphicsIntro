@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,17 @@ namespace Render
 {
     public class ModelLoader
     {
+        public static Model LoadModel(string rootDir, string geometry, string texture, string normalMap,
+            string specularMap)
+        {
+            var g = LoadGeometry(Path.Combine(rootDir, geometry));
+            var t = new Texture(Image.FromFile(Path.Combine(rootDir, texture)));
+            var nm = new Texture(Image.FromFile(Path.Combine(rootDir, normalMap)));
+            var sm = new Texture(Image.FromFile(Path.Combine(rootDir, specularMap)));
+
+            return new Model(g, t, nm, sm);
+        }
+
         public static Geometry LoadGeometry(string fileName)
         {
             var lines = File.ReadAllLines(fileName);

@@ -7,17 +7,13 @@ namespace Render.Shaders
     public class TextureShader : IShader
     {
         private readonly Geometry _geometry;
-        private readonly unsafe int* _texture;
-        private readonly int _textureWidth;
-        private readonly int _textureHeight;
         private readonly Matrix4x4 _transformation;
+        private readonly Texture _texture;
 
-        unsafe public TextureShader(Geometry geometry, byte* texture, int textureWidth, int textureHeight, Matrix4x4 transformation)
+        public TextureShader(Model model, Matrix4x4 transformation)
         {
-            _geometry = geometry;
-            _texture = (int*)texture;
-            _textureWidth = textureWidth;
-            _textureHeight = textureHeight;
+            _geometry = model.Geometry;
+            _texture = model.Texture;
             _transformation = transformation;
         }
 
@@ -35,13 +31,12 @@ namespace Render.Shaders
             return Matrix4x4Utils.Mul(_transformation, new Vector4(_geometry.GetVertex(face, vert), 1));
         }
 
-        public unsafe Color? Fragment(FragmentShaderState state)
+        public Color? Fragment(FragmentShaderState state)
         {
-            var tx = (int)(state.Varying.PopFloat() * (_textureWidth - 1));
-            var ty = (int)(state.Varying.PopFloat() * (_textureHeight - 1));
+            var tx = (int)(state.Varying.PopFloat() * (_texture.Width - 1));
+            var ty = (int)(state.Varying.PopFloat() * (_texture.Height - 1));
 
-            var pos = ((_textureHeight - ty - 1) * _textureWidth + tx);
-            var tcolor = _texture[pos];
+            var tcolor = _texture[tx, ty];
 
             return Color.FromArgb(tcolor);
         }

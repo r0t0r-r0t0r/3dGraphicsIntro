@@ -11,12 +11,14 @@ namespace Render
 {
     public class RenderCore
     {
-        private const string RootDir = @"Model\";
+        private const string RootDir = @"Model";
 
-        private readonly Geometry _geometry = ModelLoader.LoadGeometry(RootDir + "african_head.obj");
-        private readonly Bitmap _texture = new Bitmap(Image.FromFile(RootDir + "african_head_diffuse.bmp"));
-        private readonly Bitmap _normalMap = new Bitmap(Image.FromFile(RootDir + "african_head_nm.png"));
-        private readonly Bitmap _specularMap = new Bitmap(Image.FromFile(RootDir + "african_head_spec.bmp"));
+        private readonly Model _model = ModelLoader.LoadModel(
+            RootDir,
+            "african_head.obj",
+            "african_head_diffuse.bmp",
+            "african_head_nm.png",
+            "african_head_spec.bmp");
 
         private readonly List<IRender> _renders = new List<IRender>
         {
@@ -42,12 +44,6 @@ namespace Render
                 renders.Add(_renders[1]);
             }
 
-            var textureData = _texture.LockBits(new Rectangle(0, 0, _texture.Width, _texture.Height),
-                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
-            var normalMapData = _normalMap.LockBits(new Rectangle(0, 0, _normalMap.Width, _normalMap.Height),
-                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
-            var specularMapData = _specularMap.LockBits(new Rectangle(0, 0, _specularMap.Width, _specularMap.Height),
-                ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
             var cameraDirection = new Vector3(0, 0, 1);
 //            var light = new Vector3(0.6f, 0.6f, 0.75f);
             var light = new Vector3(8f, 6f, 10f);
@@ -66,22 +62,19 @@ namespace Render
 
                 if (!settings.RenderMode.UseFilling)
                 {
-                    shader = new EmptyShader(_geometry, transformation);
+                    shader = new EmptyShader(_model, transformation);
                 }
                 else
                 {
                     IShader innerShader;
                     if (settings.RenderMode.FillMode.UseTexture)
                     {
-                        innerShader = new TextureShader(_geometry, (byte*) textureData.Scan0, _texture.Width, _texture.Height, transformation);
+                        innerShader = new TextureShader(_model, transformation);
                     }
                     else
                     {
-                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _geometry, transformation);
+                        innerShader = new SolidColorShader(settings.RenderMode.FillMode.Color, _model, transformation);
                     }
-
-                    var specularMapTexture = new Texture((int*) specularMapData.Scan0, _specularMap.Width,
-                        _specularMap.Height);
 
                     switch (settings.RenderMode.LightMode)
                     {
@@ -89,16 +82,16 @@ namespace Render
                             shader = innerShader;
                             break;
                         case LightMode.Simple:
-                            shader = new SimpleShader(_geometry, light, innerShader);
+                            shader = new SimpleShader(_model, light, innerShader);
                             break;
                         case LightMode.Gouraud:
-                            shader = new GouraudShader(_geometry, light, innerShader);
+                            shader = new GouraudShader(_model, light, innerShader);
                             break;
                         case LightMode.Phong:
-                            shader = new PhongShader(_geometry, light, innerShader);
+                            shader = new PhongShader(_model, light, innerShader);
                             break;
                         case LightMode.NormalMapping:
-                            shader = new NormalMappingShader(_geometry, light, innerShader, (byte*) normalMapData.Scan0, _normalMap.Width, _normalMap.Height, transformationWoViewport, specularMapTexture);
+                            shader = new NormalMappingShader(_model, light, innerShader, transformationWoViewport);
                             break;
                         default:
                             throw new ArgumentException();
@@ -128,7 +121,7 @@ namespace Render
                 var tasks =
                     regions.Select(
                         region =>
-                            new Task(() => Draw(_geometry, rawData, width, height, renders, viewportScale,
+                            new Task(() => Draw(_model.Geometry, rawData, width, height, renders, viewportScale,
                                 usePerspectiveProjection, cameraDirection, shader, region.Item1, region.Item2)))
                         .ToArray();
                 foreach (var task in tasks)
@@ -138,9 +131,6 @@ namespace Render
                 Task.WaitAll(tasks);
             }
             bitmap.UnlockBits(data);
-            _texture.UnlockBits(textureData);
-            _normalMap.UnlockBits(normalMapData);
-            _specularMap.UnlockBits(specularMapData);
         }
 
         private unsafe static void Draw(Geometry geometry, byte* data, int width, int height, List<IRender> renders, float viewportScale, bool usePerspectiveProjection, Vector3 cameraDirection, IShader shader, int startY, int endY)

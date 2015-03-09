@@ -9,10 +9,10 @@ namespace Render.Shaders
         private readonly Geometry _geometry;
         private readonly Matrix4x4 _transformation;
 
-        public SolidColorShader(Color color, Geometry geometry, Matrix4x4 transformation)
+        public SolidColorShader(Color color, Model model, Matrix4x4 transformation)
         {
             _color = color;
-            _geometry = geometry;
+            _geometry = model.Geometry;
             _transformation = transformation;
         }
 

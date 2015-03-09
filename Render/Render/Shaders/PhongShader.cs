@@ -11,9 +11,9 @@ namespace Render.Shaders
         private readonly Vector3 _light;
         private readonly IShader _innerShader;
 
-        public PhongShader(Geometry geometry, Vector3 light, IShader innerShader)
+        public PhongShader(Model model, Vector3 light, IShader innerShader)
         {
-            _geometry = geometry;
+            _geometry = model.Geometry;
             _light = light;
             _innerShader = innerShader;
         }

@@ -8,9 +8,9 @@ namespace Render.Shaders
         private readonly Geometry _geometry;
         private readonly Matrix4x4 _transformation;
 
-        public EmptyShader(Geometry geometry, Matrix4x4 transformation)
+        public EmptyShader(Model model, Matrix4x4 transformation)
         {
-            _geometry = geometry;
+            _geometry = model.Geometry;
             _transformation = transformation;
         }
 

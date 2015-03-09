@@ -10,21 +10,17 @@ namespace Render.Shaders
         private readonly Geometry _geometry;
         private readonly Vector3 _light;
         private readonly IShader _innerShader;
-        private readonly unsafe int* _normalMap;
-        private readonly int _width;
-        private readonly int _height;
+        private readonly Texture _normalMap;
         private readonly Texture _specularMap;
         private readonly Matrix4x4 _transformation;
 
-        public unsafe NormalMappingShader(Geometry geometry, Vector3 light, IShader innerShader, byte* normalMap, int width, int height, Matrix4x4 transformation, Texture specularMap)
+        public NormalMappingShader(Model model, Vector3 light, IShader innerShader, Matrix4x4 transformation)
         {
-            _geometry = geometry;
+            _geometry = model.Geometry;
             _light = light;
             _innerShader = innerShader;
-            _normalMap = (int*)normalMap;
-            _width = width;
-            _height = height;
-            _specularMap = specularMap;
+            _normalMap = model.NormalMap;
+            _specularMap = model.SpecularMap;
 
             transformation = Matrix4x4.Transpose(transformation);
             if (!Matrix4x4.Invert(transformation, out _transformation))
@@ -47,18 +43,17 @@ namespace Render.Shaders
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public unsafe Color? Fragment(FragmentShaderState state)
+        public Color? Fragment(FragmentShaderState state)
         {
             var color = _innerShader.Fragment(state);
 
             if (color == null)
                 return null;
             
-            var tx = (int)(state.Varying.PopFloat() * (_width - 1));
-            var ty = (int)(state.Varying.PopFloat() * (_height - 1));
+            var tx = (int)(state.Varying.PopFloat() * (_normalMap.Width - 1));
+            var ty = (int)(state.Varying.PopFloat() * (_normalMap.Height - 1));
 
-            var pos = ((_height - ty - 1) * _width + tx);
-            var tcolor = _normalMap[pos];
+            var tcolor = _normalMap[tx, ty];
             var normalColor = Color.FromArgb(tcolor);
             var normal4 = new Vector4(normalColor.R, normalColor.G, normalColor.B, 0);
             normal4 = Matrix4x4Utils.Mul(_transformation, normal4);

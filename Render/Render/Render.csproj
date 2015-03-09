@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Matrix4x4Utils.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Shaders\EmptyShader.cs" />
     <Compile Include="Experiments\FilledTriangle.cs" />
     <Compile Include="Experiments\Line.cs" />
