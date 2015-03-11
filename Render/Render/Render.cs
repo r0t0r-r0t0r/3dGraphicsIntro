@@ -14,23 +14,27 @@ namespace Render
         private bool _useFill;
         private bool _useBorders;
 
-        public void Init(int width, int height, FlatRenderMode renderMode)
+        public Render(int width, int height)
         {
             _width = width;
             _height = height;
+            _zBuffer = new float[width, height];
+        }
+
+        public void Init(FlatRenderMode renderMode)
+        {
             _useFill = renderMode.UseFill();
             _useBorders = renderMode.UseBorders();
-            _zBuffer = new float[width, height];
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < _width; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < _height; y++)
                 {
                     _zBuffer[x, y] = float.NegativeInfinity;
                 }
             }
         }
 
-        unsafe public void DrawBorders(int faceIndex, byte* bitmap, ShaderState shaderState, int startY, int endY)
+        unsafe public void DrawBorders(int faceIndex, int* bitmap, ShaderState shaderState, int startY, int endY)
         {
             var shader = shaderState.World.WorldObject.Shader;
 
@@ -46,12 +50,13 @@ namespace Render
                 new Vector3(v2.X/v2.W, v2.Y/v2.W, v2.Z/v2.W)
             };
 
-            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, Color.White, startY, endY);
-            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, Color.White, startY, endY);
-            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, Color.White, startY, endY);
+            var color = Color.White.ToArgb();
+            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, color, startY, endY);
+            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, color, startY, endY);
+            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, color, startY, endY);
         }
 
-        unsafe private void Line(int x0, int y0, int x1, int y1, byte* bmp, Color color, int startY, int endY)
+        unsafe private void Line(int x0, int y0, int x1, int y1, int* bmp, int color, int startY, int endY)
         {
             var vertOrientation = Math.Abs(x1 - x0) < Math.Abs(y1 - y0);
 
@@ -102,26 +107,22 @@ namespace Render
                 {
                     if (y >= 0 && y < _width && x >= startY && x <= endY)
                     {
-                        var foo = ((_height - x - 1) * _width + y) * 4;
-                        bmp[foo + 2] = color.R;
-                        bmp[foo + 1] = color.G;
-                        bmp[foo + 0] = color.B;
+                        var foo = ((_height - x - 1)*_width + y);
+                        bmp[foo] = color;
                     }
                 }
                 else
                 {
                     if (x >= 0 && x < _width && y >= startY && y <= endY)
                     {
-                        var foo = ((_height - y - 1) * _width + x) * 4;
-                        bmp[foo + 2] = color.R;
-                        bmp[foo + 1] = color.G;
-                        bmp[foo + 0] = color.B;
+                        var foo = ((_height - y - 1)*_width + x);
+                        bmp[foo] = color;
                     }
                 }
             }
         }
 
-        unsafe public void Draw(int faceIndex, byte* data, ShaderState shaderState, int startY, int endY)
+        unsafe public void Draw(int faceIndex, int* data, ShaderState shaderState, int startY, int endY)
         {
             var shader = shaderState.World.WorldObject.Shader;
 
@@ -159,8 +160,8 @@ namespace Render
                 DrawBorders(faceIndex, data, shaderState, startY, endY);
         }
 
-        private unsafe void DrawFilling(byte* data, int startY, int endY, Vector3 v0, Vector3 v1, Vector3 v2,
-            FragmentShaderState fragmentState, FaceShaderState faceState, VertexShaderState vertexState, IShader shader)
+        private unsafe void DrawFilling(int* data, int startY, int endY, Vector3 v0, Vector3 v1, Vector3 v2,
+            FragmentShaderState fragmentState, FaceShaderState faceState, VertexShaderState vertexState, Shader shader)
         {
             var x0 = (int) Math.Round(v0.X);
             var y0 = (int) Math.Round(v0.Y);
@@ -195,7 +196,7 @@ namespace Render
 
             var converter = new BarycentricCoordinatesConverter(v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
 
-            var line = ((int*) data) + (_height - minY - 1)*_width;
+            var line = data + (_height - minY - 1)*_width;
 
             for (int y = minY; y <= maxY; y++)
             {

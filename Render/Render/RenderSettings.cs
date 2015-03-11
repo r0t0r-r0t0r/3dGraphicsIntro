@@ -59,10 +59,6 @@ namespace Render
         {
             get
             {
-                if (!_useFilling)
-                {
-                    throw new InvalidOperationException();
-                }
                 return _fillMode;
             }
         }
@@ -71,17 +67,8 @@ namespace Render
         {
             get
             {
-                if (!_useFilling)
-                {
-                    throw new InvalidOperationException();
-                }
                 return _lightMode;
             }
-        }
-
-        public static RenderMode Borders()
-        {
-            return new RenderMode(false, true, null, LightMode.None);
         }
 
         public static RenderMode Fill(FillMode fillMode, LightMode lightMode)
@@ -92,6 +79,11 @@ namespace Render
         public static RenderMode BordersAndFill(FillMode fillMode, LightMode lightMode)
         {
             return new RenderMode(true, true, fillMode, lightMode);
+        }
+
+        public static RenderMode Borders(FillMode fillMode, LightMode lightMode)
+        {
+            return new RenderMode(false, true, fillMode, lightMode);
         }
     }
 

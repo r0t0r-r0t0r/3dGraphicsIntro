@@ -52,14 +52,13 @@
   <ItemGroup>
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="Shaders\EmptyShader.cs" />
     <Compile Include="Experiments\FilledTriangle.cs" />
     <Compile Include="Experiments\Line.cs" />
     <Compile Include="Experiments\YBuffer.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="Shaders\FragmentShaderState.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
-    <Compile Include="Shaders\IShader.cs" />
+    <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="ModelUtils.cs" />

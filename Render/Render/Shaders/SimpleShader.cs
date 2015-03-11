@@ -3,16 +3,16 @@ using System.Numerics;
 
 namespace Render.Shaders
 {
-    public class SimpleShader : IShader
+    public class SimpleShader : Shader
     {
-        private readonly IShader _innerShader;
+        private readonly Shader _innerShader;
 
-        public SimpleShader(IShader innerShader)
+        public SimpleShader(Shader innerShader)
         {
             _innerShader = innerShader;
         }
 
-        public void Face(FaceShaderState state, int face)
+        public override void Face(FaceShaderState state, int face)
         {
             var geometry = state.World.WorldObject.Model.Geometry;
             var light = state.World.LightDirection;
@@ -35,12 +35,12 @@ namespace Render.Shaders
             state.Intensity = intensity;
         }
 
-        public Vector4 Vertex(VertexShaderState state, int face, int vert)
+        public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public Color? Fragment(FragmentShaderState state)
+        public override Color? Fragment(FragmentShaderState state)
         {
             var color = _innerShader.Fragment(state);
             if (color == null)

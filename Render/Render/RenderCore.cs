@@ -10,27 +10,32 @@ namespace Render
 {
     public class RenderCore
     {
-        private readonly Render _render = new Render();
+        private readonly int _width;
+        private readonly int _height;
+        private readonly Render _render;
 
-        public void Render(RenderSettings settings, Bitmap bitmap)
+        public RenderCore(int width, int height)
         {
-            var width = bitmap.Width;
-            var height = bitmap.Height;
-            var world = WorldUtils.CreateWorld(settings, width, height);
+            _width = width;
+            _height = height;
+            _render = new Render(width, height);
+        }
 
-            _render.Init(width, height, world.RenderMode);
-            var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
+        public void Render(World world, Bitmap bitmap)
+        {
+            _render.Init(world.RenderMode);
+            var data = bitmap.LockBits(new Rectangle(0, 0, _width, _height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
             unsafe
             {
-                byte* rawData = (byte*) data.Scan0;
-                var length = width*height*4;
+                var rawData = (int*) data.Scan0;
+                var length = _width*_height;
                 for (var i = 0; i < length; i++)
                 {
                     rawData[i] = 0;
                 }
 
                 var parCount = Environment.ProcessorCount;
-                var vertStep = height/parCount - 1;
+                var vertStep = _height/parCount - 1;
                 var start = 0;
                 var regions = new Tuple<int, int>[parCount];
                 for (var i = 0; i < parCount; i++)
@@ -41,7 +46,7 @@ namespace Render
                     start = end + 1;
                 }
                 var last = parCount - 1;
-                regions[last] = Tuple.Create(regions[last].Item1, height - 1);
+                regions[last] = Tuple.Create(regions[last].Item1, _height - 1);
                 var tasks =
                     regions.Select(
                         region =>
@@ -56,7 +61,7 @@ namespace Render
             bitmap.UnlockBits(data);
         }
 
-        private unsafe static void Draw(byte* data, Render render, int startY, int endY, World world)
+        private unsafe static void Draw(int* data, Render render, int startY, int endY, World world)
         {
             var shaderState = new ShaderState(30, world);
             

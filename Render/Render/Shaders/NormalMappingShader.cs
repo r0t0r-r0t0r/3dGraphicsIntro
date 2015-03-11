@@ -5,20 +5,20 @@ using System.Numerics;
 
 namespace Render.Shaders
 {
-    public class NormalMappingShader : IShader
+    public class NormalMappingShader : Shader
     {
-        private readonly IShader _innerShader;
+        private readonly Shader _innerShader;
 
-        public NormalMappingShader(IShader innerShader)
+        public NormalMappingShader(Shader innerShader)
         {
             _innerShader = innerShader;
         }
 
-        public void Face(FaceShaderState state, int face)
+        public override void Face(FaceShaderState state, int face)
         {
         }
 
-        public Vector4 Vertex(VertexShaderState state, int face, int vert)
+        public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
             var geometry = state.World.WorldObject.Model.Geometry;
 
@@ -30,11 +30,12 @@ namespace Render.Shaders
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public Color? Fragment(FragmentShaderState state)
+        public override Color? Fragment(FragmentShaderState state)
         {
             var normalMap = state.World.WorldObject.Model.NormalMap;
             var specularMap = state.World.WorldObject.Model.SpecularMap;
             var light = state.World.LightDirection;
+            var v = state.World.CameraDirection;
 
             var transformation = state.World.NormalTransform;
 
@@ -56,10 +57,6 @@ namespace Render.Shaders
 
             var power = specularMap[tx, ty].GetRed();
             var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, light), normal), light);
-
-            var center = new Vector3(0, 0, 0);
-            var eye = new Vector3(3, 3, 10);
-            var v = Vector3.Normalize(Vector3.Subtract(eye, center));
 
             var specular = Vector3.Dot(v, r);
             specular = (float) Math.Pow(specular, power);

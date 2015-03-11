@@ -17,12 +17,14 @@ namespace Render
     public partial class RenderForm : Form
     {
         private const string BenchmarkLogFileName = @"..\..\BenchmarkLog.txt";
+        private const int ViewportWidth = 800;
+        private const int ViewportHeight = 800;
         
-        private readonly RenderCore _renderCore = new RenderCore();
+        private readonly RenderCore _renderCore = new RenderCore(ViewportWidth, ViewportHeight);
         private readonly RenderSettingsBuilder _builder = new RenderSettingsBuilder();
 
-        private Bitmap _frontBuffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
-        private Bitmap _backBuffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
+        private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
+        private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
 
         public RenderForm()
         {
@@ -89,7 +91,8 @@ namespace Render
 
         private void Draw()
         {
-            _renderCore.Render(_builder.Build(), _backBuffer);
+            var world = WorldUtils.CreateWorld(_builder.Build(), _backBuffer.Width, _backBuffer.Height);
+            _renderCore.Render(world, _backBuffer);
             pictureBox1.Image = _backBuffer;
 
             var exchange = _backBuffer;
@@ -171,31 +174,32 @@ namespace Render
 
         private void startBenchmarkButton_Click(object sender, EventArgs e)
         {
-            _builder.ViewportScale = 1.5f;
+            _builder.ViewportScale = 0.9f;
             _builder.FillMode = FlatFillMode.Texture;
-            _builder.LightMode = FlatLightMode.Gouraud;
+            _builder.LightMode = FlatLightMode.NormalMapping;
             _builder.PerspectiveProjection = true;
             _builder.RenderMode = FlatRenderMode.Fill;
             InitializeSettings();
             Draw();
 
             var buffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
-            var renderCore = new RenderCore();
+            var renderCore = new RenderCore(800, 800);
 
             var settings = _builder.Build();
+            var world = WorldUtils.CreateWorld(settings, buffer.Width, buffer.Height);
 
             const int count = 200;
             var start = Stopwatch.GetTimestamp();
             for (var i = 0; i < count; i++)
             {
-                renderCore.Render(settings, buffer);
+                renderCore.Render(world, buffer);
             }
             var end = Stopwatch.GetTimestamp();
 
             double runticks = end - start;
             double runtime = runticks/Stopwatch.Frequency/count;
 
-            lastBenchmarkTimeLabel.Text = runtime.ToString("F3");
+            lastBenchmarkTimeLabel.Text = runtime.ToString("F4");
             WriteBenchmarkResult(DateTime.Now, runtime);
         }
 
@@ -207,7 +211,7 @@ namespace Render
             var lineValues = lastLine.Split(' ');
             var lastBenchmarkTime = double.Parse(lineValues[1], CultureInfo.InvariantCulture);
 
-            lastBenchmarkTimeLabel.Text = lastBenchmarkTime.ToString("F3");
+            lastBenchmarkTimeLabel.Text = lastBenchmarkTime.ToString("F4");
         }
 
         private void WriteBenchmarkResult(DateTime dateTime, double benchmarkTime)

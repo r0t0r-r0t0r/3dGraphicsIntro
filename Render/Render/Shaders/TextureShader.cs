@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace Render.Shaders
 {
-    public class TextureShader : IShader
+    public class TextureShader : Shader
     {
-        public void Face(FaceShaderState state, int face)
+        public override void Face(FaceShaderState state, int face)
         {
         }
 
-        public Vector4 Vertex(VertexShaderState state, int face, int vert)
+        public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
             var geometry = state.World.WorldObject.Model.Geometry;
             var transformation = state.World.Transformation;
@@ -22,7 +22,7 @@ namespace Render.Shaders
             return transformation.Mul(new Vector4(geometry.GetVertex(face, vert), 1));
         }
 
-        public Color? Fragment(FragmentShaderState state)
+        public override Color? Fragment(FragmentShaderState state)
         {
             var texture = state.World.WorldObject.Model.Texture;
             var tx = (int)(state.Varying.PopFloat() * (texture.Width - 1));

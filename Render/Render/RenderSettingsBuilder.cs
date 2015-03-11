@@ -28,11 +28,6 @@ namespace Render
         {
             var settings = RenderSettings.Create(PerspectiveProjection, ViewportScale);
 
-            if (RenderMode == FlatRenderMode.Borders)
-            {
-                return settings(global::Render.RenderMode.Borders());
-            }
-
             LightMode lightMode;
             switch (LightMode)
             {
@@ -66,6 +61,11 @@ namespace Render
                     break;
                 default:
                     throw new ArgumentException();
+            }
+
+            if (RenderMode == FlatRenderMode.Borders)
+            {
+                return settings(global::Render.RenderMode.Borders(fillMode, lightMode));
             }
 
             if (RenderMode == FlatRenderMode.Fill)
