@@ -232,7 +232,7 @@ namespace Render
                         if (resColor != null)
                         {
                             _zBuffer[x, y] = z;
-                            line[x] = resColor.Value.ToArgb();
+                            line[x] = resColor.Value;
                         }
                     }
                     sline1.StepX();

@@ -7,6 +7,7 @@ namespace Render.Shaders
 {
     public class PhongShader : Shader
     {
+        private static readonly int BlackColor = Color.Black.ToArgb();
         private readonly Shader _innerShader;
 
         public PhongShader(Shader innerShader)
@@ -27,7 +28,7 @@ namespace Render.Shaders
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public override Color? Fragment(FragmentShaderState state)
+        public override int? Fragment(FragmentShaderState state)
         {
             var light = state.World.LightDirection;
 
@@ -41,7 +42,7 @@ namespace Render.Shaders
 
             var intensity = Vector3.Dot(normal, light);
             if (intensity < 0)
-                return Color.Black;
+                return BlackColor;
 
             if (intensity >= 1)
                 intensity = 1;
@@ -49,11 +50,13 @@ namespace Render.Shaders
             //const float intensityStepsCount = 5;
             //intensity = (float)Math.Floor(intensity * intensityStepsCount) / intensityStepsCount;
 
-            var resR = (byte)(color.Value.R * intensity);
-            var resG = (byte)(color.Value.G * intensity);
-            var resB = (byte)(color.Value.B * intensity);
+            var intColor = new IntColor {Color = color.Value};
 
-            return Color.FromArgb(resR, resG, resB);
+            intColor.Red = (byte)(intColor.Red * intensity);
+            intColor.Green = (byte)(intColor.Green * intensity);
+            intColor.Blue = (byte)(intColor.Blue * intensity);
+
+            return intColor.Color;
         }
     }
 }

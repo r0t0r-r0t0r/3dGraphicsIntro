@@ -188,7 +188,7 @@ namespace Render
             var settings = _builder.Build();
             var world = WorldUtils.CreateWorld(settings, buffer.Width, buffer.Height);
 
-            const int count = 200;
+            const int count = 300;
             var start = Stopwatch.GetTimestamp();
             for (var i = 0; i < count; i++)
             {

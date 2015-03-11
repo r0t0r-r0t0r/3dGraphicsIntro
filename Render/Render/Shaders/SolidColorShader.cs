@@ -5,7 +5,7 @@ namespace Render.Shaders
 {
     public class SolidColorShader : Shader
     {
-        private readonly Color _color = Color.White;
+        private readonly int _color = Color.White.ToArgb();
 
         public override void Face(FaceShaderState state, int face)
         {
@@ -18,7 +18,7 @@ namespace Render.Shaders
             return transformation.Mul(new Vector4(geometry.GetVertex(face, vert), 1));
         }
 
-        public override Color? Fragment(FragmentShaderState state)
+        public override int? Fragment(FragmentShaderState state)
         {
             return _color;
         }

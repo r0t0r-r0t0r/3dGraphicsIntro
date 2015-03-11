@@ -40,7 +40,7 @@ namespace Render.Shaders
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public override Color? Fragment(FragmentShaderState state)
+        public override int? Fragment(FragmentShaderState state)
         {
             var color = _innerShader.Fragment(state);
             if (color == null)
@@ -48,11 +48,13 @@ namespace Render.Shaders
 
             var intensity = state.Intensity;
 
-            var resR = (byte)(color.Value.R * intensity);
-            var resG = (byte)(color.Value.G * intensity);
-            var resB = (byte)(color.Value.B * intensity);
+            var intColor = new IntColor { Color = color.Value };
 
-            return Color.FromArgb(resR, resG, resB);
+            intColor.Red = (byte)(intColor.Red * intensity);
+            intColor.Green = (byte)(intColor.Green * intensity);
+            intColor.Blue = (byte)(intColor.Blue * intensity);
+
+            return intColor.Color;
         }
     }
 }

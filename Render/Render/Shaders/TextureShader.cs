@@ -22,15 +22,13 @@ namespace Render.Shaders
             return transformation.Mul(new Vector4(geometry.GetVertex(face, vert), 1));
         }
 
-        public override Color? Fragment(FragmentShaderState state)
+        public override int? Fragment(FragmentShaderState state)
         {
             var texture = state.World.WorldObject.Model.Texture;
             var tx = (int)(state.Varying.PopFloat() * (texture.Width - 1));
             var ty = (int)(state.Varying.PopFloat() * (texture.Height - 1));
 
-            var tcolor = texture[tx, ty];
-
-            return Color.FromArgb(tcolor);
+            return texture[tx, ty];
         }
     }
 }

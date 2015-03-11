@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Numerics;
 
 namespace Render.Shaders
@@ -30,7 +28,7 @@ namespace Render.Shaders
             return _innerShader.Vertex(state, face, vert);
         }
 
-        public override Color? Fragment(FragmentShaderState state)
+        public override int? Fragment(FragmentShaderState state)
         {
             var normalMap = state.World.WorldObject.Model.NormalMap;
             var specularMap = state.World.WorldObject.Model.SpecularMap;
@@ -48,8 +46,8 @@ namespace Render.Shaders
             var ty = (int)(state.Varying.PopFloat() * (normalMap.Height - 1));
 
             var tcolor = normalMap[tx, ty];
-            var normalColor = Color.FromArgb(tcolor);
-            var normal4 = new Vector4(normalColor.R, normalColor.G, normalColor.B, 0);
+            var normalColor = new IntColor {Color = tcolor};
+            var normal4 = new Vector4(normalColor.Red, normalColor.Green, normalColor.Blue, 0);
             normal4 = transformation.Mul(normal4);
             var normal = Vector3.Normalize(new Vector3(normal4.X, normal4.Y, normal4.Z));
 
@@ -63,15 +61,17 @@ namespace Render.Shaders
 
             intensity += 0.6f*specular;
 
-            var resR = (int)(color.Value.R * intensity);
-            var resG = (int)(color.Value.G * intensity);
-            var resB = (int)(color.Value.B * intensity);
+            var intColor = new IntColor { Color = color.Value };
 
-            resR = Math.Max(Math.Min(5+resR, 255), 0);
-            resG = Math.Max(Math.Min(5+resG, 255), 0);
-            resB = Math.Max(Math.Min(5+resB, 255), 0);
+            var red = (intColor.Red * intensity);
+            var green = (intColor.Green * intensity);
+            var blue = (intColor.Blue * intensity);
 
-            return Color.FromArgb(resR, resG, resB);
+            intColor.Red = (byte) Math.Max(Math.Min(5+red, 255), 0);
+            intColor.Green = (byte) Math.Max(Math.Min(5+green, 255), 0);
+            intColor.Blue = (byte) Math.Max(Math.Min(5+blue, 255), 0);
+
+            return intColor.Color;
         }
     }
 }

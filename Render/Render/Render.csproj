@@ -58,6 +58,7 @@
     <Compile Include="Face.cs" />
     <Compile Include="Shaders\FragmentShaderState.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
+    <Compile Include="Shaders\IntColor.cs" />
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="ModelLoader.cs" />
