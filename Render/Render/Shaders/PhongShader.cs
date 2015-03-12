@@ -9,10 +9,20 @@ namespace Render.Shaders
     {
         private static readonly int BlackColor = Color.Black.ToArgb();
         private readonly Shader _innerShader;
+        private Geometry _geometry;
+        private Vector3 _light;
 
         public PhongShader(Shader innerShader)
         {
             _innerShader = innerShader;
+        }
+
+        public override void World(World world)
+        {
+            _geometry = world.WorldObject.Model.Geometry;
+            _light = world.LightDirection;
+
+            _innerShader.World(world);
         }
 
         public override void Face(FaceShaderState state, int face)
@@ -21,8 +31,7 @@ namespace Render.Shaders
 
         public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var geometry = state.World.WorldObject.Model.Geometry;
-            var normal = geometry.GetVertexNormal(face, vert);
+            var normal = _geometry.GetVertexNormal(face, vert);
             state.Varying[vert].Push(normal);
 
             return _innerShader.Vertex(state, face, vert);
@@ -30,8 +39,6 @@ namespace Render.Shaders
 
         public override int? Fragment(FragmentShaderState state)
         {
-            var light = state.World.LightDirection;
-
             var color = _innerShader.Fragment(state);
 
             if (color == null)
@@ -40,7 +47,7 @@ namespace Render.Shaders
             var normal = state.Varying.PopVector3();
             normal = Vector3.Normalize(normal);
 
-            var intensity = Vector3.Dot(normal, light);
+            var intensity = Vector3.Dot(normal, _light);
             if (intensity < 0)
                 return BlackColor;
 

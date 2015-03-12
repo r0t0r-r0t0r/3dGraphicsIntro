@@ -64,10 +64,12 @@ namespace Render
         private unsafe static void Draw(int* data, Render render, int startY, int endY, World world)
         {
             var shaderState = new ShaderState(30, world);
+            var shader = world.WorldObject.ShaderFactory();
+            shader.World(world);
             
             for (var i = 0; i < world.WorldObject.Model.Geometry.Faces.Count; i++)
             {
-                render.Draw(i, data, shaderState, startY, endY);
+                render.Draw(i, data, shader, shaderState, startY, endY);
             }
         }
     }

@@ -12,15 +12,32 @@ namespace Render.Shaders
             _innerShader = innerShader;
         }
 
+        private Texture _normalMap;
+        private Texture _specularMap;
+        private Vector3 _light;
+        private Vector3 _v;
+        private Matrix4x4 _transformation;
+        private Geometry _geometry;
+
+        public override void World(World world)
+        {
+            _innerShader.World(world);
+
+            _normalMap = world.WorldObject.Model.NormalMap;
+            _specularMap = world.WorldObject.Model.SpecularMap;
+            _light = world.LightDirection;
+            _v = world.CameraDirection;
+            _transformation = world.NormalTransform;
+            _geometry = world.WorldObject.Model.Geometry;
+        }
+
         public override void Face(FaceShaderState state, int face)
         {
         }
 
         public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var geometry = state.World.WorldObject.Model.Geometry;
-
-            var textureVertex = geometry.GetTextureVertex(face, vert);
+            var textureVertex = _geometry.GetTextureVertex(face, vert);
 
             state.Varying.Push(vert, textureVertex.Y);
             state.Varying.Push(vert, textureVertex.X);
@@ -30,33 +47,26 @@ namespace Render.Shaders
 
         public override int? Fragment(FragmentShaderState state)
         {
-            var normalMap = state.World.WorldObject.Model.NormalMap;
-            var specularMap = state.World.WorldObject.Model.SpecularMap;
-            var light = state.World.LightDirection;
-            var v = state.World.CameraDirection;
-
-            var transformation = state.World.NormalTransform;
-
             var color = _innerShader.Fragment(state);
 
             if (color == null)
                 return null;
             
-            var tx = (int)(state.Varying.PopFloat() * (normalMap.Width - 1));
-            var ty = (int)(state.Varying.PopFloat() * (normalMap.Height - 1));
+            var tx = (int)(state.Varying.PopFloat() * (_normalMap.Width - 1));
+            var ty = (int)(state.Varying.PopFloat() * (_normalMap.Height - 1));
 
-            var tcolor = normalMap[tx, ty];
+            var tcolor = _normalMap[tx, ty];
             var normalColor = new IntColor {Color = tcolor};
             var normal4 = new Vector4(normalColor.Red, normalColor.Green, normalColor.Blue, 0);
-            normal4 = transformation.Mul(normal4);
+            normal4 = _transformation.Mul(normal4);
             var normal = Vector3.Normalize(new Vector3(normal4.X, normal4.Y, normal4.Z));
 
-            var intensity = Vector3.Dot(normal, light);
+            var intensity = Vector3.Dot(normal, _light);
 
-            var power = specularMap[tx, ty].GetRed();
-            var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, light), normal), light);
+            var power = _specularMap[tx, ty].GetRed();
+            var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, _light), normal), _light);
 
-            var specular = Vector3.Dot(v, r);
+            var specular = Vector3.Dot(_v, r);
             specular = (float) Math.Pow(specular, power);
 
             intensity += 0.6f*specular;

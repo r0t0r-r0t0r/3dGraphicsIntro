@@ -34,10 +34,8 @@ namespace Render
             }
         }
 
-        unsafe public void DrawBorders(int faceIndex, int* bitmap, ShaderState shaderState, int startY, int endY)
+        unsafe public void DrawBorders(int faceIndex, int* bitmap, Shader shader, ShaderState shaderState, int startY, int endY)
         {
-            var shader = shaderState.World.WorldObject.Shader;
-
             shaderState.Vertex.Clear();
             var v0 = shader.Vertex(shaderState.Vertex, faceIndex, 0);
             var v1 = shader.Vertex(shaderState.Vertex, faceIndex, 1);
@@ -122,10 +120,8 @@ namespace Render
             }
         }
 
-        unsafe public void Draw(int faceIndex, int* data, ShaderState shaderState, int startY, int endY)
+        unsafe public void Draw(int faceIndex, int* data, Shader shader, ShaderState shaderState, int startY, int endY)
         {
-            var shader = shaderState.World.WorldObject.Shader;
-
             var faceState = shaderState.Face;
             var vertexState = shaderState.Vertex;
             var fragmentState = shaderState.Fragment;
@@ -157,7 +153,7 @@ namespace Render
                 DrawFilling(data, startY, endY, v0, v1, v2, fragmentState, faceState, vertexState, shader);
 
             if (_useBorders)
-                DrawBorders(faceIndex, data, shaderState, startY, endY);
+                DrawBorders(faceIndex, data, shader, shaderState, startY, endY);
         }
 
         private unsafe void DrawFilling(int* data, int startY, int endY, Vector3 v0, Vector3 v1, Vector3 v2,

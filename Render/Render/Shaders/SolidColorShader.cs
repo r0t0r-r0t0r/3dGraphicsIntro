@@ -7,15 +7,22 @@ namespace Render.Shaders
     {
         private readonly int _color = Color.White.ToArgb();
 
+        private Matrix4x4 _transformation;
+        private Geometry _geometry;
+
+        public override void World(World world)
+        {
+            _transformation = world.Transformation;
+            _geometry = world.WorldObject.Model.Geometry;
+        }
+
         public override void Face(FaceShaderState state, int face)
         {
         }
 
         public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var transformation = state.World.Transformation;
-            var geometry = state.World.WorldObject.Model.Geometry;
-            return transformation.Mul(new Vector4(geometry.GetVertex(face, vert), 1));
+            return _transformation.Mul(new Vector4(_geometry.GetVertex(face, vert), 1));
         }
 
         public override int? Fragment(FragmentShaderState state)

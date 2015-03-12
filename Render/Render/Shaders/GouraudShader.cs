@@ -14,6 +14,11 @@ namespace Render.Shaders
             _innerShader = innerShader;
         }
 
+        public override void World(World world)
+        {
+            _innerShader.World(world);
+        }
+
         public override void Face(FaceShaderState state, int face)
         {
         }

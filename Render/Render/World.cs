@@ -93,7 +93,7 @@ namespace Render
             get { return _model; }
         }
 
-        public Shader Shader { get; set; }
+        public Func<Shader> ShaderFactory { get; set; }
         public Matrix4x4 ModelTransform { get; set; }
     }
 
@@ -110,34 +110,34 @@ namespace Render
 
         public static World CreateWorld(RenderSettings settings, int width, int height)
         {
-            Shader shader;
+            Func<Shader> shaderFactory;
 
-            Shader innerShader;
+            Func<Shader> innerShaderFactory;
             if (settings.RenderMode.FillMode.UseTexture)
             {
-                innerShader = new TextureShader();
+                innerShaderFactory = () => new TextureShader();
             }
             else
             {
-                innerShader = new SolidColorShader();
+                innerShaderFactory = () => new SolidColorShader();
             }
 
             switch (settings.RenderMode.LightMode)
             {
                 case LightMode.None:
-                    shader = innerShader;
+                    shaderFactory = innerShaderFactory;
                     break;
                 case LightMode.Simple:
-                    shader = new SimpleShader(innerShader);
+                    shaderFactory = () => new SimpleShader(innerShaderFactory());
                     break;
                 case LightMode.Gouraud:
-                    shader = new GouraudShader(innerShader);
+                    shaderFactory = () => new GouraudShader(innerShaderFactory());
                     break;
                 case LightMode.Phong:
-                    shader = new PhongShader(innerShader);
+                    shaderFactory = () => new PhongShader(innerShaderFactory());
                     break;
                 case LightMode.NormalMapping:
-                    shader = new NormalMappingShader(innerShader);
+                    shaderFactory = () => new NormalMappingShader(innerShaderFactory());
                     break;
                 default:
                     throw new ArgumentException();
@@ -155,10 +155,10 @@ namespace Render
             {
                 renderMode = FlatRenderMode.Fill;
             }
-            return CreateWorld(width, height, settings.ViewportScale, settings.PerspectiveProjection, shader, renderMode);
+            return CreateWorld(width, height, settings.ViewportScale, settings.PerspectiveProjection, shaderFactory, renderMode);
         }
 
-        private static World CreateWorld(int width, int height, float viewportScale, bool usePerspectiveProjection, Shader shader, FlatRenderMode renderMode)
+        private static World CreateWorld(int width, int height, float viewportScale, bool usePerspectiveProjection, Func<Shader> shaderFactory, FlatRenderMode renderMode)
         {
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(3, 3, 10);
@@ -179,15 +179,15 @@ namespace Render
                 : Matrix4x4.Identity;
             var view = Matrix4x4Utils.LookAt(center, eye, up);
 
-            return CreateWorld(projection, viewport, view, shader, renderMode, v);
+            return CreateWorld(projection, viewport, view, shaderFactory, renderMode, v);
         }
 
-        private static World CreateWorld(Matrix4x4 projection, Matrix4x4 viewport, Matrix4x4 view, Shader shader, FlatRenderMode renderMode, Vector3 v)
+        private static World CreateWorld(Matrix4x4 projection, Matrix4x4 viewport, Matrix4x4 view, Func<Shader> shaderFactory, FlatRenderMode renderMode, Vector3 v)
         {
             var worldObject = new WorldObject(Model)
             {
                 ModelTransform = Matrix4x4.Identity,
-                Shader = shader
+                ShaderFactory = shaderFactory
             };
 
             return new World(worldObject)
