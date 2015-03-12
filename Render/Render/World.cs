@@ -155,10 +155,10 @@ namespace Render
             {
                 renderMode = FlatRenderMode.Fill;
             }
-            return CreateWorld(width, height, settings.ViewportScale, settings.PerspectiveProjection, shaderFactory, renderMode);
+            return CreateWorld(width, height, settings.ViewportScale, settings.PerspectiveProjection, shaderFactory, renderMode, settings.LightDirection);
         }
 
-        private static World CreateWorld(int width, int height, float viewportScale, bool usePerspectiveProjection, Func<Shader> shaderFactory, FlatRenderMode renderMode)
+        private static World CreateWorld(int width, int height, float viewportScale, bool usePerspectiveProjection, Func<Shader> shaderFactory, FlatRenderMode renderMode, Vector3 lightDirection)
         {
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(3, 3, 10);
@@ -179,10 +179,10 @@ namespace Render
                 : Matrix4x4.Identity;
             var view = Matrix4x4Utils.LookAt(center, eye, up);
 
-            return CreateWorld(projection, viewport, view, shaderFactory, renderMode, v);
+            return CreateWorld(projection, viewport, view, shaderFactory, renderMode, v, lightDirection);
         }
 
-        private static World CreateWorld(Matrix4x4 projection, Matrix4x4 viewport, Matrix4x4 view, Func<Shader> shaderFactory, FlatRenderMode renderMode, Vector3 v)
+        private static World CreateWorld(Matrix4x4 projection, Matrix4x4 viewport, Matrix4x4 view, Func<Shader> shaderFactory, FlatRenderMode renderMode, Vector3 v, Vector3 lightDirection)
         {
             var worldObject = new WorldObject(Model)
             {
@@ -193,7 +193,7 @@ namespace Render
             return new World(worldObject)
             {
                 RenderMode = renderMode,
-                LightDirection = Vector3.Normalize(new Vector3(8f, 6f, 10f)),
+                LightDirection = Vector3.Normalize(lightDirection),
                 ViewTransform = view,
                 ProjectionTransform = projection,
                 ViewportTransform = viewport,

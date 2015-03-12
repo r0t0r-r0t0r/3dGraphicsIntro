@@ -39,6 +39,7 @@
             this.textureRadioButton = new System.Windows.Forms.RadioButton();
             this.solidColorRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.normalMappingRadioButton = new System.Windows.Forms.RadioButton();
             this.phongRadioButton = new System.Windows.Forms.RadioButton();
             this.gouraudRadioButton = new System.Windows.Forms.RadioButton();
             this.simpleRadioButton = new System.Windows.Forms.RadioButton();
@@ -54,7 +55,10 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.normalMappingRadioButton = new System.Windows.Forms.RadioButton();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.lightDirectionXnumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.lightDirectionYnumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.lightDirectionZnumericUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -68,6 +72,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -94,6 +102,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -197,6 +206,17 @@
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Light Mode";
+            // 
+            // normalMappingRadioButton
+            // 
+            this.normalMappingRadioButton.AutoSize = true;
+            this.normalMappingRadioButton.Location = new System.Drawing.Point(6, 112);
+            this.normalMappingRadioButton.Name = "normalMappingRadioButton";
+            this.normalMappingRadioButton.Size = new System.Drawing.Size(102, 17);
+            this.normalMappingRadioButton.TabIndex = 4;
+            this.normalMappingRadioButton.Text = "Normal Mapping";
+            this.normalMappingRadioButton.UseVisualStyleBackColor = true;
+            this.normalMappingRadioButton.CheckedChanged += new System.EventHandler(this.normalMappingRadioButton_CheckedChanged);
             // 
             // phongRadioButton
             // 
@@ -380,16 +400,56 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
-            // normalMappingRadioButton
+            // groupBox5
             // 
-            this.normalMappingRadioButton.AutoSize = true;
-            this.normalMappingRadioButton.Location = new System.Drawing.Point(6, 112);
-            this.normalMappingRadioButton.Name = "normalMappingRadioButton";
-            this.normalMappingRadioButton.Size = new System.Drawing.Size(102, 17);
-            this.normalMappingRadioButton.TabIndex = 4;
-            this.normalMappingRadioButton.Text = "Normal Mapping";
-            this.normalMappingRadioButton.UseVisualStyleBackColor = true;
-            this.normalMappingRadioButton.CheckedChanged += new System.EventHandler(this.normalMappingRadioButton_CheckedChanged);
+            this.groupBox5.Controls.Add(this.lightDirectionZnumericUpDown);
+            this.groupBox5.Controls.Add(this.lightDirectionYnumericUpDown);
+            this.groupBox5.Controls.Add(this.lightDirectionXnumericUpDown);
+            this.groupBox5.Location = new System.Drawing.Point(6, 440);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(216, 111);
+            this.groupBox5.TabIndex = 9;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "groupBox5";
+            // 
+            // lightDirectionXnumericUpDown
+            // 
+            this.lightDirectionXnumericUpDown.Location = new System.Drawing.Point(7, 20);
+            this.lightDirectionXnumericUpDown.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionXnumericUpDown.Name = "lightDirectionXnumericUpDown";
+            this.lightDirectionXnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionXnumericUpDown.TabIndex = 0;
+            this.lightDirectionXnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionXnumericUpDown_ValueChanged);
+            // 
+            // lightDirectionYnumericUpDown
+            // 
+            this.lightDirectionYnumericUpDown.Location = new System.Drawing.Point(6, 46);
+            this.lightDirectionYnumericUpDown.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionYnumericUpDown.Name = "lightDirectionYnumericUpDown";
+            this.lightDirectionYnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionYnumericUpDown.TabIndex = 1;
+            this.lightDirectionYnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionYnumericUpDown_ValueChanged);
+            // 
+            // lightDirectionZnumericUpDown
+            // 
+            this.lightDirectionZnumericUpDown.Location = new System.Drawing.Point(7, 72);
+            this.lightDirectionZnumericUpDown.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionZnumericUpDown.Name = "lightDirectionZnumericUpDown";
+            this.lightDirectionZnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionZnumericUpDown.TabIndex = 2;
+            this.lightDirectionZnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionZnumericUpDown_ValueChanged);
             // 
             // RenderForm
             // 
@@ -418,6 +478,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -451,6 +515,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button startBenchmarkButton;
         private System.Windows.Forms.RadioButton normalMappingRadioButton;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.NumericUpDown lightDirectionZnumericUpDown;
+        private System.Windows.Forms.NumericUpDown lightDirectionYnumericUpDown;
+        private System.Windows.Forms.NumericUpDown lightDirectionXnumericUpDown;
     }
 }
 

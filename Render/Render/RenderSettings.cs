@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,22 +13,25 @@ namespace Render
         private readonly RenderMode _renderMode;
         private readonly bool _perspectiveProjection;
         private readonly float _viewportScale;
+        private readonly Vector3 _lightDirection;
 
-        private RenderSettings(RenderMode renderMode, bool perspectiveProjection, float viewportScale)
+        private RenderSettings(RenderMode renderMode, bool perspectiveProjection, float viewportScale, Vector3 lightDirection)
         {
             _renderMode = renderMode;
             _perspectiveProjection = perspectiveProjection;
             _viewportScale = viewportScale;
+            _lightDirection = lightDirection;
         }
 
-        public static Func<RenderMode, RenderSettings> Create(bool perspectiveProjection, float cameraZPosition)
+        public static Func<RenderMode, RenderSettings> Create(bool perspectiveProjection, float cameraZPosition, Vector3 lightDirection)
         {
-            return rm => new RenderSettings(rm, perspectiveProjection, cameraZPosition);
+            return rm => new RenderSettings(rm, perspectiveProjection, cameraZPosition, lightDirection);
         }
 
         public RenderMode RenderMode { get { return _renderMode; }}
         public bool PerspectiveProjection { get { return _perspectiveProjection; }}
         public float ViewportScale { get { return _viewportScale; }}
+        public Vector3 LightDirection { get { return _lightDirection; } }
     }
 
     public class RenderMode

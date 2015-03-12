@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,9 @@ namespace Render
             FillMode = FlatFillMode.Texture;
             PerspectiveProjection = true;
             ViewportScale = 0.9f;
+            LightDirectionX = 0;
+            LightDirectionY = 0;
+            LightDirectionZ = 1;
         }
 
         public FlatRenderMode RenderMode { get; set; }
@@ -23,10 +27,13 @@ namespace Render
         public FlatFillMode FillMode { get; set; }
         public bool PerspectiveProjection { get; set; }
         public float ViewportScale { get; set; }
+        public float LightDirectionX { get; set; }
+        public float LightDirectionY { get; set; }
+        public float LightDirectionZ { get; set; }
 
         public RenderSettings Build()
         {
-            var settings = RenderSettings.Create(PerspectiveProjection, ViewportScale);
+            var settings = RenderSettings.Create(PerspectiveProjection, ViewportScale, new Vector3(LightDirectionX, LightDirectionY, LightDirectionZ));
 
             LightMode lightMode;
             switch (LightMode)

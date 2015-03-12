@@ -222,5 +222,23 @@ namespace Render
                 benchmarkLog.WriteLine(line);
             }
         }
+
+        private void lightDirectionXnumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            _builder.LightDirectionX = (float) lightDirectionXnumericUpDown.Value;
+            Draw();
+        }
+
+        private void lightDirectionYnumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            _builder.LightDirectionY = (float) lightDirectionYnumericUpDown.Value;
+            Draw();
+        }
+
+        private void lightDirectionZnumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            _builder.LightDirectionZ = (float) lightDirectionZnumericUpDown.Value;
+            Draw();
+        }
     }
 }
