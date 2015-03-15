@@ -161,7 +161,8 @@ namespace Render
         private static World CreateWorld(int width, int height, float viewportScale, bool usePerspectiveProjection, Func<Shader> shaderFactory, FlatRenderMode renderMode, Vector3 lightDirection)
         {
             var center = new Vector3(0, 0, 0);
-            var eye = new Vector3(3, 3, 10);
+//            var eye = new Vector3(3, 3, 10);
+            var eye = new Vector3(0, 0, 10);
             var up = new Vector3(0, 1, 0);
 
             var v = Vector3.Normalize(Vector3.Subtract(eye, center));

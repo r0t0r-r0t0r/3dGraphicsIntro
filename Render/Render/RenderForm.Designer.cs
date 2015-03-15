@@ -31,6 +31,10 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.lightDirectionZnumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.lightDirectionYnumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.lightDirectionXnumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,13 +59,13 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.lightDirectionXnumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.lightDirectionYnumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.lightDirectionZnumericUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -72,10 +76,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -85,6 +85,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(800, 800);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             // 
             // tabControl1
             // 
@@ -117,6 +118,90 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.lightDirectionZnumericUpDown);
+            this.groupBox5.Controls.Add(this.lightDirectionYnumericUpDown);
+            this.groupBox5.Controls.Add(this.lightDirectionXnumericUpDown);
+            this.groupBox5.Location = new System.Drawing.Point(6, 440);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(216, 111);
+            this.groupBox5.TabIndex = 9;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "groupBox5";
+            // 
+            // lightDirectionZnumericUpDown
+            // 
+            this.lightDirectionZnumericUpDown.DecimalPlaces = 3;
+            this.lightDirectionZnumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.lightDirectionZnumericUpDown.Location = new System.Drawing.Point(7, 72);
+            this.lightDirectionZnumericUpDown.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.lightDirectionZnumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionZnumericUpDown.Name = "lightDirectionZnumericUpDown";
+            this.lightDirectionZnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionZnumericUpDown.TabIndex = 2;
+            this.lightDirectionZnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionZnumericUpDown_ValueChanged);
+            // 
+            // lightDirectionYnumericUpDown
+            // 
+            this.lightDirectionYnumericUpDown.DecimalPlaces = 3;
+            this.lightDirectionYnumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.lightDirectionYnumericUpDown.Location = new System.Drawing.Point(6, 46);
+            this.lightDirectionYnumericUpDown.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.lightDirectionYnumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionYnumericUpDown.Name = "lightDirectionYnumericUpDown";
+            this.lightDirectionYnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionYnumericUpDown.TabIndex = 1;
+            this.lightDirectionYnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionYnumericUpDown_ValueChanged);
+            // 
+            // lightDirectionXnumericUpDown
+            // 
+            this.lightDirectionXnumericUpDown.DecimalPlaces = 3;
+            this.lightDirectionXnumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.lightDirectionXnumericUpDown.Location = new System.Drawing.Point(7, 20);
+            this.lightDirectionXnumericUpDown.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.lightDirectionXnumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.lightDirectionXnumericUpDown.Name = "lightDirectionXnumericUpDown";
+            this.lightDirectionXnumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.lightDirectionXnumericUpDown.TabIndex = 0;
+            this.lightDirectionXnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionXnumericUpDown_ValueChanged);
             // 
             // groupBox4
             // 
@@ -400,57 +485,6 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.lightDirectionZnumericUpDown);
-            this.groupBox5.Controls.Add(this.lightDirectionYnumericUpDown);
-            this.groupBox5.Controls.Add(this.lightDirectionXnumericUpDown);
-            this.groupBox5.Location = new System.Drawing.Point(6, 440);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(216, 111);
-            this.groupBox5.TabIndex = 9;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "groupBox5";
-            // 
-            // lightDirectionXnumericUpDown
-            // 
-            this.lightDirectionXnumericUpDown.Location = new System.Drawing.Point(7, 20);
-            this.lightDirectionXnumericUpDown.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.lightDirectionXnumericUpDown.Name = "lightDirectionXnumericUpDown";
-            this.lightDirectionXnumericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.lightDirectionXnumericUpDown.TabIndex = 0;
-            this.lightDirectionXnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionXnumericUpDown_ValueChanged);
-            // 
-            // lightDirectionYnumericUpDown
-            // 
-            this.lightDirectionYnumericUpDown.Location = new System.Drawing.Point(6, 46);
-            this.lightDirectionYnumericUpDown.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.lightDirectionYnumericUpDown.Name = "lightDirectionYnumericUpDown";
-            this.lightDirectionYnumericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.lightDirectionYnumericUpDown.TabIndex = 1;
-            this.lightDirectionYnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionYnumericUpDown_ValueChanged);
-            // 
-            // lightDirectionZnumericUpDown
-            // 
-            this.lightDirectionZnumericUpDown.Location = new System.Drawing.Point(7, 72);
-            this.lightDirectionZnumericUpDown.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.lightDirectionZnumericUpDown.Name = "lightDirectionZnumericUpDown";
-            this.lightDirectionZnumericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.lightDirectionZnumericUpDown.TabIndex = 2;
-            this.lightDirectionZnumericUpDown.ValueChanged += new System.EventHandler(this.lightDirectionZnumericUpDown_ValueChanged);
-            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -464,6 +498,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -478,10 +516,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.groupBox5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionXnumericUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionYnumericUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lightDirectionZnumericUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }

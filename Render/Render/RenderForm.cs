@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Render.Experiments;
 using System.IO;
+using System.Numerics;
 
 namespace Render
 {
@@ -238,6 +239,39 @@ namespace Render
         private void lightDirectionZnumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             _builder.LightDirectionZ = (float) lightDirectionZnumericUpDown.Value;
+            Draw();
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+//            var b = 1/(float)Math.Sqrt(2);
+            var b = 1;
+            var r = 1f;
+            var x = (float) e.X/ViewportWidth*2*b - b;
+            var y = (float) (ViewportHeight - e.Y)/ViewportHeight*2*b - b;
+
+            var vect = new Vector2(x, y);
+            float z;
+            if (vect.Length() >= r)
+            {
+                vect = Vector2.Normalize(vect);
+                x = vect.X;
+                y = vect.Y;
+                z = 0;
+            }
+            else
+            {
+                z = (float) Math.Sqrt(r*r - x*x - y*y);
+            }
+
+            _builder.LightDirectionX = x;
+            _builder.LightDirectionY = y;
+            _builder.LightDirectionZ = z;
+
+//            lightDirectionXnumericUpDown.Value = (decimal) x;
+//            lightDirectionYnumericUpDown.Value = (decimal) y;
+//            lightDirectionZnumericUpDown.Value = (decimal) z;
+
             Draw();
         }
     }

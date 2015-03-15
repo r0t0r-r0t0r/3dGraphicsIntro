@@ -25,7 +25,8 @@ namespace Render.Shaders
 
             _normalMap = world.WorldObject.Model.NormalMap;
             _specularMap = world.WorldObject.Model.SpecularMap;
-            _light = world.LightDirection;
+            var light4 = world.ProjectionTransform.Mul(world.ViewTransform.Mul(new Vector4(world.LightDirection, 0)));
+            _light = new Vector3(light4.X, light4.Y, light4.Z);
             _v = world.CameraDirection;
             _transformation = world.NormalTransform;
             _geometry = world.WorldObject.Model.Geometry;
@@ -58,6 +59,8 @@ namespace Render.Shaders
             var tcolor = _normalMap[tx, ty];
             var normalColor = new IntColor {Color = tcolor};
             var normal4 = new Vector4(normalColor.Red, normalColor.Green, normalColor.Blue, 0);
+            normal4 = normal4/127.5f;
+            normal4 = new Vector4(normal4.X - 1, normal4.Y - 1, normal4.Z - 1, 0);
             normal4 = _transformation.Mul(normal4);
             var normal = Vector3.Normalize(new Vector3(normal4.X, normal4.Y, normal4.Z));
 
@@ -69,7 +72,8 @@ namespace Render.Shaders
             var specular = Vector3.Dot(_v, r);
             specular = (float) Math.Pow(specular, power);
 
-            intensity += 0.6f*specular;
+//            intensity += 0.6f*specular;
+            intensity = specular;
 
             var intColor = new IntColor { Color = color.Value };
 
@@ -77,9 +81,9 @@ namespace Render.Shaders
             var green = (intColor.Green * intensity);
             var blue = (intColor.Blue * intensity);
 
-            intColor.Red = (byte) Math.Max(Math.Min(5+red, 255), 0);
-            intColor.Green = (byte) Math.Max(Math.Min(5+green, 255), 0);
-            intColor.Blue = (byte) Math.Max(Math.Min(5+blue, 255), 0);
+            intColor.Red = (byte) Math.Max(Math.Min(red, 255), 0);
+            intColor.Green = (byte) Math.Max(Math.Min(green, 255), 0);
+            intColor.Blue = (byte) Math.Max(Math.Min(blue, 255), 0);
 
             return intColor.Color;
         }
