@@ -12,7 +12,7 @@ namespace Render.Shaders
 
         public override void World(World world)
         {
-            _transformation = world.Transformation;
+            _transformation = world.GetTransform();
             _geometry = world.WorldObject.Model.Geometry;
         }
 

@@ -22,7 +22,7 @@ namespace Render
         private const int ViewportHeight = 800;
         
         private readonly RenderCore _renderCore = new RenderCore(ViewportWidth, ViewportHeight);
-        private readonly RenderSettingsBuilder _builder = new RenderSettingsBuilder();
+        private readonly WorldBuilder _builder = new WorldBuilder(ViewportWidth, ViewportHeight);
 
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
@@ -37,42 +37,42 @@ namespace Render
         {
             switch (_builder.RenderMode)
             {
-                case FlatRenderMode.Borders:
+                case RenderMode.Borders:
                     bordersRadioButton.Checked = true;
                     break;
-                case FlatRenderMode.Fill:
+                case RenderMode.Fill:
                     fillRadioButton.Checked = true;
                     break;
-                case FlatRenderMode.BordersAndFill:
+                case RenderMode.BordersAndFill:
                     bordersAndFillRadioButton.Checked = true;
                     break;
             }
 
             switch (_builder.FillMode)
             {
-                case FlatFillMode.Texture:
+                case FillMode.Texture:
                     textureRadioButton.Checked = true;
                     break;
-                case FlatFillMode.SolidColor:
+                case FillMode.SolidColor:
                     solidColorRadioButton.Checked = true;
                     break;
             }
 
             switch (_builder.LightMode)
             {
-                case FlatLightMode.None:
+                case LightMode.None:
                     flatRadioButton.Checked = true;
                     break;
-                case FlatLightMode.Simple:
+                case LightMode.Simple:
                     simpleRadioButton.Checked = true;
                     break;
-                case FlatLightMode.Gouraud:
+                case LightMode.Gouraud:
                     gouraudRadioButton.Checked = true;
                     break;
-                case FlatLightMode.Phong:
+                case LightMode.Phong:
                     phongRadioButton.Checked = true;
                     break;
-                case FlatLightMode.NormalMapping:
+                case LightMode.NormalMapping:
                     normalMappingRadioButton.Checked = true;
                     break;
             }
@@ -92,7 +92,7 @@ namespace Render
 
         private void Draw()
         {
-            var world = WorldUtils.CreateWorld(_builder.Build(), _backBuffer.Width, _backBuffer.Height);
+            var world = _builder.BuildWorld();
             _renderCore.Render(world, _backBuffer);
             pictureBox1.Image = _backBuffer;
 
@@ -115,79 +115,84 @@ namespace Render
 
         private void bordersRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = FlatRenderMode.Borders;
+            _builder.RenderMode = RenderMode.Borders;
             Draw();
         }
 
         private void fillRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = FlatRenderMode.Fill;
+            _builder.RenderMode = RenderMode.Fill;
             Draw();
         }
 
         private void bordersAndFillRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = FlatRenderMode.BordersAndFill;
+            _builder.RenderMode = RenderMode.BordersAndFill;
             Draw();
         }
 
         private void flatRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = FlatLightMode.None;
+            _builder.LightMode = LightMode.None;
             Draw();
         }
 
         private void simpleRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = FlatLightMode.Simple;
+            _builder.LightMode = LightMode.Simple;
             Draw();
         }
 
         private void gouraudRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = FlatLightMode.Gouraud;
+            _builder.LightMode = LightMode.Gouraud;
             Draw();
         }
 
         private void phongRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = FlatLightMode.Phong;
+            _builder.LightMode = LightMode.Phong;
             Draw();
         }
 
         private void normalMappingRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = FlatLightMode.NormalMapping;
+            _builder.LightMode = LightMode.NormalMapping;
             Draw();
         }
 
         private void solidColorRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.FillMode = FlatFillMode.SolidColor;
+            _builder.FillMode = FillMode.SolidColor;
             Draw();
         }
 
         private void textureRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.FillMode = FlatFillMode.Texture;
+            _builder.FillMode = FillMode.Texture;
             Draw();
         }
 
         private void startBenchmarkButton_Click(object sender, EventArgs e)
         {
-            _builder.ViewportScale = 0.9f;
-            _builder.FillMode = FlatFillMode.Texture;
-            _builder.LightMode = FlatLightMode.NormalMapping;
+            _builder.RenderMode = RenderMode.Fill;
+            _builder.LightMode = LightMode.NormalMapping;
+            _builder.FillMode = FillMode.Texture;
+
             _builder.PerspectiveProjection = true;
-            _builder.RenderMode = FlatRenderMode.Fill;
+
+            _builder.ViewportScale = 0.9f;
+
+            _builder.ViewportLightX = ViewportWidth/2;
+            _builder.ViewportLightY = ViewportHeight/2;
+
             InitializeSettings();
             Draw();
 
-            var buffer = new Bitmap(800, 800, PixelFormat.Format32bppRgb);
-            var renderCore = new RenderCore(800, 800);
+            var buffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
+            var renderCore = new RenderCore(ViewportWidth, ViewportHeight);
 
-            var settings = _builder.Build();
-            var world = WorldUtils.CreateWorld(settings, buffer.Width, buffer.Height);
+            var world = _builder.BuildWorld();
 
             const int count = 300;
             var start = Stopwatch.GetTimestamp();
@@ -224,53 +229,10 @@ namespace Render
             }
         }
 
-        private void lightDirectionXnumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            _builder.LightDirectionX = (float) lightDirectionXnumericUpDown.Value;
-            Draw();
-        }
-
-        private void lightDirectionYnumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            _builder.LightDirectionY = (float) lightDirectionYnumericUpDown.Value;
-            Draw();
-        }
-
-        private void lightDirectionZnumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            _builder.LightDirectionZ = (float) lightDirectionZnumericUpDown.Value;
-            Draw();
-        }
-
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-//            var b = 1/(float)Math.Sqrt(2);
-            var b = 1;
-            var r = 1f;
-            var x = (float) e.X/ViewportWidth*2*b - b;
-            var y = (float) (ViewportHeight - e.Y)/ViewportHeight*2*b - b;
-
-            var vect = new Vector2(x, y);
-            float z;
-            if (vect.Length() >= r)
-            {
-                vect = Vector2.Normalize(vect);
-                x = vect.X;
-                y = vect.Y;
-                z = 0;
-            }
-            else
-            {
-                z = (float) Math.Sqrt(r*r - x*x - y*y);
-            }
-
-            _builder.LightDirectionX = x;
-            _builder.LightDirectionY = y;
-            _builder.LightDirectionZ = z;
-
-//            lightDirectionXnumericUpDown.Value = (decimal) x;
-//            lightDirectionYnumericUpDown.Value = (decimal) y;
-//            lightDirectionZnumericUpDown.Value = (decimal) z;
+            _builder.ViewportLightX = e.X;
+            _builder.ViewportLightY = e.Y;
 
             Draw();
         }

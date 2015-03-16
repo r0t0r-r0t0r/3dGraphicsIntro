@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Numerics;
 
 namespace Render.Shaders
@@ -28,7 +29,7 @@ namespace Render.Shaders
             var light4 = world.ProjectionTransform.Mul(world.ViewTransform.Mul(new Vector4(world.LightDirection, 0)));
             _light = new Vector3(light4.X, light4.Y, light4.Z);
             _v = world.CameraDirection;
-            _transformation = world.NormalTransform;
+            _transformation = world.GetNormalTransform();
             _geometry = world.WorldObject.Model.Geometry;
         }
 
@@ -72,8 +73,8 @@ namespace Render.Shaders
             var specular = Vector3.Dot(_v, r);
             specular = (float) Math.Pow(specular, power);
 
-//            intensity += 0.6f*specular;
-            intensity = specular;
+            intensity += 0.6f*specular;
+//            intensity = specular;
 
             var intColor = new IntColor { Color = color.Value };
 

@@ -21,7 +21,7 @@ namespace Render
             _zBuffer = new float[width, height];
         }
 
-        public void Init(FlatRenderMode renderMode)
+        public void Init(RenderMode renderMode)
         {
             _useFill = renderMode.UseFill();
             _useBorders = renderMode.UseBorders();

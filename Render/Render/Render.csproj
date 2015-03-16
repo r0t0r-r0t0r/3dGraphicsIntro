@@ -79,8 +79,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderCore.cs" />
-    <Compile Include="RenderSettings.cs" />
-    <Compile Include="RenderSettingsBuilder.cs" />
+    <Compile Include="WorldBuilder.cs" />
     <Compile Include="Shaders\SimpleShader.cs" />
     <Compile Include="Shaders\SolidColorShader.cs" />
     <Compile Include="Shaders\FaceShaderState.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="Texture.cs" />
     <Compile Include="Triple.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="WorldUtils.cs" />
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </EmbeddedResource>

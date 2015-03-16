@@ -13,7 +13,7 @@ namespace Render.Shaders
         public override void World(World world)
         {
             _geometry = world.WorldObject.Model.Geometry;
-            _transformation = world.Transformation;
+            _transformation = world.GetTransform();
             _texture = world.WorldObject.Model.Texture;
         }
 
