@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Render.Experiments;
 using System.IO;
 using System.Numerics;
 
@@ -85,9 +84,6 @@ namespace Render
         {
             Draw();
             LoadLastBenchmarkResult();
-            pictureBox2.Image = FilledTriangle.Render();
-            pictureBox3.Image = YBuffer.Render();
-            pictureBox4.Image = Line.Render();
         }
 
         private void Draw()
