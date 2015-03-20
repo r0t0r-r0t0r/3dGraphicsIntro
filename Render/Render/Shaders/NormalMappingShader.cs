@@ -71,7 +71,8 @@ namespace Render.Shaders
             var r = Vector3.Subtract(Vector3.Multiply(2*Vector3.Dot(normal, _light), normal), _light);
 
             var specular = Vector3.Dot(_v, r);
-            specular = (float) Math.Pow(specular, power);
+
+            specular = specular < 0 ? 0 : (float) Math.Pow(specular, power);
 
             intensity += 0.6f*specular;
 //            intensity = specular;
