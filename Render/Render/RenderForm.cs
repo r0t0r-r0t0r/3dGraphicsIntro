@@ -26,6 +26,8 @@ namespace Render
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
 
+        private MouseMode _mouseMode;
+
         public RenderForm()
         {
             InitializeComponent();
@@ -228,10 +230,38 @@ namespace Render
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            _builder.ViewportLightX = e.X;
-            _builder.ViewportLightY = e.Y;
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            switch (_mouseMode)
+            {
+                case MouseMode.RotateLight:
+                    _builder.ViewportLightX = e.X;
+                    _builder.ViewportLightY = e.Y;
+                    break;
+                case MouseMode.RotateModel:
+                    _builder.ModelRotationX = ((float)ViewportWidth/2 - e.X)/((float)ViewportWidth/2)*(float)Math.PI/2;
+                    _builder.ModelRotationY = ((float)ViewportHeight/2 - e.Y)/((float)ViewportHeight/2)*(float)Math.PI/2;
+                    break;
+            }
 
             Draw();
         }
+
+        private void rotateLightRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _mouseMode = MouseMode.RotateLight;
+        }
+
+        private void rotateModelRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            _mouseMode = MouseMode.RotateModel;
+        }
+    }
+
+    internal enum MouseMode
+    {
+        RotateLight,
+        RotateModel
     }
 }

@@ -50,6 +50,9 @@
             this.bordersRadioButton = new System.Windows.Forms.RadioButton();
             this.perspectiveProjectionCheckBox = new System.Windows.Forms.CheckBox();
             this.viewportScaleNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rotateLightRadioButton = new System.Windows.Forms.RadioButton();
+            this.rotateModelRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -58,6 +61,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -83,6 +87,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -333,6 +338,41 @@
             65536});
             this.viewportScaleNumericUpDown.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.rotateModelRadioButton);
+            this.groupBox5.Controls.Add(this.rotateLightRadioButton);
+            this.groupBox5.Location = new System.Drawing.Point(6, 440);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(215, 100);
+            this.groupBox5.TabIndex = 9;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Mouse Mode";
+            // 
+            // rotateLightRadioButton
+            // 
+            this.rotateLightRadioButton.AutoSize = true;
+            this.rotateLightRadioButton.Checked = true;
+            this.rotateLightRadioButton.Location = new System.Drawing.Point(7, 20);
+            this.rotateLightRadioButton.Name = "rotateLightRadioButton";
+            this.rotateLightRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.rotateLightRadioButton.TabIndex = 0;
+            this.rotateLightRadioButton.TabStop = true;
+            this.rotateLightRadioButton.Text = "Rotate Light";
+            this.rotateLightRadioButton.UseVisualStyleBackColor = true;
+            this.rotateLightRadioButton.CheckedChanged += new System.EventHandler(this.rotateLightRadioButton_CheckedChanged);
+            // 
+            // rotateModelRadioButton
+            // 
+            this.rotateModelRadioButton.AutoSize = true;
+            this.rotateModelRadioButton.Location = new System.Drawing.Point(7, 43);
+            this.rotateModelRadioButton.Name = "rotateModelRadioButton";
+            this.rotateModelRadioButton.Size = new System.Drawing.Size(89, 17);
+            this.rotateModelRadioButton.TabIndex = 1;
+            this.rotateModelRadioButton.Text = "Rotate Model";
+            this.rotateModelRadioButton.UseVisualStyleBackColor = true;
+            this.rotateModelRadioButton.CheckedChanged += new System.EventHandler(this.rotateModelRadioButton_CheckedChanged);
+            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -355,6 +395,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -383,6 +425,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button startBenchmarkButton;
         private System.Windows.Forms.RadioButton normalMappingRadioButton;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton rotateModelRadioButton;
+        private System.Windows.Forms.RadioButton rotateLightRadioButton;
     }
 }
 

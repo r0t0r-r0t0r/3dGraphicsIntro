@@ -50,6 +50,9 @@ namespace Render
         public int ViewportLightX { get; set; }
         public int ViewportLightY { get; set; }
 
+        public float ModelRotationX { get; set; }
+        public float ModelRotationY { get; set; }
+
         public World BuildWorld()
         {
             var center = new Vector3(0, 0, 0);
@@ -60,7 +63,7 @@ namespace Render
             {
                 ShaderFactory = CreateShaderFactory(LightMode, FillMode),
                 FirstPhaseShaderFactory = () => new ZBufferShader(),
-                ModelTransform = Matrix4x4.Identity
+                ModelTransform = Matrix4x4.CreateRotationX(ModelRotationY).Mul(Matrix4x4.CreateRotationY(ModelRotationX))
             };
 
             var world = new World(worldObject)

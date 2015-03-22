@@ -89,7 +89,7 @@ namespace Render.Shaders
             var shX = (int)(shadowBufPoint.X/shadowBufPoint.W);
             var shY = (int)(shadowBufPoint.Y/shadowBufPoint.W);
             var shZ = (int)(shadowBufPoint.Z/shadowBufPoint.W);
-            var shadowPresent = (shZ + 2f) <
+            var shadowPresent = (shZ + 3f) <
                                 new IntColor {Color = _shadowBuffer[_shadowBuffer.ClipX(shX), _shadowBuffer.ClipY(shY)]}.Red;
 
             var tcolor = _normalMap[tx, ty];
