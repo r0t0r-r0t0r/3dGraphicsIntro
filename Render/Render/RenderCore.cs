@@ -9,31 +9,26 @@ using Render.Shaders;
 
 namespace Render
 {
-    public class RenderCore
+    public class RenderCore: IDisposable
     {
         private readonly int _width;
         private readonly int _height;
         private readonly Render _render;
+        private readonly WritableTexture _firstPhaseScreen;
 
         public RenderCore(int width, int height)
         {
             _width = width;
             _height = height;
             _render = new Render(width, height);
+            _firstPhaseScreen = new WritableTexture(new Bitmap(width, height, PixelFormat.Format32bppRgb), true);
         }
 
         public void Render(World world, Bitmap bitmap)
         {
-            _render.Init(world.RenderMode);
-            var data = bitmap.LockBits(new Rectangle(0, 0, _width, _height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
-            unsafe
+            using (var screen = new WritableTexture(bitmap, false))
             {
-                var rawData = (int*) data.Scan0;
-                var length = _width*_height;
-                for (var i = 0; i < length; i++)
-                {
-                    rawData[i] = 0;
-                }
+                screen.Clear();
 
                 var parCount = Environment.ProcessorCount;
                 var vertStep = _height/parCount - 1;
@@ -48,30 +43,84 @@ namespace Render
                 }
                 var last = parCount - 1;
                 regions[last] = Tuple.Create(regions[last].Item1, _height - 1);
-                var tasks =
-                    regions.Select(
-                        region =>
-                            new Task(() => Draw(rawData, _render, region.Item1, region.Item2, world)))
-                        .ToArray();
-                foreach (var task in tasks)
+                if (world.TwoPhaseRendering)
                 {
-                    task.Start();
+                    var task = TwoPhaseDraw(world, regions, screen);
+                    task.Wait();
                 }
-                Task.WaitAll(tasks);
+                else
+                {
+                    _render.Init(world.RenderMode);
+                    var tasks = regions.Select(
+                        region =>
+                            new Task(() => Draw(screen, world.WorldObject.ShaderFactory, _render, region.Item1, region.Item2, world)))
+                        .ToArray();
+                    foreach (var task in tasks)
+                    {
+                        task.Start();
+                    }
+                    Task.WaitAll(tasks);
+                }
             }
-            bitmap.UnlockBits(data);
         }
 
-        private unsafe static void Draw(int* data, Render render, int startY, int endY, World world)
+        private async Task TwoPhaseDraw(World world, Tuple<int, int>[] regions, WritableTexture screen)
+        {
+            _firstPhaseScreen.Clear();
+            _render.Init(RenderMode.Fill);
+
+            var firstPhaseTasks = regions.Select(
+                region =>
+                    new Task(
+                        () =>
+                            Draw(_firstPhaseScreen, world.WorldObject.FirstPhaseShaderFactory, _render, region.Item1,
+                                region.Item2, world)))
+                .ToArray();
+            foreach (var task in firstPhaseTasks)
+            {
+                task.Start();
+            }
+            await Task.WhenAll(firstPhaseTasks).ConfigureAwait(false);
+
+            _render.Init(world.RenderMode);
+
+            var secondPhaseTasks = regions.Select(
+                region =>
+                    new Task(() =>
+                    {
+                        var shaderState = new ShaderState(30, world);
+                        var shader = world.WorldObject.ShaderFactory();
+                        shader.World(world, _firstPhaseScreen);
+
+                        for (var i = 0; i < world.WorldObject.Model.Geometry.Faces.Count; i++)
+                        {
+                            _render.Draw(i, screen, shader, shaderState, region.Item1, region.Item2);
+                        }
+                    }))
+                .ToArray();
+            foreach (var task in secondPhaseTasks)
+            {
+                task.Start();
+            }
+
+            await Task.WhenAll(secondPhaseTasks).ConfigureAwait(false);
+        }
+
+        private static void Draw(WritableTexture screen, Func<Shader> shaderFactory, Render render, int startY, int endY, World world)
         {
             var shaderState = new ShaderState(30, world);
-            var shader = world.WorldObject.ShaderFactory();
+            var shader = shaderFactory();
             shader.World(world);
             
             for (var i = 0; i < world.WorldObject.Model.Geometry.Faces.Count; i++)
             {
-                render.Draw(i, data, shader, shaderState, startY, endY);
+                render.Draw(i, screen, shader, shaderState, startY, endY);
             }
+        }
+
+        public void Dispose()
+        {
+            _firstPhaseScreen.Dispose();
         }
     }
 }

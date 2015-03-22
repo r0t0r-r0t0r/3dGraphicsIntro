@@ -186,23 +186,24 @@ namespace Render
             Draw();
 
             var buffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
-            var renderCore = new RenderCore(ViewportWidth, ViewportHeight);
-
-            var world = _builder.BuildWorld();
-
-            const int count = 300;
-            var start = Stopwatch.GetTimestamp();
-            for (var i = 0; i < count; i++)
+            using (var renderCore = new RenderCore(ViewportWidth, ViewportHeight))
             {
-                renderCore.Render(world, buffer);
+                var world = _builder.BuildWorld();
+
+                const int count = 300;
+                var start = Stopwatch.GetTimestamp();
+                for (var i = 0; i < count; i++)
+                {
+                    renderCore.Render(world, buffer);
+                }
+                var end = Stopwatch.GetTimestamp();
+
+                double runticks = end - start;
+                double runtime = runticks/Stopwatch.Frequency/count;
+
+                lastBenchmarkTimeLabel.Text = runtime.ToString("F4");
+                WriteBenchmarkResult(DateTime.Now, runtime);
             }
-            var end = Stopwatch.GetTimestamp();
-
-            double runticks = end - start;
-            double runtime = runticks/Stopwatch.Frequency/count;
-
-            lastBenchmarkTimeLabel.Text = runtime.ToString("F4");
-            WriteBenchmarkResult(DateTime.Now, runtime);
         }
 
         private void LoadLastBenchmarkResult()

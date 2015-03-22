@@ -34,7 +34,7 @@ namespace Render
             }
         }
 
-        unsafe public void DrawBorders(int faceIndex, int* bitmap, Shader shader, ShaderState shaderState, int startY, int endY)
+        public void DrawBorders(int faceIndex, WritableTexture screen, Shader shader, ShaderState shaderState, int startY, int endY)
         {
             shaderState.Vertex.Clear();
             var v0 = shader.Vertex(shaderState.Vertex, faceIndex, 0);
@@ -49,12 +49,12 @@ namespace Render
             };
 
             var color = Color.White.ToArgb();
-            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, bitmap, color, startY, endY);
-            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, bitmap, color, startY, endY);
-            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, bitmap, color, startY, endY);
+            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, screen, color, startY, endY);
+            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, screen, color, startY, endY);
+            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, screen, color, startY, endY);
         }
 
-        unsafe private void Line(int x0, int y0, int x1, int y1, int* bmp, int color, int startY, int endY)
+        private void Line(int x0, int y0, int x1, int y1, WritableTexture screen, int color, int startY, int endY)
         {
             var vertOrientation = Math.Abs(x1 - x0) < Math.Abs(y1 - y0);
 
@@ -105,22 +105,20 @@ namespace Render
                 {
                     if (y >= 0 && y < _width && x >= startY && x <= endY)
                     {
-                        var foo = ((_height - x - 1)*_width + y);
-                        bmp[foo] = color;
+                        screen.Write(y, x, color);
                     }
                 }
                 else
                 {
                     if (x >= 0 && x < _width && y >= startY && y <= endY)
                     {
-                        var foo = ((_height - y - 1)*_width + x);
-                        bmp[foo] = color;
+                        screen.Write(x, y, color);
                     }
                 }
             }
         }
 
-        unsafe public void Draw(int faceIndex, int* data, Shader shader, ShaderState shaderState, int startY, int endY)
+        public void Draw(int faceIndex, WritableTexture screen, Shader shader, ShaderState shaderState, int startY, int endY)
         {
             var faceState = shaderState.Face;
             var vertexState = shaderState.Vertex;
@@ -150,13 +148,13 @@ namespace Render
                 return;
 
             if (_useFill)
-                DrawFilling(data, startY, endY, v0, v1, v2, fragmentState, faceState, vertexState, shader);
+                DrawFilling(screen, startY, endY, v0, v1, v2, fragmentState, faceState, vertexState, shader);
 
             if (_useBorders)
-                DrawBorders(faceIndex, data, shader, shaderState, startY, endY);
+                DrawBorders(faceIndex, screen, shader, shaderState, startY, endY);
         }
 
-        private unsafe void DrawFilling(int* data, int startY, int endY, Vector3 v0, Vector3 v1, Vector3 v2,
+        private void DrawFilling(WritableTexture screen, int startY, int endY, Vector3 v0, Vector3 v1, Vector3 v2,
             FragmentShaderState fragmentState, FaceShaderState faceState, VertexShaderState vertexState, Shader shader)
         {
             var x0 = (int) Math.Round(v0.X);
@@ -192,7 +190,7 @@ namespace Render
 
             var converter = new BarycentricCoordinatesConverter(v0.X, v0.Y, v1.X, v1.Y, v2.X, v2.Y);
 
-            var line = data + (_height - minY - 1)*_width;
+            var writer = screen.GetWriter(minY);
 
             for (int y = minY; y <= maxY; y++)
             {
@@ -228,7 +226,7 @@ namespace Render
                         if (resColor != null)
                         {
                             _zBuffer[x, y] = z;
-                            line[x] = resColor.Value;
+                            writer.Write(x, resColor.Value);
                         }
                     }
                     sline1.StepX();
@@ -238,7 +236,7 @@ namespace Render
                 sline1.StepY();
                 sline2.StepY();
                 sline3.StepY();
-                line -= _width;
+                writer.NextLine();
             }
         }
 

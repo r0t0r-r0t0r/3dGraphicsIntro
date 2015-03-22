@@ -25,9 +25,9 @@ namespace Render
 
         public WorldBuilder(int width, int height)
         {
-            RenderMode = global::Render.RenderMode.Fill;
-            LightMode = global::Render.LightMode.NormalMapping;
-            FillMode = global::Render.FillMode.Texture;
+            RenderMode = RenderMode.Fill;
+            LightMode = LightMode.NormalMapping;
+            FillMode = FillMode.Texture;
 
             PerspectiveProjection = true;
 
@@ -59,6 +59,7 @@ namespace Render
             var worldObject = new WorldObject(Model)
             {
                 ShaderFactory = CreateShaderFactory(LightMode, FillMode),
+                FirstPhaseShaderFactory = () => new ZBufferShader(),
                 ModelTransform = Matrix4x4.Identity
             };
 
@@ -71,7 +72,9 @@ namespace Render
                 ProjectionTransform = CreateProjectionTransform(PerspectiveProjection, center, eye),
                 ViewportTransform = CreateViewportTransform(_viewportWidth, _viewportHeight, ViewportScale),
 
-                CameraDirection = CreateCameraDirection(center, eye)
+                CameraDirection = CreateCameraDirection(center, eye),
+
+                TwoPhaseRendering = true
             };
 
             return world;
@@ -121,13 +124,13 @@ namespace Render
                 case LightMode.Simple:
                     shaderFactory = () => new SimpleShader(innerShaderFactory());
                     break;
-                case global::Render.LightMode.Gouraud:
+                case LightMode.Gouraud:
                     shaderFactory = () => new GouraudShader(innerShaderFactory());
                     break;
-                case global::Render.LightMode.Phong:
+                case LightMode.Phong:
                     shaderFactory = () => new PhongShader(innerShaderFactory());
                     break;
-                case global::Render.LightMode.NormalMapping:
+                case LightMode.NormalMapping:
                     shaderFactory = () => new NormalMappingShader(innerShaderFactory());
                     break;
                 default:

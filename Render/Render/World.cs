@@ -25,6 +25,8 @@ namespace Render
         public Matrix4x4 ProjectionTransform { get; set; }
         public Matrix4x4 ViewTransform { get; set; }
 
+        public bool TwoPhaseRendering { get; set; }
+
         public WorldObject WorldObject
         {
             get { return _worldObject; }
@@ -46,6 +48,7 @@ namespace Render
         }
 
         public Func<Shader> ShaderFactory { get; set; }
+        public Func<Shader> FirstPhaseShaderFactory { get; set; }
         public Matrix4x4 ModelTransform { get; set; }
     }
 }
