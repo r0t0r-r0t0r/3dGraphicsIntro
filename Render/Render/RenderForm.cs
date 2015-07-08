@@ -1,16 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
-using System.Numerics;
+using System.Linq;
+using System.Windows.Forms;
 using Render.Benchmarking;
 
 namespace Render
@@ -22,7 +16,6 @@ namespace Render
         private const int ViewportHeight = 800;
         
         private readonly RenderCore _renderCore = new RenderCore(ViewportWidth, ViewportHeight);
-        private readonly WorldBuilder _builder = new WorldBuilder(ViewportWidth, ViewportHeight);
 
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
@@ -32,153 +25,203 @@ namespace Render
         public RenderForm()
         {
             InitializeComponent();
-            InitializeSettings();
+            SetupWorldStateControls();
         }
 
-        private void InitializeSettings()
+        private static WorldState CreateInitialState()
         {
-            switch (_builder.RenderMode)
+            return new WorldState(renderMode: RenderMode.Fill, lightMode: LightMode.NormalMapping,
+                fillMode: FillMode.Texture, perspectiveProjection: true, viewportScale: 0.9f,
+                viewportWidth: ViewportWidth, viewportHeight: ViewportHeight, viewportLightX: ViewportWidth/2,
+                viewportLightY: ViewportHeight/2, modelRotationX: 0, modelRotationY: 0);
+        }
+
+        private class ControlsWorldStateChangeAware: IWorldStateChangeAware<Unit>
+        {
+            private readonly RenderForm _form;
+
+            public ControlsWorldStateChangeAware(RenderForm form)
             {
-                case RenderMode.Borders:
-                    bordersRadioButton.Checked = true;
-                    break;
-                case RenderMode.Fill:
-                    fillRadioButton.Checked = true;
-                    break;
-                case RenderMode.BordersAndFill:
-                    bordersAndFillRadioButton.Checked = true;
-                    break;
+                _form = form;
             }
 
-            switch (_builder.FillMode)
+            public Unit Empty()
             {
-                case FillMode.Texture:
-                    textureRadioButton.Checked = true;
-                    break;
-                case FillMode.SolidColor:
-                    solidColorRadioButton.Checked = true;
-                    break;
+                return Unit.Value;
             }
 
-            switch (_builder.LightMode)
+            public Unit ChangeRenderMode(RenderMode mode)
             {
-                case LightMode.None:
-                    flatRadioButton.Checked = true;
-                    break;
-                case LightMode.Simple:
-                    simpleRadioButton.Checked = true;
-                    break;
-                case LightMode.Gouraud:
-                    gouraudRadioButton.Checked = true;
-                    break;
-                case LightMode.Phong:
-                    phongRadioButton.Checked = true;
-                    break;
-                case LightMode.NormalMapping:
-                    normalMappingRadioButton.Checked = true;
-                    break;
+                switch (mode)
+                {
+                    case RenderMode.Borders:
+                        _form.bordersRadioButton.Checked = true;
+                        break;
+                    case RenderMode.Fill:
+                        _form.fillRadioButton.Checked = true;
+                        break;
+                    case RenderMode.BordersAndFill:
+                        _form.bordersAndFillRadioButton.Checked = true;
+                        break;
+                }
+
+                return Unit.Value;
             }
 
-            viewportScaleNumericUpDown.Value = (decimal) _builder.ViewportScale;
-            perspectiveProjectionCheckBox.Checked = _builder.PerspectiveProjection;
+            public Unit ChangeLightMode(LightMode mode)
+            {
+                switch (mode)
+                {
+                    case LightMode.None:
+                        _form.flatRadioButton.Checked = true;
+                        break;
+                    case LightMode.Simple:
+                        _form.simpleRadioButton.Checked = true;
+                        break;
+                    case LightMode.Gouraud:
+                        _form.gouraudRadioButton.Checked = true;
+                        break;
+                    case LightMode.Phong:
+                        _form.phongRadioButton.Checked = true;
+                        break;
+                    case LightMode.NormalMapping:
+                        _form.normalMappingRadioButton.Checked = true;
+                        break;
+                }
+
+                return Unit.Value;
+            }
+
+            public Unit ChangeFillMode(FillMode mode)
+            {
+                switch (mode)
+                {
+                    case FillMode.Texture:
+                        _form.textureRadioButton.Checked = true;
+                        break;
+                    case FillMode.SolidColor:
+                        _form.solidColorRadioButton.Checked = true;
+                        break;
+                }
+
+                return Unit.Value;
+            }
+
+            public Unit ChangePerspectiveProjection(bool projection)
+            {
+                _form.perspectiveProjectionCheckBox.Checked = projection;
+
+                return Unit.Value;
+            }
+
+            public Unit ChangeViewportScale(float scale)
+            {
+                _form.viewportScaleNumericUpDown.Value = (decimal) scale;
+
+                return Unit.Value;
+            }
+
+            public Unit ChangeViewportSize(int width, int height)
+            {
+                return Unit.Value;
+            }
+
+            public Unit ChangeLightPosition(int x, int y)
+            {
+                return Unit.Value;
+            }
+
+            public Unit ChangeModelRotation(float x, float y)
+            {
+                return Unit.Value;
+            }
+        }
+
+        private void SetupWorldStateControls()
+        {
+            var changes = _worldState.AsChanges();
+            var aware = new ControlsWorldStateChangeAware(this);
+            foreach (var change in changes)
+            {
+                change.Perform(aware);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Draw();
+            Draw(WorldStateChange.Empty);
             LoadLastBenchmarkResult();
-        }
-
-        private void Draw()
-        {
-            var world = _builder.BuildWorld();
-            _renderCore.Render(world, _backBuffer);
-            pictureBox1.Image = _backBuffer;
-
-            var exchange = _backBuffer;
-            _backBuffer = _frontBuffer;
-            _frontBuffer = exchange;
         }
 
         private void CameraZPositionHandler(object sender, EventArgs e)
         {
-            _builder.ViewportScale = (float) viewportScaleNumericUpDown.Value;
-            Draw();
+            var viewportScale = (float) viewportScaleNumericUpDown.Value;
+            Draw(WorldStateChange.ChangeViewportScale(viewportScale));
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.PerspectiveProjection = perspectiveProjectionCheckBox.Checked;
-            Draw();
+            var perspectiveProjection = perspectiveProjectionCheckBox.Checked;
+            Draw(WorldStateChange.ChangePerspectiveProjection(perspectiveProjection));
         }
 
         private void bordersRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = RenderMode.Borders;
-            Draw();
+            Draw(WorldStateChange.ChangeRenderMode(RenderMode.Borders));
         }
 
         private void fillRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = RenderMode.Fill;
-            Draw();
+            Draw(WorldStateChange.ChangeRenderMode(RenderMode.Fill));
         }
 
         private void bordersAndFillRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.RenderMode = RenderMode.BordersAndFill;
-            Draw();
+            Draw(WorldStateChange.ChangeRenderMode(RenderMode.BordersAndFill));
         }
 
         private void flatRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = LightMode.None;
-            Draw();
+            Draw(WorldStateChange.ChangeLightMode(LightMode.None));
         }
 
         private void simpleRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = LightMode.Simple;
-            Draw();
+            Draw(WorldStateChange.ChangeLightMode(LightMode.Simple));
         }
 
         private void gouraudRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = LightMode.Gouraud;
-            Draw();
+            Draw(WorldStateChange.ChangeLightMode(LightMode.Gouraud));
         }
 
         private void phongRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = LightMode.Phong;
-            Draw();
+            Draw(WorldStateChange.ChangeLightMode(LightMode.Phong));
         }
 
         private void normalMappingRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.LightMode = LightMode.NormalMapping;
-            Draw();
+            Draw(WorldStateChange.ChangeLightMode(LightMode.NormalMapping));
         }
 
         private void solidColorRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.FillMode = FillMode.SolidColor;
-            Draw();
+            Draw(WorldStateChange.ChangeFillMode(FillMode.SolidColor));
         }
 
         private void textureRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            _builder.FillMode = FillMode.Texture;
-            Draw();
+            Draw(WorldStateChange.ChangeFillMode(FillMode.Texture));
         }
 
         private async void startBenchmarkButton_Click(object sender, EventArgs e)
         {
             var benchmark = BenchmarkFactory.Create();
 
-            _builder.SetFrom(benchmark.Settings);
-            InitializeSettings();
-            Draw();
+            _worldState = benchmark.State;
+            SetupWorldStateControls();
+            Draw(WorldStateChange.Empty);
             lastBenchmarkTimeLabel.Text = "Started";
             mainPanel.Enabled = false;
 
@@ -224,16 +267,15 @@ namespace Render
             switch (_mouseMode)
             {
                 case MouseMode.RotateLight:
-                    _builder.ViewportLightX = e.X;
-                    _builder.ViewportLightY = e.Y;
+                    Draw(WorldStateChange.ChangeLightPosition(e.X, e.Y));
                     break;
                 case MouseMode.RotateModel:
-                    _builder.ModelRotationX = ((float)ViewportWidth/2 - e.X)/((float)ViewportWidth/2)*(float)Math.PI/2;
-                    _builder.ModelRotationY = ((float)ViewportHeight/2 - e.Y)/((float)ViewportHeight/2)*(float)Math.PI/2;
+                    var x = ((float)ViewportWidth/2 - e.X)/((float)ViewportWidth/2)*(float)Math.PI/2;
+                    var y = ((float)ViewportHeight/2 - e.Y)/((float)ViewportHeight/2)*(float)Math.PI/2;
+                    
+                    Draw(WorldStateChange.ChangeModelRotation(x, y));
                     break;
             }
-
-            Draw();
         }
 
         private void rotateLightRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -244,6 +286,21 @@ namespace Render
         private void rotateModelRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             _mouseMode = MouseMode.RotateModel;
+        }
+
+        private WorldState _worldState = CreateInitialState();
+
+        private void Draw(WorldStateChange change)
+        {
+            _worldState = change.Perform(WorldStateChangeAware.Instance)(_worldState);
+
+            var world = WorldBuilder.BuildWorld(_worldState);
+            _renderCore.Render(world, _backBuffer);
+            pictureBox1.Image = _backBuffer;
+
+            var exchange = _backBuffer;
+            _backBuffer = _frontBuffer;
+            _frontBuffer = exchange;
         }
     }
 
