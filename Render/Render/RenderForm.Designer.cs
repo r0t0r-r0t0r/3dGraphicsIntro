@@ -30,7 +30,10 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.mainTabPage = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rotateModelRadioButton = new System.Windows.Forms.RadioButton();
+            this.rotateLightRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -50,18 +53,15 @@
             this.bordersRadioButton = new System.Windows.Forms.RadioButton();
             this.perspectiveProjectionCheckBox = new System.Windows.Forms.CheckBox();
             this.viewportScaleNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.rotateLightRadioButton = new System.Windows.Forms.RadioButton();
-            this.rotateModelRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.mainTabPage.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).BeginInit();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -78,30 +78,65 @@
             this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.mainTabPage);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(766, 776);
             this.tabControl1.TabIndex = 1;
             // 
-            // tabPage1
+            // mainTabPage
             // 
-            this.tabPage1.Controls.Add(this.groupBox5);
-            this.tabPage1.Controls.Add(this.groupBox4);
-            this.tabPage1.Controls.Add(this.groupBox3);
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Controls.Add(this.perspectiveProjectionCheckBox);
-            this.tabPage1.Controls.Add(this.viewportScaleNumericUpDown);
-            this.tabPage1.Controls.Add(this.pictureBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(758, 750);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Main";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.mainTabPage.Controls.Add(this.groupBox5);
+            this.mainTabPage.Controls.Add(this.groupBox4);
+            this.mainTabPage.Controls.Add(this.groupBox3);
+            this.mainTabPage.Controls.Add(this.groupBox2);
+            this.mainTabPage.Controls.Add(this.groupBox1);
+            this.mainTabPage.Controls.Add(this.perspectiveProjectionCheckBox);
+            this.mainTabPage.Controls.Add(this.viewportScaleNumericUpDown);
+            this.mainTabPage.Controls.Add(this.pictureBox1);
+            this.mainTabPage.Location = new System.Drawing.Point(4, 22);
+            this.mainTabPage.Name = "mainTabPage";
+            this.mainTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.mainTabPage.Size = new System.Drawing.Size(758, 750);
+            this.mainTabPage.TabIndex = 0;
+            this.mainTabPage.Text = "Main";
+            this.mainTabPage.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.rotateModelRadioButton);
+            this.groupBox5.Controls.Add(this.rotateLightRadioButton);
+            this.groupBox5.Location = new System.Drawing.Point(6, 440);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(215, 100);
+            this.groupBox5.TabIndex = 9;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Mouse Mode";
+            // 
+            // rotateModelRadioButton
+            // 
+            this.rotateModelRadioButton.AutoSize = true;
+            this.rotateModelRadioButton.Location = new System.Drawing.Point(7, 43);
+            this.rotateModelRadioButton.Name = "rotateModelRadioButton";
+            this.rotateModelRadioButton.Size = new System.Drawing.Size(89, 17);
+            this.rotateModelRadioButton.TabIndex = 1;
+            this.rotateModelRadioButton.Text = "Rotate Model";
+            this.rotateModelRadioButton.UseVisualStyleBackColor = true;
+            this.rotateModelRadioButton.CheckedChanged += new System.EventHandler(this.rotateModelRadioButton_CheckedChanged);
+            // 
+            // rotateLightRadioButton
+            // 
+            this.rotateLightRadioButton.AutoSize = true;
+            this.rotateLightRadioButton.Checked = true;
+            this.rotateLightRadioButton.Location = new System.Drawing.Point(7, 20);
+            this.rotateLightRadioButton.Name = "rotateLightRadioButton";
+            this.rotateLightRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.rotateLightRadioButton.TabIndex = 0;
+            this.rotateLightRadioButton.TabStop = true;
+            this.rotateLightRadioButton.Text = "Rotate Light";
+            this.rotateLightRadioButton.UseVisualStyleBackColor = true;
+            this.rotateLightRadioButton.CheckedChanged += new System.EventHandler(this.rotateLightRadioButton_CheckedChanged);
             // 
             // groupBox4
             // 
@@ -338,41 +373,6 @@
             65536});
             this.viewportScaleNumericUpDown.ValueChanged += new System.EventHandler(this.CameraZPositionHandler);
             // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.rotateModelRadioButton);
-            this.groupBox5.Controls.Add(this.rotateLightRadioButton);
-            this.groupBox5.Location = new System.Drawing.Point(6, 440);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(215, 100);
-            this.groupBox5.TabIndex = 9;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Mouse Mode";
-            // 
-            // rotateLightRadioButton
-            // 
-            this.rotateLightRadioButton.AutoSize = true;
-            this.rotateLightRadioButton.Checked = true;
-            this.rotateLightRadioButton.Location = new System.Drawing.Point(7, 20);
-            this.rotateLightRadioButton.Name = "rotateLightRadioButton";
-            this.rotateLightRadioButton.Size = new System.Drawing.Size(83, 17);
-            this.rotateLightRadioButton.TabIndex = 0;
-            this.rotateLightRadioButton.TabStop = true;
-            this.rotateLightRadioButton.Text = "Rotate Light";
-            this.rotateLightRadioButton.UseVisualStyleBackColor = true;
-            this.rotateLightRadioButton.CheckedChanged += new System.EventHandler(this.rotateLightRadioButton_CheckedChanged);
-            // 
-            // rotateModelRadioButton
-            // 
-            this.rotateModelRadioButton.AutoSize = true;
-            this.rotateModelRadioButton.Location = new System.Drawing.Point(7, 43);
-            this.rotateModelRadioButton.Name = "rotateModelRadioButton";
-            this.rotateModelRadioButton.Size = new System.Drawing.Size(89, 17);
-            this.rotateModelRadioButton.TabIndex = 1;
-            this.rotateModelRadioButton.Text = "Rotate Model";
-            this.rotateModelRadioButton.UseVisualStyleBackColor = true;
-            this.rotateModelRadioButton.CheckedChanged += new System.EventHandler(this.rotateModelRadioButton_CheckedChanged);
-            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -384,8 +384,10 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.mainTabPage.ResumeLayout(false);
+            this.mainTabPage.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -395,8 +397,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).EndInit();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -405,7 +405,7 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage mainTabPage;
         private System.Windows.Forms.NumericUpDown viewportScaleNumericUpDown;
         private System.Windows.Forms.CheckBox perspectiveProjectionCheckBox;
         private System.Windows.Forms.GroupBox groupBox1;

@@ -39,6 +39,23 @@ namespace Render
             ViewportLightY = _viewportHeight/2;
         }
 
+        public void SetFrom(WorldBuilder builder)
+        {
+            RenderMode = builder.RenderMode;
+            LightMode = builder.LightMode;
+            FillMode = builder.FillMode;
+
+            PerspectiveProjection = builder.PerspectiveProjection;
+
+            ViewportScale = builder.ViewportScale;
+
+            ViewportLightX = (int) ((double)builder.ViewportLightX/builder._viewportWidth*_viewportWidth);
+            ViewportLightY = (int) ((double)builder.ViewportLightY/builder._viewportHeight*_viewportHeight);
+
+            ModelRotationX = builder.ModelRotationX;
+            ModelRotationY = builder.ModelRotationY;
+        }
+
         public RenderMode RenderMode { get; set; }
         public LightMode LightMode { get; set; }
         public FillMode FillMode { get; set; }

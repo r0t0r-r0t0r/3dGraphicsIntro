@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmarking\Benchmarking.cs" />
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Face.cs" />

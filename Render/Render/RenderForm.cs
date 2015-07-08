@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Numerics;
+using Render.Benchmarking;
 
 namespace Render
 {
@@ -171,40 +172,27 @@ namespace Render
             Draw();
         }
 
-        private void startBenchmarkButton_Click(object sender, EventArgs e)
+        private async void startBenchmarkButton_Click(object sender, EventArgs e)
         {
-            _builder.RenderMode = RenderMode.Fill;
-            _builder.LightMode = LightMode.NormalMapping;
-            _builder.FillMode = FillMode.Texture;
+            var benchmark = BenchmarkFactory.Create();
 
-            _builder.PerspectiveProjection = true;
-
-            _builder.ViewportScale = 0.9f;
-
-            _builder.ViewportLightX = ViewportWidth/2;
-            _builder.ViewportLightY = ViewportHeight/2;
-
+            _builder.SetFrom(benchmark.Settings);
             InitializeSettings();
             Draw();
+            lastBenchmarkTimeLabel.Text = "Started";
+            mainTabPage.Enabled = false;
 
-            var buffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
-            using (var renderCore = new RenderCore(ViewportWidth, ViewportHeight))
+            try
             {
-                var world = _builder.BuildWorld();
+                var result = await benchmark.Start().ConfigureAwait(false);
 
-                const int count = 300;
-                var start = Stopwatch.GetTimestamp();
-                for (var i = 0; i < count; i++)
-                {
-                    renderCore.Render(world, buffer);
-                }
-                var end = Stopwatch.GetTimestamp();
-
-                double runticks = end - start;
-                double runtime = runticks/Stopwatch.Frequency/count;
-
+                var runtime = result.FrameRenderingDuration;
                 lastBenchmarkTimeLabel.Text = runtime.ToString("F4");
                 WriteBenchmarkResult(DateTime.Now, runtime);
+            }
+            finally
+            {
+                mainTabPage.Enabled = true;
             }
         }
 
