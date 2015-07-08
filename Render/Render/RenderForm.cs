@@ -180,7 +180,7 @@ namespace Render
             InitializeSettings();
             Draw();
             lastBenchmarkTimeLabel.Text = "Started";
-            mainTabPage.Enabled = false;
+            mainPanel.Enabled = false;
 
             try
             {
@@ -192,7 +192,7 @@ namespace Render
             }
             finally
             {
-                mainTabPage.Enabled = true;
+                mainPanel.Enabled = true;
             }
         }
 
