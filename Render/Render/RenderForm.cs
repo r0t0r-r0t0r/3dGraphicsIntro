@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
-using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Render.Benchmarking;
+using Render.Lib;
 
 namespace Render
 {
     public partial class RenderForm : Form
     {
-        private const string BenchmarkLogFileName = @"..\..\BenchmarkLog.txt";
         private const int ViewportWidth = 800;
         private const int ViewportHeight = 800;
         
@@ -21,6 +23,8 @@ namespace Render
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
 
         private MouseMode _mouseMode;
+
+        private IReadOnlyCollection<BenchmarkRecord> _benchmarkRecords = new List<BenchmarkRecord>();
 
         public RenderForm()
         {
@@ -222,7 +226,11 @@ namespace Render
             _worldState = benchmark.State;
             SetupWorldStateControls();
             Draw(WorldStateChange.Empty);
-            lastBenchmarkTimeLabel.Text = "Started";
+
+            var dateTime = DateTime.Now;
+            lastBenchmarkTimeLabel.Text = "Benchmarking...";
+            lastBenchmarkRunLabel.Text = dateTime.ToString(Thread.CurrentThread.CurrentCulture);
+
             mainPanel.Enabled = false;
 
             try
@@ -230,8 +238,7 @@ namespace Render
                 var result = await benchmark.Start().ConfigureAwait(false);
 
                 var runtime = result.FrameRenderingDuration;
-                lastBenchmarkTimeLabel.Text = runtime.ToString("F4");
-                WriteBenchmarkResult(DateTime.Now, runtime);
+                WriteBenchmarkResult(dateTime, runtime);
             }
             finally
             {
@@ -241,22 +248,29 @@ namespace Render
 
         private void LoadLastBenchmarkResult()
         {
-            var lastLine = new []{"0 0"}
-                .Concat(File.ReadLines(BenchmarkLogFileName))
-                .Last();
-            var lineValues = lastLine.Split(' ');
-            var lastBenchmarkTime = double.Parse(lineValues[1], CultureInfo.InvariantCulture);
+            _benchmarkRecords = BenchmarkRecordsIo.Read();
 
-            lastBenchmarkTimeLabel.Text = lastBenchmarkTime.ToString("F4");
+            var lastBenchmark =
+                _benchmarkRecords.LastOption()
+                    .Select(
+                        x =>
+                            new
+                            {
+                                RunAt = x.DateTime.ToString(Thread.CurrentThread.CurrentCulture),
+                                Result = x.FrameRenderingDuration.ToString("F4")
+                            })
+                    .OrElse(new { RunAt = "Never", Result = "Unknown" });
+
+            lastBenchmarkTimeLabel.Text = lastBenchmark.Result;
+            lastBenchmarkRunLabel.Text = lastBenchmark.RunAt;
         }
 
         private void WriteBenchmarkResult(DateTime dateTime, double benchmarkTime)
         {
-            var line = string.Format(CultureInfo.InvariantCulture, "{0} {1}", dateTime.Ticks, benchmarkTime);
-            using (var benchmarkLog = File.AppendText(BenchmarkLogFileName))
-            {
-                benchmarkLog.WriteLine(line);
-            }
+            lastBenchmarkTimeLabel.Text = benchmarkTime.ToString("F4");
+            lastBenchmarkRunLabel.Text = dateTime.ToString(Thread.CurrentThread.CurrentCulture);
+
+            BenchmarkRecordsIo.Append(new BenchmarkRecord(dateTime, benchmarkTime));
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)

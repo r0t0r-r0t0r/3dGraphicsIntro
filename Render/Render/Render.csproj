@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmarking\Benchmarking.cs" />
+    <Compile Include="Benchmarking\IO.cs" />
+    <Compile Include="Filesystem\FilesystemUtils.cs" />
+    <Compile Include="Lib\Option.cs" />
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Face.cs" />
