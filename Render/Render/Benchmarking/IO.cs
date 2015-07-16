@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Render.Filesystem;
+using Render.Lib.Parsing;
 
 namespace Render.Benchmarking
 {
@@ -77,6 +79,29 @@ namespace Render.Benchmarking
             if (fi.Exists) return;
             using (fi.Create())
             {
+            }
+        }
+    }
+
+    internal class BenchmarkFileParsers: Parsers
+    {
+        private static Parser<DateTime> DateTimeFromLong(long rawDateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Parser<ImmutableList<BenchmarkRecord>> BenchmarkFileParser
+        {
+            get
+            {
+                var newLine = String(Environment.NewLine);
+                var dateTime = Long.SelectMany(DateTimeFromLong);
+
+                var line = dateTime.Product1(String(" ")).Product(Double).Product1(newLine).Select(x => new BenchmarkRecord(x.Item1, x.Item2));
+
+                var lines = Many(line);
+
+                return lines;
             }
         }
     }
