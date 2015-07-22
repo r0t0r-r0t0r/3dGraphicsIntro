@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Render.Filesystem;
 using Render.Lib.Parsing;
+using static Render.Lib.Parsing.Parsers;
+using static Render.Lib.Parsing.PrimitiveParsers;
 
 namespace Render.Benchmarking
 {
@@ -83,21 +85,21 @@ namespace Render.Benchmarking
         }
     }
 
-    internal class BenchmarkFileParsers: Parsers
+    internal static class BenchmarkFileParsers
     {
         private static Parser<DateTime> DateTimeFromLong(long rawDateTime)
         {
             throw new NotImplementedException();
         }
 
-        public Parser<ImmutableList<BenchmarkRecord>> BenchmarkFileParser
+        public static Parser<ImmutableList<BenchmarkRecord>> BenchmarkFileParser
         {
             get
             {
                 var newLine = String(Environment.NewLine);
-                var dateTime = Long.SelectMany(DateTimeFromLong);
+                var dateTime = Long().SelectMany(DateTimeFromLong);
 
-                var line = dateTime.Product1(String(" ")).Product(Double).Product1(newLine).Select(x => new BenchmarkRecord(x.Item1, x.Item2));
+                var line = dateTime.Product1(String(" ")).Product(Double()).Product1(newLine).Select(x => new BenchmarkRecord(x._1, x._2));
 
                 var lines = Many(line);
 

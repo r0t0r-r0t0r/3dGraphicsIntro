@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Render</RootNamespace>
     <AssemblyName>Render</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,8 +57,12 @@
     <Compile Include="Benchmarking\Benchmarking.cs" />
     <Compile Include="Benchmarking\IO.cs" />
     <Compile Include="Filesystem\FilesystemUtils.cs" />
+    <Compile Include="Lib\Either.cs" />
     <Compile Include="Lib\Option.cs" />
     <Compile Include="Lib\Parsing\Parser.cs" />
+    <Compile Include="Lib\Parsing\Parsers.cs" />
+    <Compile Include="Lib\Parsing\PrimitiveParsers.cs" />
+    <Compile Include="Lib\Parsing\ProductParsers.cs" />
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Face.cs" />
@@ -108,6 +113,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Model\african_head.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

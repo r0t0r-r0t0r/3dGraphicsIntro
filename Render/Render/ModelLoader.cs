@@ -11,6 +11,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Render.Lib.Parsing;
+using static Render.Lib.Parsing.Parsers;
+using static Render.Lib.Parsing.PrimitiveParsers;
+using static Render.Lib.Parsing.ProductParsers;
 
 namespace Render
 {
@@ -94,34 +97,34 @@ namespace Render
         }
     }
 
-    internal class GeometryParsers : Parsers
+    internal static class GeometryParsers
     {
         private static readonly Parser<Vector3> Vector3 =
-            Float.Product1(String(" "))
-                .Product(Float)
+            Float().Product1(String(" "))
+                .Product(Float())
                 .Product1(String(" "))
-                .Product(Float)
-                .Select(x => new Vector3(x.Item1, x.Item2, x.Item3));
+                .Product(Float())
+                .Select(x => new Vector3(x._1, x._2, x._3));
 
         private static readonly Parser<Line> Vertex =
-            String1("v ").Product(Vector3).Product1(NewLine).Select(Line.Vertex).Scope("Vertex");
+            String1("v ").Product(Vector3).Product1(NewLine()).Select(Line.Vertex).Scope("Vertex");
 
         private static readonly Parser<Line> TextureVertex =
-            String1("vt ").Product(Vector3).Product1(NewLine).Select(Line.TextureVertex).Scope("Texture Vertex");
+            String1("vt ").Product(Vector3).Product1(NewLine()).Select(Line.TextureVertex).Scope("Texture Vertex");
 
         private static readonly Parser<Line> VertexNormal =
-            String1("vn ").Product(Vector3).Product1(NewLine).Select(Line.VertexNormal).Scope("Vertex Normal");
+            String1("vn ").Product(Vector3).Product1(NewLine()).Select(Line.VertexNormal).Scope("Vertex Normal");
 
         private static readonly Parser<Line> Face = CreateFaceParser().Scope("Face");
 
         private static Parser<Line> CreateFaceParser()
         {
             var threeIndices =
-                Int.Product1(String("/"))
-                    .Product(Int)
+                Int().Product1(String("/"))
+                    .Product(Int())
                     .Product1(String("/"))
-                    .Product(Int)
-                    .Select(x => new {v = x.Item1, vt = x.Item2, vn = x.Item3});
+                    .Product(Int())
+                    .Select(x => new {v = x._1, vt = x._2, vn = x._3});
 
             return
                 String1("f ")
@@ -130,12 +133,12 @@ namespace Render
                     .Product(threeIndices)
                     .Product1(String(" "))
                     .Product(threeIndices)
-                    .Product1(NewLine)
+                    .Product1(NewLine())
                     .Select(x =>
                     {
-                        var v1 = x.Item1;
-                        var v2 = x.Item2;
-                        var v3 = x.Item3;
+                        var v1 = x._1;
+                        var v2 = x._2;
+                        var v3 = x._3;
 
                         var vs = new Triple<int>(v1.v, v2.v, v3.v);
                         var vts = new Triple<int>(v1.vt, v2.vt, v3.vt);
