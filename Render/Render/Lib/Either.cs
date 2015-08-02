@@ -32,6 +32,16 @@ namespace Render.Lib
         {
             return IsRight ? this : other();
         }
+
+        public TR GetOrElse(Func<TR> func)
+        {
+            return IsRight ? _right : func();
+        }
+
+        public TOut Match<TOut>(Func<TL, TOut> leftCase, Func<TR, TOut> rightCase)
+        {
+            return IsRight ? rightCase(_right) : leftCase(_left);
+        }
     }
 
     public static class Either
@@ -45,7 +55,6 @@ namespace Render.Lib
         {
             return new Either<TL, TR>(false, default(TL), right);
         }
-
 
         public static Either<TL, TR2> Select<TL, TR1, TR2>(this Either<TL, TR1> either, Func<TR1, TR2> func)
         {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Render.Lib.Parsing;
 using static Render.Lib.Parsing.Parsers;
 using static Render.Lib.Parsing.PrimitiveParsers;
-using static Render.Lib.Parsing.ProductParsers;
+using static Render.Lib.Parsing.AndParsers;
 
 namespace Render
 {
@@ -100,40 +100,40 @@ namespace Render
     internal static class GeometryParsers
     {
         private static readonly Parser<Vector3> Vector3 =
-            Float().Product1(String(" "))
-                .Product(Float())
-                .Product1(String(" "))
-                .Product(Float())
+            Float().And1(String(" "))
+                .And(Float())
+                .And1(String(" "))
+                .And(Float())
                 .Select(x => new Vector3(x._1, x._2, x._3));
 
         private static readonly Parser<Line> Vertex =
-            String1("v ").Product(Vector3).Product1(NewLine()).Select(Line.Vertex).Scope("Vertex");
+            String1("v ").And(Vector3).And1(NewLine()).Select(Line.Vertex).Scope("Vertex");
 
         private static readonly Parser<Line> TextureVertex =
-            String1("vt ").Product(Vector3).Product1(NewLine()).Select(Line.TextureVertex).Scope("Texture Vertex");
+            String1("vt ").And(Vector3).And1(NewLine()).Select(Line.TextureVertex).Scope("Texture Vertex");
 
         private static readonly Parser<Line> VertexNormal =
-            String1("vn ").Product(Vector3).Product1(NewLine()).Select(Line.VertexNormal).Scope("Vertex Normal");
+            String1("vn ").And(Vector3).And1(NewLine()).Select(Line.VertexNormal).Scope("Vertex Normal");
 
         private static readonly Parser<Line> Face = CreateFaceParser().Scope("Face");
 
         private static Parser<Line> CreateFaceParser()
         {
             var threeIndices =
-                Int().Product1(String("/"))
-                    .Product(Int())
-                    .Product1(String("/"))
-                    .Product(Int())
+                Int().And1(String("/"))
+                    .And(Int())
+                    .And1(String("/"))
+                    .And(Int())
                     .Select(x => new {v = x._1, vt = x._2, vn = x._3});
 
             return
                 String1("f ")
-                    .Product(threeIndices)
-                    .Product1(String(" "))
-                    .Product(threeIndices)
-                    .Product1(String(" "))
-                    .Product(threeIndices)
-                    .Product1(NewLine())
+                    .And(threeIndices)
+                    .And1(String(" "))
+                    .And(threeIndices)
+                    .And1(String(" "))
+                    .And(threeIndices)
+                    .And1(NewLine())
                     .Select(x =>
                     {
                         var v1 = x._1;
@@ -276,11 +276,6 @@ namespace Render
 
             protected class MatchParams
             {
-                public readonly Action<Vector3> VertexAction;
-                public readonly Action<Vector3> TextureVertexAction;
-                public readonly Action<Vector3> VertexNormalAction;
-                public readonly Action<Face> FaceAction;
-
                 public MatchParams(Action<Vector3> vertex, Action<Vector3> textureVertex, Action<Vector3> vertexNormal, Action<Face> face)
                 {
                     VertexAction = vertex;
@@ -288,6 +283,11 @@ namespace Render
                     VertexNormalAction = vertexNormal;
                     FaceAction = face;
                 }
+
+                public Action<Vector3> VertexAction { get; }
+                public Action<Vector3> TextureVertexAction { get; }
+                public Action<Vector3> VertexNormalAction { get; }
+                public Action<Face> FaceAction { get; }
             }
         }
     }

@@ -10,16 +10,24 @@ namespace Render.Lib.Parsing
 {
     public static class Parsers
     {
-        public static Parser<TOut> Select<TIn, TOut>(this Parser<TIn> p, Func<TIn, TOut> func)
+        // For LINQ
+        public static Parser<TOut> SelectMany<TIn, TMid, TOut>(this Parser<TIn> p, Func<TIn, Parser<TMid>> func, Func<TIn, TMid, TOut> selector)
         {
-            return p.SelectMany(x => Succeed(func(x)));
+            return p.SelectMany(x => func(x).Select(y => selector(x, y)));
         }
 
+        public static Parser<TOut> Select<TIn, TOut>(this Parser<TIn> p, Func<TIn, TOut> func)
+        {
+            return p.SelectMany(x => Return(func(x)));
+        }
+
+        // Unused
         public static Parser<char> Char(char c)
         {
             throw new NotImplementedException();
         }
 
+        // Unused
         public static Parser<ImmutableList<T>> ListOfN<T>(int n, Parser<T> p)
         {
             throw new NotImplementedException();
@@ -27,9 +35,10 @@ namespace Render.Lib.Parsing
 
         public static Parser<ImmutableList<T>> Many<T>(Parser<T> p)
         {
-            throw new NotImplementedException();
+            return Select2(p, () => Many(p), (x, xs) => xs.Add(x)).Or(Return(ImmutableList.Create<T>()));
         }
 
+        // Unused
         public static Parser<ImmutableList<T>> Many1<T>(Parser<T> p)
         {
             throw new NotImplementedException();
@@ -37,7 +46,10 @@ namespace Render.Lib.Parsing
 
         public static Parser<TOut> Select2<T1, T2, TOut>(Parser<T1> p1, Func<Parser<T2>> p2, Func<T1, T2, TOut> func)
         {
-            throw new NotImplementedException();
+            return
+                from x1 in p1
+                from x2 in p2()
+                select func(x1, x2);
         }
 
         public static Parser<int> Int()
@@ -62,7 +74,7 @@ namespace Render.Lib.Parsing
 
         public static Parser<Unit> NewLine()
         {
-            throw new NotImplementedException();
+            return String(Environment.NewLine).Select(_ => Unit.Value);
         }
     }
 }

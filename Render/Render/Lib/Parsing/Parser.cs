@@ -32,18 +32,18 @@ namespace Render.Lib.Parsing
 
     public class Parser<T>
     {
-        private readonly Func<ParserState, Either<Exception, Tuple<T, ParserState>>> _func;
+        private readonly Func<ParserState, TailRec<Either<Exception, Tuple<T, ParserState>>>> _func;
 
-        internal Parser(Func<ParserState, Either<Exception, Tuple<T, ParserState>>> func)
+        internal Parser(Func<ParserState, TailRec<Either<Exception, Tuple<T, ParserState>>>> func)
         {
             _func = func;
         }
 
-        public Either<Exception, Tuple<T, ParserState>> Run(ParserState state) => _func(state);
+        public TailRec<Either<Exception, Tuple<T, ParserState>>> Run(ParserState state) => _func(state);
 
-        public static T Parse(string str)
+        public T Parse(string str)
         {
-            throw new NotImplementedException();
+            return Try.FromEither(Run(new ParserState(0, str, "root")).Run().Select(x => x.Item1)).GetValue();
         }
     }
 }

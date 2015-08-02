@@ -99,7 +99,7 @@ namespace Render.Benchmarking
                 var newLine = String(Environment.NewLine);
                 var dateTime = Long().SelectMany(DateTimeFromLong);
 
-                var line = dateTime.Product1(String(" ")).Product(Double()).Product1(newLine).Select(x => new BenchmarkRecord(x._1, x._2));
+                var line = dateTime.And1(String(" ")).And(Double()).And1(newLine).Select(x => new BenchmarkRecord(x._1, x._2));
 
                 var lines = Many(line);
 
