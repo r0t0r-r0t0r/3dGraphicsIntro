@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 
-namespace Render.Benchmarking
+namespace Disunity.App.Benchmarking
 {
     public static class BenchmarkFactory
     {

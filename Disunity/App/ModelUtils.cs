@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Render
+namespace Disunity.App
 {
     public static class ModelUtils
     {

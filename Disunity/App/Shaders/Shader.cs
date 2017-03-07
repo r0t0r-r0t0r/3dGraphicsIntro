@@ -1,7 +1,6 @@
-using System.Drawing;
 using System.Numerics;
 
-namespace Render.Shaders
+namespace Disunity.App.Shaders
 {
     public abstract class Shader
     {

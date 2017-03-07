@@ -1,4 +1,4 @@
-﻿namespace Render
+﻿namespace Disunity.App
 {
     partial class RenderForm
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Render.Shaders;
+using Disunity.App.Shaders;
 
-namespace Render
+namespace Disunity.App
 {
     public struct Unit
     {

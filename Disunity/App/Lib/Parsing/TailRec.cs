@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Render.Lib.Parsing
+namespace Disunity.App.Lib.Parsing
 {
     public class TailRec<T>
     {

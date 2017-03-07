@@ -5,8 +5,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Render.Lib.Parsing.Parsers;
-using static Render.Lib.Parsing.PrimitiveParsers;
+using static Disunity.App.Lib.Parsing.Parsers;
+using static Disunity.App.Lib.Parsing.PrimitiveParsers;
 
 namespace ParserTests
 {

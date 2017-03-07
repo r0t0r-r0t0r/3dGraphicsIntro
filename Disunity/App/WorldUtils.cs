@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 
-namespace Render
+namespace Disunity.App
 {
     public static class WorldUtils
     {

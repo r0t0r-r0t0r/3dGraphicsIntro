@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Render
+namespace Disunity.App
 {
     public class Geometry
     {

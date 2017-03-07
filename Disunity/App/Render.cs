@@ -1,10 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
-using Render.Shaders;
+using Disunity.App.Shaders;
 
-namespace Render
+namespace Disunity.App
 {
     public class Render
     {

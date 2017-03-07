@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using Render;
-using Render.Lib.Parsing;
 using System;
-using static Render.Lib.Parsing.PrimitiveParsers;
+using Disunity.App;
+using Disunity.App.Lib.Parsing;
+using static Disunity.App.Lib.Parsing.PrimitiveParsers;
 
 namespace ParserTests
 {

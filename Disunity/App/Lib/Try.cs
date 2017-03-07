@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Render.Lib
+namespace Disunity.App.Lib
 {
     public class Try<TException, TValue>
         where TException : Exception

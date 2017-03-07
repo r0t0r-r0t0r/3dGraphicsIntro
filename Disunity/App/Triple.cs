@@ -1,6 +1,6 @@
 using System;
 
-namespace Render
+namespace Disunity.App
 {
     public struct Triple<T> where T : struct
     {

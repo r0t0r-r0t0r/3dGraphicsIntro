@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Render.Shaders;
+using Disunity.App.Shaders;
 
-namespace Render
+namespace Disunity.App
 {
     public class World
     {

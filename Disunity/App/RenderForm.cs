@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Render.Benchmarking;
-using Render.Lib;
+using Disunity.App.Benchmarking;
+using Disunity.App.Lib;
 
-namespace Render
+namespace Disunity.App
 {
     public partial class RenderForm : Form
     {

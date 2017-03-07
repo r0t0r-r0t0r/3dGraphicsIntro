@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Render.Shaders
+namespace Disunity.App.Shaders
 {
     public static class ShaderStateUtils
     {

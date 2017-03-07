@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Render.Lib.Parsing.PrimitiveParsers;
-
-namespace Render.Lib.Parsing
+﻿namespace Disunity.App.Lib.Parsing
 {
     public static class AndParsers
     {
         public static String1 String1(string s) =>
-            new String1(String(s));
+            new String1(PrimitiveParsers.String(s));
 
         public static Parser<T1> And1<T1, T2>(this Parser<T1> p1, Parser<T2> p2) =>
             from x1 in p1

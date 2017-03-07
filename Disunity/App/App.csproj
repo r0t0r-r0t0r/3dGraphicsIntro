@@ -7,8 +7,8 @@
     <ProjectGuid>{1CCC48CE-A8EB-4A6F-8B03-B298F21E1B13}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Render</RootNamespace>
-    <AssemblyName>Render</AssemblyName>
+    <RootNamespace>Disunity.App</RootNamespace>
+    <AssemblyName>DisunityApp</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Render.Lib.Parsing.PrimitiveParsers;
 
-namespace Render.Lib.Parsing
+namespace Disunity.App.Lib.Parsing
 {
     public static class Parsers
     {
@@ -18,7 +13,7 @@ namespace Render.Lib.Parsing
 
         public static Parser<TOut> Select<TIn, TOut>(this Parser<TIn> p, Func<TIn, TOut> func)
         {
-            return p.SelectMany(x => Return(func(x)));
+            return p.SelectMany(x => PrimitiveParsers.Return(func(x)));
         }
 
         // Unused
@@ -35,7 +30,7 @@ namespace Render.Lib.Parsing
 
         public static Parser<ImmutableList<T>> Many<T>(Parser<T> p)
         {
-            return Select2(p, () => Many(p), (x, xs) => xs.Add(x)).Or(Return(ImmutableList.Create<T>()));
+            return Select2(p, () => Many(p), (x, xs) => xs.Add(x)).Or(PrimitiveParsers.Return(ImmutableList.Create<T>()));
         }
 
         // Unused
@@ -74,7 +69,7 @@ namespace Render.Lib.Parsing
 
         public static Parser<Unit> NewLine()
         {
-            return String(Environment.NewLine).Select(_ => Unit.Value);
+            return PrimitiveParsers.String(Environment.NewLine).Select(_ => Unit.Value);
         }
     }
 }

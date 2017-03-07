@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
-using Render.Shaders;
+using Disunity.App.Shaders;
 
-namespace Render
+namespace Disunity.App
 {
     public class RenderCore: IDisposable
     {

@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Render.Lib.Parsing;
-using static Render.Lib.Parsing.Parsers;
-using static Render.Lib.Parsing.PrimitiveParsers;
-using static Render.Lib.Parsing.AndParsers;
+using Disunity.App.Lib.Parsing;
 
-namespace Render
+namespace Disunity.App
 {
     public class ModelLoader
     {
@@ -100,40 +93,40 @@ namespace Render
     internal static class GeometryParsers
     {
         private static readonly Parser<Vector3> Vector3 =
-            Float().And1(String(" "))
-                .And(Float())
-                .And1(String(" "))
-                .And(Float())
+            Parsers.Float().And1(PrimitiveParsers.String(" "))
+                .And(Parsers.Float())
+                .And1(PrimitiveParsers.String(" "))
+                .And(Parsers.Float())
                 .Select(x => new Vector3(x._1, x._2, x._3));
 
         private static readonly Parser<Line> Vertex =
-            String1("v ").And(Vector3).And1(NewLine()).Select(Line.Vertex).Scope("Vertex");
+            AndParsers.String1("v ").And(Vector3).And1(Parsers.NewLine()).Select(Line.Vertex).Scope("Vertex");
 
         private static readonly Parser<Line> TextureVertex =
-            String1("vt ").And(Vector3).And1(NewLine()).Select(Line.TextureVertex).Scope("Texture Vertex");
+            AndParsers.String1("vt ").And(Vector3).And1(Parsers.NewLine()).Select(Line.TextureVertex).Scope("Texture Vertex");
 
         private static readonly Parser<Line> VertexNormal =
-            String1("vn ").And(Vector3).And1(NewLine()).Select(Line.VertexNormal).Scope("Vertex Normal");
+            AndParsers.String1("vn ").And(Vector3).And1(Parsers.NewLine()).Select(Line.VertexNormal).Scope("Vertex Normal");
 
         private static readonly Parser<Line> Face = CreateFaceParser().Scope("Face");
 
         private static Parser<Line> CreateFaceParser()
         {
             var threeIndices =
-                Int().And1(String("/"))
-                    .And(Int())
-                    .And1(String("/"))
-                    .And(Int())
+                Parsers.Int().And1(PrimitiveParsers.String("/"))
+                    .And(Parsers.Int())
+                    .And1(PrimitiveParsers.String("/"))
+                    .And(Parsers.Int())
                     .Select(x => new {v = x._1, vt = x._2, vn = x._3});
 
             return
-                String1("f ")
+                AndParsers.String1("f ")
                     .And(threeIndices)
-                    .And1(String(" "))
+                    .And1(PrimitiveParsers.String(" "))
                     .And(threeIndices)
-                    .And1(String(" "))
+                    .And1(PrimitiveParsers.String(" "))
                     .And(threeIndices)
-                    .And1(NewLine())
+                    .And1(Parsers.NewLine())
                     .Select(x =>
                     {
                         var v1 = x._1;
@@ -156,7 +149,7 @@ namespace Render
             {
                 var line = Vertex.Or(TextureVertex).Or(VertexNormal).Or(Face);
 
-                var lines = Many(line);
+                var lines = Parsers.Many(line);
 
                 var geometry = lines.Select(LinesToGeometry);
 

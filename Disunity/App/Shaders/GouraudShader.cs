@@ -1,8 +1,7 @@
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
 
-namespace Render.Shaders
+namespace Disunity.App.Shaders
 {
     public class GouraudShader : Shader
     {
