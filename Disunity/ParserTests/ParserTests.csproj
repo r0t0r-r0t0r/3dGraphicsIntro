@@ -64,7 +64,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Render\Render.csproj">
+    <ProjectReference Include="..\App\App.csproj">
       <Project>{1ccc48ce-a8eb-4a6f-8b03-b298f21e1b13}</Project>
       <Name>Render</Name>
     </ProjectReference>
