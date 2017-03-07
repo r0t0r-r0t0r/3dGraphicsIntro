@@ -67,7 +67,6 @@
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Face.cs" />
-    <Compile Include="NativeRenderWrapper.cs" />
     <Compile Include="Shaders\FragmentShaderState.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
     <Compile Include="Shaders\IntColor.cs" />
