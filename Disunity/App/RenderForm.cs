@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Disunity.App.Benchmarking;
 using Disunity.App.Lib;
+using Disunity.Models;
 
 namespace Disunity.App
 {

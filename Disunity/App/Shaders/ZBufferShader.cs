@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using Disunity.Models;
+using Disunity.Models.Shaders;
 
 namespace Disunity.App.Shaders
 {

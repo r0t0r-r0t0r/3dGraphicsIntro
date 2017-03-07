@@ -1,4 +1,5 @@
 using System.Numerics;
+using Disunity.Models;
 
 namespace Disunity.App
 {

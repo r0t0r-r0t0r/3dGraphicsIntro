@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Disunity.App
+namespace Disunity.Models
 {
     public sealed class Model: IDisposable
     {

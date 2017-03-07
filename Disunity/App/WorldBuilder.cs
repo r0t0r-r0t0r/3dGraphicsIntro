@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Disunity.App.Shaders;
+using Disunity.Models;
+using Disunity.Models.Shaders;
 
 namespace Disunity.App
 {
@@ -523,13 +525,6 @@ namespace Disunity.App
             return Vector3.Normalize(Vector3.Subtract(eye, center));
         }
 
-    }
-
-    public enum RenderMode
-    {
-        Borders,
-        Fill,
-        BordersAndFill
     }
 
     public static class RenderModeUtils

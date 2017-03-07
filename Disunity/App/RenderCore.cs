@@ -4,6 +4,8 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using Disunity.App.Shaders;
+using Disunity.Models;
+using Disunity.Models.Shaders;
 
 namespace Disunity.App
 {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Numerics;
-using Disunity.App.Shaders;
+﻿using System.Numerics;
 
-namespace Disunity.App
+namespace Disunity.Models
 {
     public class World
     {
@@ -27,24 +25,5 @@ namespace Disunity.App
         {
             get { return _worldObject; }
         }
-    }
-
-    public class WorldObject
-    {
-        private readonly Model _model;
-
-        public WorldObject(Model model)
-        {
-            _model = model;
-        }
-
-        public Model Model
-        {
-            get { return _model; }
-        }
-
-        public Func<Shader> ShaderFactory { get; set; }
-        public Func<Shader> FirstPhaseShaderFactory { get; set; }
-        public Matrix4x4 ModelTransform { get; set; }
     }
 }

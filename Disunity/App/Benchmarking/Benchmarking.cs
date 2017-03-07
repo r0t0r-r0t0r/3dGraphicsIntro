@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
+using Disunity.Models;
 
 namespace Disunity.App.Benchmarking
 {

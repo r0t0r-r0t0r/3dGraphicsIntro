@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Disunity.App.Shaders
+namespace Disunity.Models.Shaders
 {
     public sealed class FragmentShaderState
     {
