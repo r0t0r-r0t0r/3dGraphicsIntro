@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserTests", "ParserTests\ParserTests.csproj", "{38217CC5-5CE6-4CD9-87B4-F959E1A979D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{42F7CB62-FE89-47BA-AE33-C6F7F1BCE809}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{42F7CB62-FE89-47BA-AE33-C6F7F1BCE809}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
