@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Disunity.Models.Shaders
+namespace Disunity.Data.Shaders
 {
     public sealed class VertexShaderState
     {

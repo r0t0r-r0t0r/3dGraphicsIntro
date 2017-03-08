@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public class Geometry
     {

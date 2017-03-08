@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public class Texture: IDisposable
     {

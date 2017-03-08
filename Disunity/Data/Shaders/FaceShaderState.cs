@@ -1,4 +1,4 @@
-﻿namespace Disunity.Models.Shaders
+﻿namespace Disunity.Data.Shaders
 {
     public sealed class FaceShaderState
     {

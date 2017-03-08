@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public class World
     {

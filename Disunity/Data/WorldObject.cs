@@ -1,8 +1,8 @@
 using System;
 using System.Numerics;
-using Disunity.Models.Shaders;
+using Disunity.Data.Shaders;
 
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public class WorldObject
     {

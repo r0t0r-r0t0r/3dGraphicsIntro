@@ -1,4 +1,4 @@
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public class Face
     {

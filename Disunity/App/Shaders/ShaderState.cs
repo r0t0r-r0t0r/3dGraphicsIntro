@@ -1,5 +1,5 @@
-﻿using Disunity.Models;
-using Disunity.Models.Shaders;
+﻿using Disunity.Data;
+using Disunity.Data.Shaders;
 
 namespace Disunity.App.Shaders
 {

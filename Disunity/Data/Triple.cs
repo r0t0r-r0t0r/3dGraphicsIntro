@@ -1,6 +1,6 @@
 using System;
 
-namespace Disunity.Models
+namespace Disunity.Data
 {
     public struct Triple<T> where T : struct
     {

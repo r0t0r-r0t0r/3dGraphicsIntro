@@ -1,5 +1,5 @@
 using System;
-using Disunity.Models;
+using Disunity.Data;
 
 namespace Disunity.App
 {

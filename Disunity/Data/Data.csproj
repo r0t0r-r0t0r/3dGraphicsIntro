@@ -7,8 +7,8 @@
     <ProjectGuid>{42F7CB62-FE89-47BA-AE33-C6F7F1BCE809}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Disunity.Models</RootNamespace>
-    <AssemblyName>Models</AssemblyName>
+    <RootNamespace>Disunity.Data</RootNamespace>
+    <AssemblyName>Data</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

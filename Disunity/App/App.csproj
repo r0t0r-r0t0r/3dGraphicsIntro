@@ -137,9 +137,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Models\Models.csproj">
+    <ProjectReference Include="..\Data\Data.csproj">
       <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
-      <Name>Models</Name>
+      <Name>Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

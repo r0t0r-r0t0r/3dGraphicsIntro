@@ -7,7 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Disunity.App.Lib.Parsing;
-using Disunity.Models;
+using Disunity.Data;
 
 namespace Disunity.App
 {
