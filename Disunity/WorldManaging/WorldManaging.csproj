@@ -61,7 +61,13 @@
     <Compile Include="Shading\TextureUtils.cs" />
     <Compile Include="Shading\WorldUtils.cs" />
     <Compile Include="Shading\Shaders\ZBufferShader.cs" />
-    <Compile Include="StateChanging\WorldBuilder.cs" />
+    <Compile Include="StateChanging\FillMode.cs" />
+    <Compile Include="StateChanging\IWorldStateChangeAware.cs" />
+    <Compile Include="StateChanging\LightMode.cs" />
+    <Compile Include="StateChanging\WorldState.cs" />
+    <Compile Include="StateChanging\WorldStateChange.cs" />
+    <Compile Include="StateChanging\WorldStateChangeAware.cs" />
+    <Compile Include="WorldBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

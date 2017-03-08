@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Disunity.Data;
 using Disunity.Rendering;
+using Disunity.WorldManaging;
 using Disunity.WorldManaging.Loading;
 using Disunity.WorldManaging.StateChanging;
 
