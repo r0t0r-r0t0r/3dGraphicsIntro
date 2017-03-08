@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using Disunity.App.Filesystem;
-using Disunity.Parsing;
 
 namespace Disunity.App.Benchmarking
 {
@@ -77,29 +75,6 @@ namespace Disunity.App.Benchmarking
             if (fi.Exists) return;
             using (fi.Create())
             {
-            }
-        }
-    }
-
-    internal static class BenchmarkFileParsers
-    {
-        private static Parser<DateTime> DateTimeFromLong(long rawDateTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Parser<ImmutableList<BenchmarkRecord>> BenchmarkFileParser
-        {
-            get
-            {
-                var newLine = PrimitiveParsers.String(Environment.NewLine);
-                var dateTime = Parsers.Long().SelectMany(DateTimeFromLong);
-
-                var line = dateTime.And1(PrimitiveParsers.String(" ")).And(Parsers.Double()).And1(newLine).Select(x => new BenchmarkRecord(x._1, x._2));
-
-                var lines = Parsers.Many(line);
-
-                return lines;
             }
         }
     }

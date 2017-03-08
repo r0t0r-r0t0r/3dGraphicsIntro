@@ -133,10 +133,6 @@
       <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
       <Name>Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Parsing\Parsing.csproj">
-      <Project>{634ab147-3e9a-4c7c-9be3-fedee1824c8c}</Project>
-      <Name>Parsing</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
