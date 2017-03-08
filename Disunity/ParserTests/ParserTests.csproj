@@ -64,9 +64,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\App\App.csproj">
-      <Project>{1ccc48ce-a8eb-4a6f-8b03-b298f21e1b13}</Project>
-      <Name>Render</Name>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parsing\Parsing.csproj">
+      <Project>{634ab147-3e9a-4c7c-9be3-fedee1824c8c}</Project>
+      <Name>Parsing</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

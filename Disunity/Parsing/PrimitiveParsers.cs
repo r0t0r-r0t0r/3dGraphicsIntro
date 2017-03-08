@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Disunity.Data.Common;
 
-namespace Disunity.App.Lib.Parsing
+namespace Disunity.Parsing
 {
     public static class PrimitiveParsers
     {

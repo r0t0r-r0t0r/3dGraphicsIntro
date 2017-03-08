@@ -1,12 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Disunity.App.Lib.Parsing.Parsers;
-using static Disunity.App.Lib.Parsing.PrimitiveParsers;
+using static Disunity.Parsing.Parsers;
+using static Disunity.Parsing.PrimitiveParsers;
 
 namespace ParserTests
 {

@@ -1,3 +1,5 @@
+using Disunity.Data.Common;
+
 namespace Disunity.Data
 {
     public class Face

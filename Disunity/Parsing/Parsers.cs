@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Immutable;
+using Disunity.Data.Common;
 
-namespace Disunity.App.Lib.Parsing
+namespace Disunity.Parsing
 {
     public static class Parsers
     {

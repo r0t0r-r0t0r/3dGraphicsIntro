@@ -1,6 +1,7 @@
 ﻿using System;
+using Disunity.Data.Common;
 
-namespace Disunity.App.Lib.Parsing
+namespace Disunity.Parsing
 {
     public class ParserState
     {

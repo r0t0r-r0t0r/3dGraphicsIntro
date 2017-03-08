@@ -1,11 +1,8 @@
 ﻿using NUnit.Framework;
-using static Disunity.App.Lib.Parsing.TailRec;
+using static Disunity.Parsing.TailRec;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Disunity.App.Lib.Parsing;
+using Disunity.Parsing;
 
 namespace ParserTests
 {

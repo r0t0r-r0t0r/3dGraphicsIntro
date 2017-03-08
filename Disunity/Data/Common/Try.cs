@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Disunity.App.Lib
+namespace Disunity.Data.Common
 {
     public class Try<TException, TValue>
         where TException : Exception

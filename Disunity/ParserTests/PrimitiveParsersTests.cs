@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
-using Disunity.App;
-using Disunity.App.Lib.Parsing;
-using static Disunity.App.Lib.Parsing.PrimitiveParsers;
+using Disunity.Data.Common;
+using Disunity.Parsing;
+using static Disunity.Parsing.PrimitiveParsers;
 
 namespace ParserTests
 {

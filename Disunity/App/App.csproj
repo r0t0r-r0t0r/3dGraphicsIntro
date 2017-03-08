@@ -57,14 +57,6 @@
     <Compile Include="Benchmarking\Benchmarking.cs" />
     <Compile Include="Benchmarking\IO.cs" />
     <Compile Include="Filesystem\FilesystemUtils.cs" />
-    <Compile Include="Lib\Either.cs" />
-    <Compile Include="Lib\Option.cs" />
-    <Compile Include="Lib\Parsing\TailRec.cs" />
-    <Compile Include="Lib\Parsing\Parser.cs" />
-    <Compile Include="Lib\Parsing\Parsers.cs" />
-    <Compile Include="Lib\Parsing\PrimitiveParsers.cs" />
-    <Compile Include="Lib\Parsing\ProductParsers.cs" />
-    <Compile Include="Lib\Try.cs" />
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />
     <Compile Include="Shaders\IntColor.cs" />
@@ -140,6 +132,10 @@
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
       <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parsing\Parsing.csproj">
+      <Project>{634ab147-3e9a-4c7c-9be3-fedee1824c8c}</Project>
+      <Name>Parsing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

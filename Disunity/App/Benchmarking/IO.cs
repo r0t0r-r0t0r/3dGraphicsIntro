@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Disunity.App.Filesystem;
-using Disunity.App.Lib.Parsing;
+using Disunity.Parsing;
 
 namespace Disunity.App.Benchmarking
 {

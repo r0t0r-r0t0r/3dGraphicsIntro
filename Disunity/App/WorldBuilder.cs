@@ -7,11 +7,6 @@ using Disunity.Data.Shaders;
 
 namespace Disunity.App
 {
-    public struct Unit
-    {
-        public static Unit Value = new Unit();
-    }
-
     public interface IWorldStateChangeAware<out T>
     {
         T Empty();
