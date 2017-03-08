@@ -3,20 +3,25 @@ using System.Numerics;
 using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App.Shaders
+namespace Disunity.WorldManaging.Shading.Shaders
 {
-    public class GouraudShader : Shader
+    public class PhongShader : Shader
     {
         private static readonly int BlackColor = Color.Black.ToArgb();
         private readonly Shader _innerShader;
+        private Geometry _geometry;
+        private Vector3 _light;
 
-        public GouraudShader(Shader innerShader)
+        public PhongShader(Shader innerShader)
         {
             _innerShader = innerShader;
         }
 
         public override void World(World world)
         {
+            _geometry = world.WorldObject.Model.Geometry;
+            _light = world.LightDirection;
+
             _innerShader.World(world);
         }
 
@@ -26,13 +31,8 @@ namespace Disunity.App.Shaders
 
         public override Vector4 Vertex(VertexShaderState state, int face, int vert)
         {
-            var geometry = state.World.WorldObject.Model.Geometry;
-            var light = state.World.LightDirection;
-
-            var normal = geometry.GetVertexNormal(face, vert);
-            var intensity = Vector3.Dot(normal, light);
-
-            state.Varying.Push(vert, intensity);
+            var normal = _geometry.GetVertexNormal(face, vert);
+            state.Varying[vert].Push(normal);
 
             return _innerShader.Vertex(state, face, vert);
         }
@@ -44,21 +44,26 @@ namespace Disunity.App.Shaders
             if (color == null)
                 return null;
 
-            var intensity = state.Varying.PopFloat();
+            var normal = state.Varying.PopVector3();
+            normal = Vector3.Normalize(normal);
 
+            var intensity = Vector3.Dot(normal, _light);
             if (intensity < 0)
                 return BlackColor;
 
-            if (intensity > 1)
+            if (intensity >= 1)
                 intensity = 1;
 
-            var intColor = new IntColor { Color = color.Value };
+            //const float intensityStepsCount = 5;
+            //intensity = (float)Math.Floor(intensity * intensityStepsCount) / intensityStepsCount;
+
+            var intColor = new IntColor {Color = color.Value};
 
             intColor.Red = (byte)(intColor.Red * intensity);
             intColor.Green = (byte)(intColor.Green * intensity);
             intColor.Blue = (byte)(intColor.Blue * intensity);
 
-            return intColor.Color; ;
+            return intColor.Color;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging.Loading
 {
     public sealed class TextParser
     {

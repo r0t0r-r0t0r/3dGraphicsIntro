@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Disunity.App.Shaders
+namespace Disunity.WorldManaging.Shading
 {
     public static class ShaderStateUtils
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Disunity.App.Shaders;
 using Disunity.Data;
 using Disunity.Data.Shaders;
+using Disunity.WorldManaging.Shading.Shaders;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging.StateChanging
 {
     public interface IWorldStateChangeAware<out T>
     {

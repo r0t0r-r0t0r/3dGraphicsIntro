@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Disunity.App.Shaders
+namespace Disunity.WorldManaging.Shading
 {
     [StructLayout(LayoutKind.Explicit)]
     public struct IntColor

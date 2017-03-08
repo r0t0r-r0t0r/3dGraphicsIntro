@@ -2,7 +2,7 @@ using System;
 using System.Numerics;
 using Disunity.Data;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging.Shading
 {
     public static class WorldUtils
     {

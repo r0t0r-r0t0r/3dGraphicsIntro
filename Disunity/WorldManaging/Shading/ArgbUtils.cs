@@ -1,4 +1,4 @@
-﻿namespace Disunity.App
+﻿namespace Disunity.WorldManaging.Shading
 {
     public static class ArgbUtils
     {

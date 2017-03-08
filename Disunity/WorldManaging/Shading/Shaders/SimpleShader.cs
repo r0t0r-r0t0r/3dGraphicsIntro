@@ -2,7 +2,7 @@ using System.Numerics;
 using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App.Shaders
+namespace Disunity.WorldManaging.Shading.Shaders
 {
     public class SimpleShader : Shader
     {

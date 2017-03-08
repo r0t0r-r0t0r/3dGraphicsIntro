@@ -1,7 +1,7 @@
 using System;
 using Disunity.Data;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging.Shading
 {
     public static class TextureUtils
     {

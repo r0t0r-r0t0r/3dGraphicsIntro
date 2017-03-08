@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rendering", "Rendering\Rendering.csproj", "{D68CEBAF-A051-43CF-98CB-A12223956AED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldStateManaging", "WorldManaging\WorldManaging.csproj", "{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{D68CEBAF-A051-43CF-98CB-A12223956AED}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D68CEBAF-A051-43CF-98CB-A12223956AED}.Release|Win32.ActiveCfg = Release|Any CPU
 		{D68CEBAF-A051-43CF-98CB-A12223956AED}.Release|Win32.Build.0 = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Debug|Win32.Build.0 = Debug|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Win32.ActiveCfg = Release|Any CPU
+		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

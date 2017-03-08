@@ -7,9 +7,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Disunity.Data;
-using Disunity.Data.Common;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging.Loading
 {
     public class ModelLoader
     {
@@ -66,28 +65,6 @@ namespace Disunity.App
         {
             Func<string, float> parseFloat = value => float.Parse(value, CultureInfo.InvariantCulture);
             return match.ParseGroups(3, parseFloat).ToVector3();
-        }
-    }
-
-    internal static class TripleUtils
-    {
-        public static Triple<T> ToTriple<T>(this T[] values, int index1, int index2, int index3) where T : struct
-        {
-            return new Triple<T>(values[index1], values[index2], values[index3]);
-        }
-
-        public static Vector3 ToVector3(this IEnumerable<float> values)
-        {
-            var materialized = values.ToArray();
-            return new Vector3(materialized[0], materialized[1], materialized[2]);
-        }
-    }
-
-    internal static class MatchUtils
-    {
-        public static IEnumerable<T> ParseGroups<T>(this Match match, int count, Func<string, T> parser)
-        {
-            return match.Groups.Cast<Group>().Skip(1).Take(count).Select(g => parser(g.Value));
         }
     }
 }

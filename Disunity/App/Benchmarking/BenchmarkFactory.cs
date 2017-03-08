@@ -5,6 +5,8 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Disunity.Data;
 using Disunity.Rendering;
+using Disunity.WorldManaging.Loading;
+using Disunity.WorldManaging.StateChanging;
 
 namespace Disunity.App.Benchmarking
 {

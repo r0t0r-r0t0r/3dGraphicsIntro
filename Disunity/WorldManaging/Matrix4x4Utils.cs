@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Disunity.App
+namespace Disunity.WorldManaging
 {
     public static class Matrix4x4Utils
     {

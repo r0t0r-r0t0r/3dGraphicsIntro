@@ -2,9 +2,9 @@
 using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App.Shaders
+namespace Disunity.WorldManaging.Shading.Shaders
 {
-    class ZBufferShader: Shader
+    public class ZBufferShader: Shader
     {
         private Geometry _geometry;
         private Matrix4x4 _transformation;
