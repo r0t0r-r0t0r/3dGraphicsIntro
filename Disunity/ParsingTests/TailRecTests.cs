@@ -1,10 +1,8 @@
-﻿using NUnit.Framework;
-using static Disunity.Parsing.TailRec;
-using System;
+﻿using System;
 using System.Linq;
-using Disunity.Parsing;
+using NUnit.Framework;
 
-namespace ParserTests
+namespace Disunity.Parsing
 {
     [TestFixture]
     class TailRecTests
@@ -14,9 +12,9 @@ namespace ParserTests
         {
             var value = "foobar";
 
-            Func<string, TailRec<string>> f = x => Return(x);
+            Func<string, TailRec<string>> f = x => TailRec.Return(x);
 
-            var g = Enumerable.Repeat(f, 100000).Aggregate((a, b) => x => SuspendTailRec(() => a(x).SelectMany(b)));
+            var g = Enumerable.Repeat(f, 100000).Aggregate((a, b) => x => TailRec.SuspendTailRec(() => a(x).SelectMany(b)));
 
             var result = g(value).Run();
 
@@ -26,9 +24,9 @@ namespace ParserTests
         [Test]
         public void TailRec_2()
         {
-            var a = Suspend(() => "a");
-            var b = Suspend(() => "b");
-            var c = Suspend(() => "c");
+            var a = TailRec.Suspend(() => "a");
+            var b = TailRec.Suspend(() => "b");
+            var c = TailRec.Suspend(() => "c");
 
             var abc =
                 from x in a

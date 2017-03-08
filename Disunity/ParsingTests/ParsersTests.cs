@@ -1,10 +1,8 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Immutable;
-using static Disunity.Parsing.Parsers;
-using static Disunity.Parsing.PrimitiveParsers;
+using NUnit.Framework;
 
-namespace ParserTests
+namespace Disunity.Parsing
 {
     [TestFixture]
     class ParsersTests
@@ -12,9 +10,9 @@ namespace ParserTests
         [Test]
         public void Many_1()
         {
-            var ab = String("ab");
+            var ab = PrimitiveParsers.String("ab");
 
-            var abs = Many(ab);
+            var abs = Parsers.Many(ab);
 
             var expected = ImmutableList.Create<string>();
 
@@ -24,9 +22,9 @@ namespace ParserTests
         [Test]
         public void Many_2()
         {
-            var ab = String("ab");
+            var ab = PrimitiveParsers.String("ab");
 
-            var abs = Many(ab);
+            var abs = Parsers.Many(ab);
 
             var expected = ImmutableList.Create(new[] { "ab" });
 
@@ -36,9 +34,9 @@ namespace ParserTests
         [Test]
         public void Many_3()
         {
-            var ab = String("ab");
+            var ab = PrimitiveParsers.String("ab");
 
-            var abs = Many(ab);
+            var abs = Parsers.Many(ab);
 
             var expected = ImmutableList.Create(new[] { "ab", "ab" });
 
@@ -48,10 +46,10 @@ namespace ParserTests
         [Test]
         public void Select2_1()
         {
-            var p1 = Return(1);
-            var p2 = Return(2);
+            var p1 = PrimitiveParsers.Return(1);
+            var p2 = PrimitiveParsers.Return(2);
 
-            var select2 = Select2(p1, () => p2, Tuple.Create);
+            var select2 = Parsers.Select2(p1, () => p2, Tuple.Create);
 
             var expected = Tuple.Create(1, 2);
 
@@ -61,10 +59,10 @@ namespace ParserTests
         [Test]
         public void Select2_2()
         {
-            var p1 = Fail<int>(new Exception("Error!"));
-            var p2 = Return(2);
+            var p1 = PrimitiveParsers.Fail<int>(new Exception("Error!"));
+            var p2 = PrimitiveParsers.Return(2);
 
-            var select2 = Select2(p1, () => p2, Tuple.Create);
+            var select2 = Parsers.Select2(p1, () => p2, Tuple.Create);
 
             ParserAssert.That(select2.OnAnyInput(), p => p.Fails());
         }
@@ -72,10 +70,10 @@ namespace ParserTests
         [Test]
         public void Select2_3()
         {
-            var p1 = Return(2);
-            var p2 = Fail<int>(new Exception("Error!"));
+            var p1 = PrimitiveParsers.Return(2);
+            var p2 = PrimitiveParsers.Fail<int>(new Exception("Error!"));
 
-            var select2 = Select2(p1, () => p2, Tuple.Create);
+            var select2 = Parsers.Select2(p1, () => p2, Tuple.Create);
 
             ParserAssert.That(select2.OnAnyInput(), p => p.Fails());
         }
@@ -83,10 +81,10 @@ namespace ParserTests
         [Test]
         public void Select2_4()
         {
-            var p1 = String("ab");
-            var p2 = String("cd");
+            var p1 = PrimitiveParsers.String("ab");
+            var p2 = PrimitiveParsers.String("cd");
 
-            var select2 = Select2(p1, () => p2, Tuple.Create);
+            var select2 = Parsers.Select2(p1, () => p2, Tuple.Create);
 
             var expected = Tuple.Create("ab", "cd");
 

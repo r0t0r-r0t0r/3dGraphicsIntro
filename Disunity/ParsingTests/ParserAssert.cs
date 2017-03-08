@@ -1,11 +1,10 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Disunity.Data.Common;
-using Disunity.Parsing;
+using NUnit.Framework;
 
-namespace ParserTests
+namespace Disunity.Parsing
 {
     public delegate bool ParsingResultPredicate<T>(Either<Exception, Tuple<T, ParserState>> result);
 

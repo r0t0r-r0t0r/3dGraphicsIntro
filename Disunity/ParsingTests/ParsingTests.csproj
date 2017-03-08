@@ -6,8 +6,8 @@
     <ProjectGuid>{38217CC5-5CE6-4CD9-87B4-F959E1A979D8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ParserTests</RootNamespace>
-    <AssemblyName>ParserTests</AssemblyName>
+    <RootNamespace>Disunity.Parsing</RootNamespace>
+    <AssemblyName>ParsingTests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
