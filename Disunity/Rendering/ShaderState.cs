@@ -3,7 +3,7 @@ using Disunity.Data.Shaders;
 
 namespace Disunity.Rendering
 {
-    public sealed class ShaderState
+    sealed class ShaderState
     {
         private readonly World _world;
         private readonly FaceShaderState _face;

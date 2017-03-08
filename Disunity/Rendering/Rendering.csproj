@@ -44,10 +44,10 @@
   <ItemGroup>
     <Compile Include="BarycentricCoordinates.cs" />
     <Compile Include="BarycentricCoordinatesConverter.cs" />
-    <Compile Include="MyFastLine.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Render.cs" />
-    <Compile Include="RenderCore.cs" />
+    <Compile Include="FaceDrawer.cs" />
+    <Compile Include="Renderer.cs" />
     <Compile Include="ShaderState.cs" />
   </ItemGroup>
   <ItemGroup>

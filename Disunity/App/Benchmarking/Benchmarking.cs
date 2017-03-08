@@ -31,7 +31,7 @@ namespace Disunity.App.Benchmarking
             var worldState = CreateWorldState();
 
             var buffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
-            using (var renderCore = new RenderCore(ViewportWidth, ViewportHeight))
+            using (var renderCore = new Renderer(ViewportWidth, ViewportHeight))
             {
                 var world = WorldBuilder.BuildWorld(worldState);
 

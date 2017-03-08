@@ -8,18 +8,18 @@ using Disunity.Data.Shaders;
 
 namespace Disunity.Rendering
 {
-    public class RenderCore: IDisposable
+    public class Renderer: IDisposable
     {
         private readonly int _width;
         private readonly int _height;
-        private readonly Render _render;
+        private readonly FaceDrawer _faceDrawer;
         private readonly WritableTexture _firstPhaseScreen;
 
-        public RenderCore(int width, int height)
+        public Renderer(int width, int height)
         {
             _width = width;
             _height = height;
-            _render = new Render(width, height);
+            _faceDrawer = new FaceDrawer(width, height);
             _firstPhaseScreen = new WritableTexture(new Bitmap(width, height, PixelFormat.Format32bppRgb), true);
         }
 
@@ -49,10 +49,10 @@ namespace Disunity.Rendering
                 }
                 else
                 {
-                    _render.Init(world.RenderMode);
+                    _faceDrawer.Init(world.RenderMode);
                     var tasks = regions.Select(
                         region =>
-                            new Task(() => Draw(screen, world.WorldObject.ShaderFactory, _render, region.Item1, region.Item2, world)))
+                            new Task(() => Draw(screen, world.WorldObject.ShaderFactory, _faceDrawer, region.Item1, region.Item2, world)))
                         .ToArray();
                     foreach (var task in tasks)
                     {
@@ -66,13 +66,13 @@ namespace Disunity.Rendering
         private async Task TwoPhaseDraw(World world, Tuple<int, int>[] regions, WritableTexture screen)
         {
             _firstPhaseScreen.Clear();
-            _render.Init(RenderMode.Fill);
+            _faceDrawer.Init(RenderMode.Fill);
 
             var firstPhaseTasks = regions.Select(
                 region =>
                     new Task(
                         () =>
-                            Draw(_firstPhaseScreen, world.WorldObject.FirstPhaseShaderFactory, _render, region.Item1,
+                            Draw(_firstPhaseScreen, world.WorldObject.FirstPhaseShaderFactory, _faceDrawer, region.Item1,
                                 region.Item2, world)))
                 .ToArray();
             foreach (var task in firstPhaseTasks)
@@ -81,7 +81,7 @@ namespace Disunity.Rendering
             }
             await Task.WhenAll(firstPhaseTasks).ConfigureAwait(false);
 
-            _render.Init(world.RenderMode);
+            _faceDrawer.Init(world.RenderMode);
 
             var secondPhaseTasks = regions.Select(
                 region =>
@@ -93,7 +93,7 @@ namespace Disunity.Rendering
 
                         for (var i = 0; i < world.WorldObject.Model.Geometry.Faces.Count; i++)
                         {
-                            _render.Draw(i, screen, shader, shaderState, region.Item1, region.Item2);
+                            _faceDrawer.Draw(i, screen, shader, shaderState, region.Item1, region.Item2);
                         }
                     }))
                 .ToArray();
@@ -105,7 +105,7 @@ namespace Disunity.Rendering
             await Task.WhenAll(secondPhaseTasks).ConfigureAwait(false);
         }
 
-        private static void Draw(WritableTexture screen, Func<Shader> shaderFactory, Render render, int startY, int endY, World world)
+        private static void Draw(WritableTexture screen, Func<Shader> shaderFactory, FaceDrawer faceDrawer, int startY, int endY, World world)
         {
             var shaderState = new ShaderState(30, world);
             var shader = shaderFactory();
@@ -113,7 +113,7 @@ namespace Disunity.Rendering
             
             for (var i = 0; i < world.WorldObject.Model.Geometry.Faces.Count; i++)
             {
-                render.Draw(i, screen, shader, shaderState, startY, endY);
+                faceDrawer.Draw(i, screen, shader, shaderState, startY, endY);
             }
         }
 

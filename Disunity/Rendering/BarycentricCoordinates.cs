@@ -1,6 +1,6 @@
 namespace Disunity.Rendering
 {
-    public struct BarycentricCoordinates
+    struct BarycentricCoordinates
     {
         private readonly float _a;
         private readonly float _b;

@@ -1,6 +1,6 @@
 ﻿namespace Disunity.Rendering
 {
-    public struct MyFastLine
+    struct Line
     {
         private readonly float _dx;
         private readonly float _dy;
@@ -10,7 +10,7 @@
 
         private readonly float _minXdX;
 
-        public MyFastLine(float x0, float y0, float x1, float y1, float minX, float minY)
+        public Line(float x0, float y0, float x1, float y1, float minX, float minY)
         {
             var c = -y0*(x1 - x0) + x0*(y1 - y0);
             _dx = y0 - y1;

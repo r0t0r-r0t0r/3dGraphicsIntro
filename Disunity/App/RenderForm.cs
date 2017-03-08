@@ -16,7 +16,7 @@ namespace Disunity.App
         private const int ViewportWidth = 800;
         private const int ViewportHeight = 800;
         
-        private readonly RenderCore _renderCore = new RenderCore(ViewportWidth, ViewportHeight);
+        private readonly Renderer _renderer = new Renderer(ViewportWidth, ViewportHeight);
 
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
@@ -308,7 +308,7 @@ namespace Disunity.App
             _worldState = change.Perform(WorldStateChangeAware.Instance)(_worldState);
 
             var world = WorldBuilder.BuildWorld(_worldState);
-            _renderCore.Render(world, _backBuffer);
+            _renderer.Render(world, _backBuffer);
             pictureBox1.Image = _backBuffer;
 
             var exchange = _backBuffer;
