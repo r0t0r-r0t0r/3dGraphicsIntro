@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BarycentricCoordinates.cs" />
+    <Compile Include="BarycentricCoordinatesConverter.cs" />
     <Compile Include="MyFastLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Render.cs" />
