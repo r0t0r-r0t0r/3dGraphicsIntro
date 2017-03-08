@@ -44,11 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Either.cs" />
     <Compile Include="Common\EnumerableOption.cs" />
     <Compile Include="Common\Option.cs" />
     <Compile Include="Common\Triple.cs" />
-    <Compile Include="Common\Try.cs" />
     <Compile Include="Common\Unit.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="Shaders\FaceShaderState.cs" />
