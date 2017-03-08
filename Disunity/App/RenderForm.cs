@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Disunity.App.Benchmarking;
 using Disunity.Data;
 using Disunity.Data.Common;
+using Disunity.Rendering;
 
 namespace Disunity.App
 {

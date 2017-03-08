@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Disunity.Data;
+using Disunity.Rendering;
 
 namespace Disunity.App.Benchmarking
 {

@@ -3,11 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
-using Disunity.App.Shaders;
 using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App
+namespace Disunity.Rendering
 {
     public class RenderCore: IDisposable
     {

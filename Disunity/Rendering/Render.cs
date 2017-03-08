@@ -1,14 +1,15 @@
 using System;
 using System.Drawing;
 using System.Numerics;
-using Disunity.App.Shaders;
 using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App
+namespace Disunity.Rendering
 {
     public class Render
     {
+        private readonly int _borderColor = Color.White.ToArgb();
+
         private float[,] _zBuffer;
         private int _width;
         private int _height;
@@ -49,10 +50,12 @@ namespace Disunity.App
                 new Vector3(v2.X/v2.W, v2.Y/v2.W, v2.Z/v2.W)
             };
 
-            var color = Color.White.ToArgb();
-            Line((int)screenCoords[0].X, (int)screenCoords[0].Y, (int)screenCoords[1].X, (int)screenCoords[1].Y, screen, color, startY, endY);
-            Line((int)screenCoords[1].X, (int)screenCoords[1].Y, (int)screenCoords[2].X, (int)screenCoords[2].Y, screen, color, startY, endY);
-            Line((int)screenCoords[2].X, (int)screenCoords[2].Y, (int)screenCoords[0].X, (int)screenCoords[0].Y, screen, color, startY, endY);
+            Line((int) screenCoords[0].X, (int) screenCoords[0].Y, (int) screenCoords[1].X, (int) screenCoords[1].Y,
+                screen, _borderColor, startY, endY);
+            Line((int) screenCoords[1].X, (int) screenCoords[1].Y, (int) screenCoords[2].X, (int) screenCoords[2].Y,
+                screen, _borderColor, startY, endY);
+            Line((int) screenCoords[2].X, (int) screenCoords[2].Y, (int) screenCoords[0].X, (int) screenCoords[0].Y,
+                screen, _borderColor, startY, endY);
         }
 
         private void Line(int x0, int y0, int x1, int y1, WritableTexture screen, int color, int startY, int endY)

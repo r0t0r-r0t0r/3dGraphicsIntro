@@ -1,7 +1,7 @@
 ﻿using Disunity.Data;
 using Disunity.Data.Shaders;
 
-namespace Disunity.App.Shaders
+namespace Disunity.Rendering
 {
     public sealed class ShaderState
     {

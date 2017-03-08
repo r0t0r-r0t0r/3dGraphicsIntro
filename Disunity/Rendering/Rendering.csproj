@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{42F7CB62-FE89-47BA-AE33-C6F7F1BCE809}</ProjectGuid>
+    <ProjectGuid>{D68CEBAF-A051-43CF-98CB-A12223956AED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Disunity.Data</RootNamespace>
-    <AssemblyName>Disunity.Data</AssemblyName>
+    <RootNamespace>Disunity.Rendering</RootNamespace>
+    <AssemblyName>Disunity.Rendering</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,7 +28,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,25 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\EnumerableOption.cs" />
-    <Compile Include="Common\Option.cs" />
-    <Compile Include="Common\Triple.cs" />
-    <Compile Include="Common\Unit.cs" />
-    <Compile Include="Face.cs" />
-    <Compile Include="RenderModeUtils.cs" />
-    <Compile Include="Shaders\FaceShaderState.cs" />
-    <Compile Include="Shaders\FragmentShaderState.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="Model.cs" />
+    <Compile Include="MyFastLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderMode.cs" />
-    <Compile Include="Shaders\Shader.cs" />
-    <Compile Include="Texture.cs" />
-    <Compile Include="TextureWriter.cs" />
-    <Compile Include="Shaders\VertexShaderState.cs" />
-    <Compile Include="World.cs" />
-    <Compile Include="WorldObject.cs" />
-    <Compile Include="WritableTexture.cs" />
+    <Compile Include="Render.cs" />
+    <Compile Include="RenderCore.cs" />
+    <Compile Include="ShaderState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

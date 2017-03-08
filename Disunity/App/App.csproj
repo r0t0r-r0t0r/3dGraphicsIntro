@@ -62,9 +62,7 @@
     <Compile Include="Shaders\IntColor.cs" />
     <Compile Include="ModelLoader.cs" />
     <Compile Include="ModelUtils.cs" />
-    <Compile Include="MyFastLine.cs" />
     <Compile Include="Shaders\NormalMappingShader.cs" />
-    <Compile Include="Shaders\ShaderState.cs" />
     <Compile Include="Shaders\ShaderStateUtils.cs" />
     <Compile Include="Shaders\TextureShader.cs" />
     <Compile Include="Shaders\PhongShader.cs" />
@@ -76,14 +74,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderCore.cs" />
     <Compile Include="Shaders\ZBufferShader.cs" />
     <Compile Include="TextureUtils.cs" />
     <Compile Include="WorldBuilder.cs" />
     <Compile Include="Shaders\SimpleShader.cs" />
     <Compile Include="Shaders\SolidColorShader.cs" />
     <Compile Include="Shaders\Verctor4.cs" />
-    <Compile Include="Render.cs" />
     <Compile Include="TextParser.cs" />
     <Compile Include="WorldUtils.cs" />
     <EmbeddedResource Include="RenderForm.resx">
@@ -132,6 +128,10 @@
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
       <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\Rendering.csproj">
+      <Project>{d68cebaf-a051-43cf-98cb-a12223956aed}</Project>
+      <Name>Rendering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
