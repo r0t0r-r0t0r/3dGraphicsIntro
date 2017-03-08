@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace Disunity.App.Benchmarking
+namespace Disunity.Benchmarking
 {
     public class BenchmarkRecordsIo
     {

@@ -1,4 +1,4 @@
-﻿namespace Disunity.App.Benchmarking
+﻿namespace Disunity.Benchmarking
 {
     public class BenchmarkResult
     {

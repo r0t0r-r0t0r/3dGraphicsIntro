@@ -1,6 +1,6 @@
 using System;
 
-namespace Disunity.App.Benchmarking
+namespace Disunity.Benchmarking
 {
     public sealed class BenchmarkRecord
     {

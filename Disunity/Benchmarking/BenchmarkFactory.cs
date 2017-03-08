@@ -9,7 +9,7 @@ using Disunity.WorldManaging;
 using Disunity.WorldManaging.Loading;
 using Disunity.WorldManaging.StateChanging;
 
-namespace Disunity.App.Benchmarking
+namespace Disunity.Benchmarking
 {
     public static class BenchmarkFactory
     {

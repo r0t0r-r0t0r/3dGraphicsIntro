@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 
-namespace Disunity.App.Filesystem
+namespace Disunity.App
 {
     public static class FilesystemUtils
     {

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Disunity.WorldManaging.StateChanging;
 
-namespace Disunity.App.Benchmarking
+namespace Disunity.Benchmarking
 {
     public class Benchmark
     {

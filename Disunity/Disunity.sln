@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rendering", "Rendering\Rendering.csproj", "{D68CEBAF-A051-43CF-98CB-A12223956AED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldStateManaging", "WorldManaging\WorldManaging.csproj", "{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldManaging", "WorldManaging\WorldManaging.csproj", "{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarking", "Benchmarking\Benchmarking.csproj", "{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,18 @@ Global
 		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Win32.ActiveCfg = Release|Any CPU
 		{47DE07E2-7A1C-4CB8-9158-BD6DD091C037}.Release|Win32.Build.0 = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Debug|Win32.Build.0 = Debug|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C77FFF35-4678-4CED-82C5-4F64A9DCA86E}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -53,12 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Benchmarking\Benchmark.cs" />
-    <Compile Include="Benchmarking\BenchmarkFactory.cs" />
-    <Compile Include="Benchmarking\BenchmarkRecord.cs" />
-    <Compile Include="Benchmarking\BenchmarkResult.cs" />
-    <Compile Include="Benchmarking\BenchmarkRecordsIo.cs" />
-    <Compile Include="Filesystem\FilesystemUtils.cs" />
+    <Compile Include="FilesystemUtils.cs" />
     <Compile Include="RenderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +104,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Benchmarking\Benchmarking.csproj">
+      <Project>{c77fff35-4678-4ced-82c5-4f64a9dca86e}</Project>
+      <Name>Benchmarking</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{42f7cb62-fe89-47ba-ae33-c6f7f1bce809}</Project>
       <Name>Data</Name>
