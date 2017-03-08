@@ -54,8 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgbUtils.cs" />
-    <Compile Include="Benchmarking\Benchmarking.cs" />
-    <Compile Include="Benchmarking\IO.cs" />
+    <Compile Include="Benchmarking\Benchmark.cs" />
+    <Compile Include="Benchmarking\BenchmarkFactory.cs" />
+    <Compile Include="Benchmarking\BenchmarkRecord.cs" />
+    <Compile Include="Benchmarking\BenchmarkResult.cs" />
+    <Compile Include="Benchmarking\BenchmarkRecordsIo.cs" />
     <Compile Include="Filesystem\FilesystemUtils.cs" />
     <Compile Include="Matrix4x4Utils.cs" />
     <Compile Include="Shaders\GouraudShader.cs" />

@@ -13,6 +13,13 @@ namespace Disunity.App.Benchmarking
         private const int ViewportWidth = 800;
         private const int ViewportHeight = 800;
 
+        private const string RootDir = @"Model";
+
+        private const string GeometryFile = "african_head.obj";
+        private const string TextureFile = "african_head_diffuse.bmp";
+        private const string NormalMapFile = "african_head_nm.png";
+        private const string SpecularMapFile = "african_head_spec.bmp"; 
+
         private static WorldState CreateWorldState()
         {
             return new WorldState(renderMode: RenderMode.Fill, lightMode: LightMode.NormalMapping,
@@ -29,25 +36,26 @@ namespace Disunity.App.Benchmarking
         private static BenchmarkResult StartBenchmark()
         {
             var worldState = CreateWorldState();
-
+            var model = ModelLoader.LoadModel(RootDir, GeometryFile, TextureFile, NormalMapFile, SpecularMapFile);
             var buffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
-            using (var renderCore = new Renderer(ViewportWidth, ViewportHeight))
+
+            using (var renderer = new Renderer(ViewportWidth, ViewportHeight))
             {
-                var world = WorldBuilder.BuildWorld(worldState);
+                var world = new WorldBuilder(model).BuildWorld(worldState);
 
                 const int count = 500;
 
                 // Heating
                 for (var i = 0; i < count; i++)
                 {
-                    renderCore.Render(world, buffer);
+                    renderer.Render(world, buffer);
                 }
 
                 // Actual measuring
                 var start = Stopwatch.GetTimestamp();
                 for (var i = 0; i < count; i++)
                 {
-                    renderCore.Render(world, buffer);
+                    renderer.Render(world, buffer);
                 }
                 var end = Stopwatch.GetTimestamp();
 
@@ -56,43 +64,6 @@ namespace Disunity.App.Benchmarking
 
                 return new BenchmarkResult(runtime);
             }
-        }
-    }
-
-    public class Benchmark
-    {
-        private readonly WorldState _state;
-        private readonly Func<Task<BenchmarkResult>> _startBenchmark;
-
-        public Benchmark(WorldState state, Func<Task<BenchmarkResult>> startBenchmark)
-        {
-            _state = state;
-            _startBenchmark = startBenchmark;
-        }
-
-        public WorldState State
-        {
-            get { return _state; }
-        }
-
-        public Task<BenchmarkResult> Start()
-        {
-            return _startBenchmark();
-        }
-    }
-
-    public class BenchmarkResult
-    {
-        private readonly double _frameRenderingDuration;
-
-        public BenchmarkResult(double frameRenderingDuration)
-        {
-            _frameRenderingDuration = frameRenderingDuration;
-        }
-
-        public double FrameRenderingDuration
-        {
-            get { return _frameRenderingDuration; }
         }
     }
 }

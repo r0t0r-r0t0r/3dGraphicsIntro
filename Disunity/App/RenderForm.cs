@@ -15,7 +15,15 @@ namespace Disunity.App
     {
         private const int ViewportWidth = 800;
         private const int ViewportHeight = 800;
+
+        private const string RootDir = @"Model";
         
+        private readonly WorldBuilder _worldBuilder = new WorldBuilder(ModelLoader.LoadModel(
+            RootDir,
+            "african_head.obj",
+            "african_head_diffuse.bmp",
+            "african_head_nm.png",
+            "african_head_spec.bmp"));
         private readonly Renderer _renderer = new Renderer(ViewportWidth, ViewportHeight);
 
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
@@ -24,6 +32,8 @@ namespace Disunity.App
         private MouseMode _mouseMode;
 
         private IReadOnlyCollection<BenchmarkRecord> _benchmarkRecords = new List<BenchmarkRecord>();
+
+        private WorldState _worldState = CreateInitialState();
 
         public RenderForm()
         {
@@ -301,13 +311,11 @@ namespace Disunity.App
             _mouseMode = MouseMode.RotateModel;
         }
 
-        private WorldState _worldState = CreateInitialState();
-
         private void Draw(WorldStateChange change)
         {
             _worldState = change.Perform(WorldStateChangeAware.Instance)(_worldState);
 
-            var world = WorldBuilder.BuildWorld(_worldState);
+            var world = _worldBuilder.BuildWorld(_worldState);
             _renderer.Render(world, _backBuffer);
             pictureBox1.Image = _backBuffer;
 

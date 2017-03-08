@@ -388,22 +388,22 @@ namespace Disunity.App
 
     public class WorldBuilder
     {
-        private const string RootDir = @"Model";
+        private readonly Model _model;
 
-        private static readonly Model Model = ModelLoader.LoadModel(
-            RootDir,
-            "african_head.obj",
-            "african_head_diffuse.bmp",
-            "african_head_nm.png",
-            "african_head_spec.bmp");
+        public WorldBuilder(Model model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
 
-        public static World BuildWorld(WorldState state)
+            _model = model;
+        }
+
+        public World BuildWorld(WorldState state)
         {
             var center = new Vector3(0, 0, 0);
             var eye = new Vector3(0, 0, 10);
             var up = new Vector3(0, 1, 0);
 
-            var worldObject = new WorldObject(Model)
+            var worldObject = new WorldObject(_model)
             {
                 ShaderFactory = CreateShaderFactory(state.LightMode, state.FillMode),
                 FirstPhaseShaderFactory = () => new ZBufferShader(),
