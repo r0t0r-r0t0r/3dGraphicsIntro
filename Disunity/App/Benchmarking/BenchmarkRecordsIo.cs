@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Disunity.App.Filesystem;
 
 namespace Disunity.App.Benchmarking
 {
-    public static class BenchmarkRecordsIo
+    public class BenchmarkRecordsIo
     {
-        private static readonly string BenchmarkLogFileName = Path.Combine(FilesystemUtils.LocalHome, "benchmark.log");
+        private readonly string _logFileName;
 
-        public static IReadOnlyCollection<BenchmarkRecord> Read()
+        public BenchmarkRecordsIo(string logFileName)
         {
-            EnsureFileExists(BenchmarkLogFileName);
+            if (logFileName == null) throw new ArgumentNullException(nameof(logFileName));
+
+            _logFileName = logFileName;
+        }
+
+        public IReadOnlyCollection<BenchmarkRecord> Read()
+        {
+            EnsureFileExists(_logFileName);
             var records = File
-                .ReadLines(BenchmarkLogFileName)
+                .ReadLines(_logFileName)
                 .Select(x =>
                 {
                     var parts = x.Split(' ');
@@ -31,10 +37,10 @@ namespace Disunity.App.Benchmarking
             return records.AsReadOnly();
         }
 
-        public static void Append(BenchmarkRecord record)
+        public void Append(BenchmarkRecord record)
         {
-            EnsureFileExists(BenchmarkLogFileName);
-            using (var benchmarkLog = File.AppendText(BenchmarkLogFileName))
+            EnsureFileExists(_logFileName);
+            using (var benchmarkLog = File.AppendText(_logFileName))
             {
                 var line = string.Format(CultureInfo.InvariantCulture, "{0} {1}", record.DateTime.ToFileTimeUtc(),
                     record.FrameRenderingDuration);

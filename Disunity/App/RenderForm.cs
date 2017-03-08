@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Disunity.App.Benchmarking;
+using Disunity.App.Filesystem;
 using Disunity.Data;
 using Disunity.Data.Common;
 using Disunity.Rendering;
@@ -16,15 +18,18 @@ namespace Disunity.App
         private const int ViewportWidth = 800;
         private const int ViewportHeight = 800;
 
-        private const string RootDir = @"Model";
+        private const string ModelPath = @"Model";
+
+        private static readonly string BenchmarkLogFileName = Path.Combine(FilesystemUtils.LocalHome, "benchmark.log");
         
         private readonly WorldBuilder _worldBuilder = new WorldBuilder(ModelLoader.LoadModel(
-            RootDir,
+            ModelPath,
             "african_head.obj",
             "african_head_diffuse.bmp",
             "african_head_nm.png",
             "african_head_spec.bmp"));
         private readonly Renderer _renderer = new Renderer(ViewportWidth, ViewportHeight);
+        private readonly BenchmarkRecordsIo _benchmarkRecordsIo = new BenchmarkRecordsIo(BenchmarkLogFileName);
 
         private Bitmap _frontBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
         private Bitmap _backBuffer = new Bitmap(ViewportWidth, ViewportHeight, PixelFormat.Format32bppRgb);
@@ -257,7 +262,7 @@ namespace Disunity.App
 
         private void LoadLastBenchmarkResult()
         {
-            _benchmarkRecords = BenchmarkRecordsIo.Read();
+            _benchmarkRecords = _benchmarkRecordsIo.Read();
 
             var lastBenchmark =
                 _benchmarkRecords.LastOption()
@@ -279,7 +284,7 @@ namespace Disunity.App
             lastBenchmarkTimeLabel.Text = benchmarkTime.ToString("F4");
             lastBenchmarkRunLabel.Text = dateTime.ToString(Thread.CurrentThread.CurrentCulture);
 
-            BenchmarkRecordsIo.Append(new BenchmarkRecord(dateTime, benchmarkTime));
+            _benchmarkRecordsIo.Append(new BenchmarkRecord(dateTime, benchmarkTime));
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)

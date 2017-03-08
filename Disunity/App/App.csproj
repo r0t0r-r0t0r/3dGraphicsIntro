@@ -116,7 +116,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BenchmarkLog.txt" />
     <Content Include="Model\african_head_diffuse.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
