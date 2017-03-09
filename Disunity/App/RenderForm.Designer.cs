@@ -34,6 +34,8 @@
             this.rotateLightRadioButton = new System.Windows.Forms.RadioButton();
             this.viewportScaleNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lastBenchmarkRunLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.lastBenchmarkTimeLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.startBenchmarkButton = new System.Windows.Forms.Button();
@@ -52,8 +54,6 @@
             this.bordersAndFillRadioButton = new System.Windows.Forms.RadioButton();
             this.fillRadioButton = new System.Windows.Forms.RadioButton();
             this.bordersRadioButton = new System.Windows.Forms.RadioButton();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lastBenchmarkRunLabel = new System.Windows.Forms.Label();
             this.mainPanel.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewportScaleNumericUpDown)).BeginInit();
@@ -159,6 +159,24 @@
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Benchmark";
+            // 
+            // lastBenchmarkRunLabel
+            // 
+            this.lastBenchmarkRunLabel.AutoSize = true;
+            this.lastBenchmarkRunLabel.Location = new System.Drawing.Point(59, 43);
+            this.lastBenchmarkRunLabel.Name = "lastBenchmarkRunLabel";
+            this.lastBenchmarkRunLabel.Size = new System.Drawing.Size(36, 13);
+            this.lastBenchmarkRunLabel.TabIndex = 4;
+            this.lastBenchmarkRunLabel.Text = "Never";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Run on:";
             // 
             // lastBenchmarkTimeLabel
             // 
@@ -363,24 +381,6 @@
             this.bordersRadioButton.UseVisualStyleBackColor = true;
             this.bordersRadioButton.CheckedChanged += new System.EventHandler(this.bordersRadioButton_CheckedChanged);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 43);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Run on:";
-            // 
-            // lastBenchmarkRunLabel
-            // 
-            this.lastBenchmarkRunLabel.AutoSize = true;
-            this.lastBenchmarkRunLabel.Location = new System.Drawing.Point(59, 43);
-            this.lastBenchmarkRunLabel.Name = "lastBenchmarkRunLabel";
-            this.lastBenchmarkRunLabel.Size = new System.Drawing.Size(36, 13);
-            this.lastBenchmarkRunLabel.TabIndex = 4;
-            this.lastBenchmarkRunLabel.Text = "Never";
-            // 
             // RenderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -388,7 +388,7 @@
             this.ClientSize = new System.Drawing.Size(790, 800);
             this.Controls.Add(this.mainPanel);
             this.Name = "RenderForm";
-            this.Text = "Render";
+            this.Text = "Disunity";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.mainPanel.ResumeLayout(false);
             this.mainPanel.PerformLayout();

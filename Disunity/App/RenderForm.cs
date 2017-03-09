@@ -239,10 +239,6 @@ namespace Disunity.App
         {
             var benchmark = BenchmarkFactory.Create();
 
-            _worldState = benchmark.State;
-            SetupWorldStateControls();
-            Draw(WorldStateChange.Empty);
-
             var dateTime = DateTime.Now;
             lastBenchmarkTimeLabel.Text = "Benchmarking...";
             lastBenchmarkRunLabel.Text = dateTime.ToString(Thread.CurrentThread.CurrentCulture);
@@ -330,11 +326,5 @@ namespace Disunity.App
             _backBuffer = _frontBuffer;
             _frontBuffer = exchange;
         }
-    }
-
-    internal enum MouseMode
-    {
-        RotateLight,
-        RotateModel
     }
 }
